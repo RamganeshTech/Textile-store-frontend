@@ -1,0 +1,48 @@
+.navbar_toggle{
+    border-color: 2px solid red;
+    color: #fff !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap:3px;
+    align-items: center;
+    /* float: unset;
+    margin: 0 5px 0 0;
+    background: transparent !important; */
+    cursor: pointer;
+
+}
+
+.icon_bar{
+    background: black;
+    border-radius: 5px;
+    width: 22px;
+    height: 2px;
+    display: block;
+    transition: all .3s;
+    transform-origin: left;
+
+}
+
+.icon_bar.two, 
+.icon_bar.three {
+    width: 22px;
+    height: 2px;
+
+}
+
+.icon_bar.active.two {
+    /* width: 19px; */
+    transform: scaleX(0.86);
+    height: 2px;
+
+}
+
+.icon_bar.active.three {
+    /* width: 16px; */
+    transform: scaleX(0.73);
+    height: 2px;
+
+
+}
+   
