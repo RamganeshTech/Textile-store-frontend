@@ -2,6 +2,7 @@
 import { useState, useEffect, useRef } from "react";
 import style from './Home.module.css'
 import Carousel from "../../components/Carousel/Carousel";
+import SubCarousel from "../../components/Subcarousel/SubCarousel";
 const Home = () => {
   
     const [navbarHeight, setNavbarHeight] = useState(0);
@@ -15,8 +16,9 @@ const Home = () => {
     }, []);
   
   return (
-    <div className={`mt-[${navbarHeight}px]`}>
+    <div className={`mt-[70px]`}>
         <Carousel />
+        <SubCarousel />
     </div>
   )
 }

@@ -1,20 +1,23 @@
 import React, { useState } from 'react'
 import style from './Navbar.module.css'
-import MenuIcon from '@mui/icons-material/Menu';
+// import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
 import userlogo from '../../assets/userlogo.webp'
+import { Navigate, useNavigate } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
 
   const [isDropdownVisible, setDropdownVisible] = useState<Boolean>(false);
   const [ismainMenuVisble, setIsmainMenuVisble] = useState<Boolean>(false);
 
+  let navigate = useNavigate()
+
   return (
     <>
-      <nav className="w-full  flex flex-col items-center justify-center fixed top-0 left-0 z-[999] bg-white">
+      <nav className="w-full  flex flex-col items-center justify-center fixed top-0 left-0 z-[999] bg-white shadow-lg">
         <div className="w-[95%] h-[70px] flex items-center justify-between">
           <div className="flex items-center gap-2">
             {/* <span onClick={()=> setIsmainMenuVisble(!ismainMenuVisble)}>
@@ -27,10 +30,10 @@ const Navbar: React.FC = () => {
             <span className={`${style.icon_bar}  ${ismainMenuVisble ? style.active : ""} ${style.three}`}></span>                       
           </button>
             </div>
-            <img src={userlogo} alt="User" className="w-5 h-5" />
+            <img src={userlogo} alt="User" className="w-5 h-5" onClick={()=> navigate('login')} />
             <p>Login</p>
           </div>
-          <h1 className="text-xl text-pink-500">BMB Fashion</h1>
+          <h1 className="text-4xl text-[#3182ce] font-semibold">BMB Fashion</h1>
           <div className="flex gap-4">
             <SearchIcon />
             <ShoppingCartOutlinedIcon />
