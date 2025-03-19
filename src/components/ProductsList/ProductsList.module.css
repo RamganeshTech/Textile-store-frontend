@@ -1,0 +1,84 @@
+.maincontainer {
+    padding: clamp(10px, 2vw, 20px);
+    width: 100vw;
+    background: #fafafa;
+}
+
+.viewallcontainer {
+    display: flex;
+    gap: clamp(3px, 2vw, 10px);
+    /* transform-origin: center; */
+    /* border: 2px solid red; */
+    width: 8%;
+    will-change: transform;
+}
+
+.viewallcontainer p,
+span {
+    font-size: clamp(14px, 2vw, 18px);
+    color: #1f2937;
+}
+
+.viewallcontainer:hover {
+    transition: .3s all;
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.productslist {
+    width: 100%;
+    /* border: 2px solid red; */
+    /* height: auto; */
+    min-height: auto;
+    margin-top: 20px;
+}
+
+.innerDiv {
+    display: grid;
+    place-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    height: 100%;
+    row-gap: 30px;
+    width: 100%;
+    padding: clamp(10px, 2vw, 20px);
+    /* border: 2px solid red; */
+}
+
+
+
+/* 📱 Mobile: 2 products per row */
+
+@media (max-width: 767px) {
+    .viewallcontainer {
+        width: 35%;
+    }
+
+    .viewallcontainer p {
+        font-size: 20px;
+    }
+
+    .innerDiv {
+        place-items: center;
+        grid-template-columns: repeat(1, 1fr);
+        row-gap: 20px;
+    }
+}
+
+/* 📲 Tablet: 3 products per row */
+@media (min-width: 768px) and (max-width: 1023px) {
+
+    .viewallcontainer {
+        width: 13%;
+    }
+
+    .innerDiv {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* 💻 Large Screens: 4 products per row */
+@media (min-width: 1024px) {
+    .innerDiv {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
