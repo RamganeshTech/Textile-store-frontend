@@ -20,7 +20,6 @@ const Carousel = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
-  // Previous slide function
   const prevSlide = () => {
     setCurrentIndex(
       (prevIndex) => (prevIndex - 1 + images.length) % images.length
@@ -29,7 +28,7 @@ const Carousel = () => {
 
 
   useEffect(() => {
-    // Set up interval using setTimeout for smoother auto-scroll
+   
     const scrollImage = () => {
       if (currentIndex === images.length - 1) {
         setTimeout(() => {
@@ -42,29 +41,34 @@ const Carousel = () => {
       }
     };
 
-    // Scroll every 3 seconds
+   
     const interval = setTimeout(() => {
       scrollImage();
-    }, 3000); // Delay of 3 seconds before the next slide
+    }, 3000);
 
-    return () => clearTimeout(interval); // Clear the timeout when component unmounts
-  }, [currentIndex]); // Dependency on currentIndex so it triggers each time it updates
+    return () => clearTimeout(interval);
+  }, [currentIndex]);
 
 
   useEffect(() => {
     if (carouselRef.current) {
       const navbarHeight = document.querySelector("nav")
         ? (document.querySelector("nav") as HTMLElement).offsetHeight
-        : 70; // Default value
+        : 70;
 
-      const calculatedHeight = `calc(100vh - ${navbarHeight}px)`; // Correct height calculation
-      carouselRef.current.style.height = calculatedHeight;
-      console.log("Calculated Height: ", calculatedHeight);
+      // const calculatedHeight = `calc(100vh - ${navbarHeight}px)`;
+      // carouselRef.current.style.height = calculatedHeight;
+      // console.log("Calculated Height: ", calculatedHeight);
+
+      if (window.innerWidth <= 426) {
+        // For mobile: Set fixed height
+        carouselRef.current.style.height = "250px";
+      } else {
+        // For tablets & desktops: Calculate height dynamically
+        carouselRef.current.style.height = `calc(100vh - ${navbarHeight}px)`;
+      }
     }
   }, []);
-
-
-
 
   return (
     <div ref={carouselRef} className={`${style.carousel}`}>
@@ -72,7 +76,7 @@ const Carousel = () => {
         className={`${style.carouselInner}`}
         style={{
           transform: `translateX(-${currentIndex * 100}%)`,
-          transition: "transform 0.8s ease-in-out", // Smooth transition effect
+          transition: "transform 0.8s ease-in-out",
         }}
       >
 

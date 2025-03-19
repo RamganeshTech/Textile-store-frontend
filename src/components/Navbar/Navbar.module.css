@@ -6,11 +6,7 @@
     justify-content: center;
     gap:3px;
     align-items: center;
-    /* float: unset;
-    margin: 0 5px 0 0;
-    background: transparent !important; */
     cursor: pointer;
-
 }
 
 .icon_bar{
@@ -32,17 +28,148 @@
 }
 
 .icon_bar.active.two {
-    /* width: 19px; */
     transform: scaleX(0.86);
     height: 2px;
 
 }
 
 .icon_bar.active.three {
-    /* width: 16px; */
     transform: scaleX(0.73);
     height: 2px;
-
-
 }
-   
+
+
+.companyheading {
+    font-size: 21px; 
+}
+
+  
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px; 
+    width: 250px;
+    height: 100vh;
+    background: white;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    z-index: 1000;
+    transition: left 0.4s ease-in-out; 
+  }
+  
+  .sidebar.show {
+    left: 0;
+  }
+
+  /* .sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .sidebar ul li {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+  } */
+
+
+  
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 50px 0 0 0; 
+  }
+  
+  .sidebar ul li {
+    padding: 15px 20px; 
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1); 
+    font-size: 18px; 
+    font-weight: 500; 
+    color: #333; 
+    transition: background 0.3s ease-in-out; 
+  }
+  
+  .sidebar ul li:last-child {
+    border-bottom: none; 
+  }
+  
+  .sidebar ul li:hover {
+    background: rgba(0, 0, 0, 0.05); 
+    cursor: pointer;
+  }
+  
+  
+  
+  .closeBtn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    position: absolute;
+    right: 15px;
+    top: 15px;
+  }
+  
+  
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.4s ease-in-out;
+  }
+  
+  .overlayShow {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  
+  .hideMobile{
+    cursor: pointer;
+  }
+
+@media (max-width: 767px) {
+    .hideMobile {
+        display: none !important;
+    }
+}
+
+@media (min-width: 768px) {
+    .companyheading {
+        font-size: 24px; 
+    }
+
+    .sidebar {
+        display: none;
+      }
+
+      .menuicon{
+        display: none;
+      }
+}
+
+@media (min-width: 1024px) {
+    .companyheading {
+        font-size: 32px; 
+    }
+
+    .menuicon{
+        display: none;
+      }
+}
+
+@media (min-width: 1440px) {
+    .companyheading {
+        font-size: 40px; 
+    }
+
+    .menuicon{
+        display: none;
+      }
+}
+

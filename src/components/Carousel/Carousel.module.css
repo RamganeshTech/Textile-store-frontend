@@ -3,6 +3,7 @@
     overflow: hidden;
     position: relative;
     height: 100%;
+    overflow: hidden;
 }
   
   .carouselInner {
@@ -18,7 +19,7 @@
     height: 100%;
     object-fit: cover; 
    filter: brightness(0.8);
-
+    display: block; 
   }
 
   .carouselButton {
@@ -35,10 +36,6 @@
     opacity: 0.8;
     font-size: 20px;
   }
-
-  
-
- 
   
   .prevButton {
     left: 20px;
@@ -54,4 +51,39 @@
     text-decoration: underline;
     text-underline-offset: 7px;
     text-decoration-thickness: 2px;
+  }
+
+  @media (max-width: 426px) {
+    .carousel{
+      width: 100%;
+      height: 350px;
+    }
+
+    .carouselInner{
+     filter: brightness(1.5);
+    }
+
+    .image {
+      width: 100%;
+      height: 100%;
+      /* object-fit: contain;  */
+     filter: brightness(0.7);
+     object-fit: cover; 
+     /* display: block; */
+     /* object-position: center; */
+     /* aspect-ratio: 16/9; */
+    }
+
+    .carouselButton{
+      color: rgba(0, 0, 0, 0.276);
+    }
+
+    .prevButton{
+      left: 0px;
+    }
+
+    .nextButton{
+      right: 0px;
+    }
+  
   }
