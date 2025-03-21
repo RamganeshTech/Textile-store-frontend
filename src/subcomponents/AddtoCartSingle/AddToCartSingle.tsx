@@ -1,5 +1,6 @@
 import React from 'react'
-import styles from '../../components/AddToCart/AddToCart.module.css'
+// import styles from '../../components/AddToCart/AddToCart.module.css'
+import styles from '../../pages/AddToCart/AddToCart.module.css'
 import  RemoveIcon from '@mui/icons-material/Remove';
 import { IconButton } from '@mui/material';
 import { CartItem } from '../../Types/types';
