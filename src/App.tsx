@@ -6,7 +6,7 @@ import Footer from './components/Footer/Footer'
 import Login from './components/Login/Login'
 import ForgotPassword from './components/ForgotPassword/ForgotPassword'
 import SingleProduct from './components/SingleProduct/SingleProduct'
-import AddToCart from './components/AddToCart/AddToCart'
+import AddToCart from './pages/AddToCart/AddToCart'
 import Favourite from './pages/Favourite/Favourite'
 
 function App() {
