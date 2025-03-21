@@ -49,6 +49,11 @@
 .itemDetails h2{
     font-weight: 500;
     font-size: clamp(14px, 4vw, 24px);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
 }
 
 .itemDetails p{
