@@ -22,15 +22,7 @@ const ProductsList: React.FC = () => {
                     {products.map((product, i) =>
                         <Products key={i} product={product} />
                     )}
-                    {/* <Products />
-                  <Products />
-                  <Products />
-                  <Products />
-                  <Products />
-                  <Products />
-                  <Products />
-                  <Products />
-                  <Products /> */}
+                 
                 </div>
             </section>
         </main>
