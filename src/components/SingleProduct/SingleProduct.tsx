@@ -13,26 +13,8 @@ import { ProductType } from '../../Types/types';
 import products from '../../Utils/product';
 import { Link, useParams } from 'react-router-dom';
 
-import { FaStar, FaRegStar } from "react-icons/fa";
-
-type RatingProps = {
-    rating: number; // Expects a number between 0-5
-};
-
-const StarRating: React.FC<RatingProps> = ({ rating }) => {
-    return (
-        <div style={{ display: "flex", gap: "5px" }}>
-            {Array.from({ length: 5 }, (_, index) =>
-                index < rating ? (
-                    <FaStar key={index} color="gold" size={20} /> // Filled star
-                ) : (
-                    <FaRegStar key={index} color="gray" size={20} /> // Empty star
-                )
-            )}
-        </div>
-    );
-};
-
+import { FaStar } from "react-icons/fa";
+import StarRating from '../StarRating/StarRating';
 
 type reviewprouducts = {
     reviewername: (string | null),
