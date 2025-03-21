@@ -1,4 +1,4 @@
-import { ProductType } from "../Types/types";
+import { FavouriteItem, ProductType } from "../Types/types";
 
 const products: ProductType[] = [
     {
@@ -125,6 +125,43 @@ const products: ProductType[] = [
       ],
     }
   ];
+
+
+  export const favouriteItems: FavouriteItem[] = [
+    {
+      id: 1,
+      productImg: "https://picsum.photos/200/300?random=4",
+      productTitle: "Stylish Jacket",
+      price: 49.99,
+      availableStocks: 10,
+      rating: 4.5,
+    },
+    {
+      id: 2,
+      productImg: "https://picsum.photos/200/300?random=1",
+      productTitle: "Casual Sneakers",
+      price: 59.99,
+      availableStocks: 5,
+      rating: 4.2,
+    },
+    {
+      id: 3,
+      productImg: "https://picsum.photos/200/300?random=2",
+      productTitle: "Leather Handbag",
+      price: 89.99,
+      availableStocks: 7,
+      rating: 4.8,
+    },
+    {
+      id: 4,
+      productImg: "https://picsum.photos/200/300?random=3",
+      productTitle: "Smart Watch",
+      price: 129.99,
+      availableStocks: 3,
+      rating: 4.7,
+    },
+  ];
+  
   
   export default products;
   

@@ -13,6 +13,7 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 import { ProductType } from '../../Types/types';
 import { Link } from 'react-router-dom';
+import StarRating from '../../components/StarRating/StarRating';
 
 type singleProductprop = {
     product: ProductType
@@ -50,7 +51,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
 
     return (
-        <div>
+        <div className={`${style.mainProduct}`}>
             <Link to={`/product/${product.id}`}>
            
             <section className={`${style.product}`}>
@@ -77,7 +78,8 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                     <div className={`${style.rating}`}>
                         <span>Rating: </span>
                         <span>
-                            {renderStars(rating)}
+                            {/* {renderStars(rating)} */}
+                            <StarRating rating={rating}  />
                         </span>
                     </div>
                     <Button variant='contained' className={`${style.addtocart}`}

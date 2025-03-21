@@ -19,4 +19,24 @@ export type ReviewType = {
     reviews: ReviewType[];
     reviewStar: number;
   };
+
+
+  export interface CartItem {
+    id: number;
+    productImg: string;
+    productTitle: string;
+    price: number;
+    availableStocks: number;
+    quantity: number;
+  }
+  
+
+  export interface FavouriteItem {
+    id: number;
+    productImg: string;
+    productTitle: string;
+    price: number;
+    availableStocks: number;
+    rating?:number;
+  }
   

@@ -6,7 +6,7 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
 import userlogo from '../../assets/userlogo.webp'
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import CloseIcon  from '@mui/icons-material/Close';
 
 const Navbar: React.FC = () => {
@@ -59,55 +59,16 @@ const Navbar: React.FC = () => {
           <h1 className={`${style.companyheading}  text-[#3182ce] font-semibold`}>BMB Fashion</h1>
           <div className="flex gap-4">
             {/* <SearchIcon /> */}
+            <Link to={'/cart'}>
             <ShoppingCartOutlinedIcon className={`${style.hideMobile}`} />
-            <FavoriteBorderOutlinedIcon className={`${style.hideMobile}`} />
-          </div>
-        </div>
-      {/* {ismainMenuVisble && <section className='h-[25px] flex items-center justify-center w-full  bg-[#ffdee8]'>
-          <ul className='flex items-center justify-center gap-1  '>
-            <li className='hover:bg-[#ef0650] px-4 cursor-pointer'>Kurta</li>
-            <li className='hover:bg-[#ef0650] px-4 cursor-pointer'>Kurta Set</li>
-            <li className='hover:bg-[#ef0650] px-4 cursor-pointer'>New Collection</li>
-            <li className='hover:bg-[#ef0650] px-4 cursor-pointer'>Suit Set</li>
-            <li className='hover:bg-[#ef0650] px-4 cursor-pointer'>Ethnic Wear</li>
-            <li
-        className="relative hover:bg-[#ef0650] px-4 cursor-pointer"
-        onMouseEnter={() => setDropdownVisible(true)}
-        onMouseLeave={() => setDropdownVisible(false)}
-      >
-        Men's
-        {isDropdownVisible && (
-          <select className="absolute left-0 mt-[25px] w-[100px] border p-1 bg-white">
-            <option value="Shirt">Shirt</option>
-          </select>
-        )}
-      </li>
-            
-       
-        <li  className=" hover:bg-[#ef0650] px-4 cursor-pointer"  > All Categories </li>
-          </ul>
-        </section>} */}
-      </nav>
+            </Link>
 
-      {/* {ismainMenuVisble && (
-        <div className={style.overlay}>
-          <div ref={sidebarRef} className={`${style.sidebar} ${ismainMenuVisble ? style.show : ""}`}>
-            <button className={style.closeBtn} onClick={() => setIsmainMenuVisble(false)}>
-            <CloseIcon />
-            </button>
-          
-            <ul>
-              <li>Kurta</li>
-              <li>Kurta Set</li>
-              <li>New Collection</li>
-              <li>Suit Set</li>
-              <li>Ethnic Wear</li>
-              <li>Men's</li>
-              <li>All Categories</li>
-            </ul>
+            <Link to={'/favourite'}>
+            <FavoriteBorderOutlinedIcon className={`${style.hideMobile}`} />
+            </Link>
           </div>
         </div>
-      )} */}
+      </nav>
 
   <div id="sidebar" ref={sidebarRef} className={`${style.sidebar} ${ismainMenuVisble ? style.show : ''}`}>
         <button className={style.closeBtn} onClick={() => setIsmainMenuVisble(false)}>
@@ -115,9 +76,10 @@ const Navbar: React.FC = () => {
         </button>
         <ul>
           <li>Profile</li>
-          <li>My Cart</li>
-          <li>Register</li>
-          <li>My Favourites</li>
+          <li><Link to="/cart">My Cart</Link></li>
+          <li><Link to="/login">Register</Link></li>
+          <li><Link to="/favourite">My Favourites</Link></li>
+          <li>Logout</li>
         </ul>
       </div>
 
