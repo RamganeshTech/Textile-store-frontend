@@ -6,7 +6,7 @@ const Footer = () => {
     <div className={`${style.footinner}`}>
 
     <section className={`${style.sections}`}>
-         <p className={`${style.companyheading}`}>HOUSE OF RAM</p>
+         <p className={`${style.companyheading}`}>BMB Products</p>
         </section>
        
         <section className={`${style.sections}`}>

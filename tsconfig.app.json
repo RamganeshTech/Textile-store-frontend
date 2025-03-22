@@ -22,5 +22,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
   },
-  "include": ["src"]
+  "include": ["src", "../../Textile-store-backend/src/Utils/forgotPasswordMail.ts"]
 }
