@@ -5,156 +5,6 @@
     margin: 70px auto 0 auto;
 }
 
-/* 
-.container {
-    width: 50%;
-    padding: 2rem;
-    background-color: white;
-    border-radius: 0.5rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    margin: 90px auto 0 auto;
-    border: 2px solid red;
-  }
-  
-  .header {
-    text-align: center;
-  }
-  
-  .title {
-    font-size: 2rem;
-    font-weight: bold;
-  }
-  
-  .subtitle {
-    margin-top: 0.5rem;
-    font-size: 1.2rem;
-    color: #4a5568;
-  }
-  
-  .link {
-    color: #3182ce;
-  }
-  
-  .googleButton {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #4a5568;
-    background-color: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-  }
-  
-  .googleLogo {
-    width: 1.25rem;
-    height: 1.25rem;
-    width: 2rem;
-    height: 2rem;
-    margin-right: 0.5rem;
-  }
-  
-  .divider {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 1.5rem 0;
-  }
-  
-  .dividerText {
-    position: absolute;
-    padding: 0 0.5rem;
-    font-size: 1rem;
-    color: #a0aec0;
-    background-color: white;
-  }
-  
-  .dividerLine {
-    width: 100%;
-    border-top: 1px solid #e2e8f0;
-  }
-  
-  .form {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-  
-  .label {
-    font-size: 1.2rem;
-    font-weight: 500;
-    color: #4a5568;
-  }
-  
-  .input {
-    width: 100%;
-    padding: 0.5rem 0.75rem;
-    margin-top: 0.25rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
-    color: #4a5568;
-  }
-  
-  .passwordContainer {
-    position: relative;
-    margin-top: 0.25rem;
-  }
-  
-  .eyeIcon {
-    position: absolute;
-    top: 50%;
-    right: 0.75rem;
-    transform: translateY(-50%);
-    color: #a0aec0;
-    cursor: pointer;
-  }
-  
-  .checkboxContainer {
-    display: flex;
-    align-items: center;
-  }
-  
-  .checkbox {
-    width: 1rem;
-    height: 1rem;
-    color: #3182ce;
-    border: 1px solid #e2e8f0;
-    border-radius: 0.25rem;
-    margin-right: 0.5rem;
-  }
-  
-  .checkboxLabel {
-    font-size: 0.875rem;
-    color: #4a5568;
-  }
-  
-  .forgotPassword {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #3182ce;
-    cursor: pointer;
-  }
-  
-  .loginButton {
-    width: 100%;
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: white;
-    background-color: black;
-    border: none;
-    border-radius: 0.375rem;
-    cursor: pointer;
-  } */
-
-
   .container {
     width: 100%;
     max-width: clamp(20rem, 50vw, 40rem);
@@ -307,5 +157,20 @@
     border-radius: 0.375rem;
     cursor: pointer;
     height: 50px;
-    font-size: 20px !important;
+    font-size: clamp(14px, 2vw, 20px) !important;
+  }
+
+
+
+  @media (max-width:768px) {
+    .loginButton {
+      height: 30px;
+    }
+    }
+
+
+  @media (max-width:426px) {
+  .loginButton {
+    height: 30px;
+  }
   }

@@ -6,25 +6,122 @@ import { auth } from '../../Utils/firebase';
 
 import GoogleLogo from '../../assets/Google Logo.png'
 import { Button } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
+import Api from '../../apiClient/apiClient';
+import { validateLogin, validateRegister } from '../../Utils/validation';
 
 const Login: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
+
+  const [address, setAddress] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [indianState, setIndianState] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
+  const navigate = useNavigate();
+  
 
-  const googleLogin = ()=>{
-    const provider = new GoogleAuthProvider();
-    signInWithPopup(auth, provider).then(async (result)=>{
-      console.log(result)
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    try {
 
-      if(result.user){
-        console.log(result.user)
+      validateLogin({email, password})
+
+      const response = await Api.post("/login", { email, password });
+      // The backend should set an httpOnly, secure cookie with the token.
+      if (response.data?.success) {
+        console.log("Login successful:", response.data.user);
+        // Redirect to a protected route
+        navigate("/dashboard");
+      } else {
+        setError(response.data.message || "Login failed");
       }
-    })
-  }
+    } catch (err: any) {
+      const msg =
+        err.response?.data?.message || "An unexpected error occurred during login.";
+      console.error("Login error:", msg);
+      setError(msg);
+    }
+  };
+
+
+
+  // const googleLogin = ()=>{
+  //   const provider = new GoogleAuthProvider();
+  //   signInWithPopup(auth, provider).then(async (result)=>{
+  //     console.log(result)
+
+  //     if(result.user){
+  //       console.log(result.user)
+  //     }
+  //   })
+  // }
+
+
+  // use the below one 
+
+//   const googleLogin = () => {
+//   const provider = new GoogleAuthProvider();
+//   signInWithPopup(auth, provider)
+//     .then(async (result) => {
+//       const user = result.user;
+//       const idToken = await user.getIdToken(); // Get Firebase ID token
+
+//       console.log("idToken from googlelogin", idToken);
+
+//       const response = await fetch("http://localhost:3000/api/googlelogin", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ idToken }),
+//       });
+
+//       const data = await response.json();
+//       console.log("data from googlelogin", data);
+//     })
+//     .catch((error) => {
+//       console.error("Google login error:", error);
+//     });
+// };
+
+// const googleLogin = async () => {
+//   try {
+//     const provider = new GoogleAuthProvider();
+//     const result = await signInWithPopup(auth, provider);
+
+//     if (result.user) {
+//       const idToken = await result.user.getIdToken(); // Get Google ID Token
+
+//       // Send token to backend
+//       const response = await fetch("http://localhost:3000/api/googlelogin", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ idToken }),
+//       });
+
+//       const data = await response.json();
+//       if (response.ok) {
+//         localStorage.setItem("token", data.token); // Store JWT token
+//         console.log("User authenticated:", data.user);
+//       } else {
+//         console.error("Error:", data.message);
+//       }
+//     }
+//   } catch (error) {
+//     console.error("Google login error:", error);
+//   }
+// };
+
 
 
   const fetchUserData = async ()=>{
@@ -53,15 +150,40 @@ const Login: React.FC = () => {
   //   }
   // }
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle login logic here
-  };
+    setError(null);
+    try {
 
-  const handleRegister = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle registration logic here
+      validateRegister({email, password, phoneNumber, pincode, address, state:indianState, userName:name})
+      const response = await Api.post("/register", {
+        // Required fields
+        userName: name, // Pass the name input as userName, as defined in your UserModel
+        email,
+        password,
+        // Optional fields – if not provided, backend should default them to null
+        address: address || null,
+        pincode: pincode || null,
+        state: indianState || null,
+        phoneNumber: phoneNumber || null,
+      });
+  
+      if (response.data?.success) {
+        console.log("Registration successful:", response.data.message);
+        // Optionally, switch to login view or automatically log the user in
+        setIsLogin(true);
+      } else {
+        setError(response.data.message || "Registration failed");
+      }
+    } catch (err: any) {
+      const msg =
+        err.response?.data?.message ||
+        "An unexpected error occurred during registration.";
+      console.error("Registration error:", msg);
+      setError(msg);
+    }
   };
+  
 
   return (
     <main className={`${styles.maincontainer}`}>
@@ -80,12 +202,12 @@ const Login: React.FC = () => {
           )}
         </p>
       </div>
-      <div>
-        <button className={`${styles.googleButton}`} onClick={googleLogin}>
-          <img src={GoogleLogo} alt="Google logo" className={`${styles.googleLogo}`} />
+     {/* <div>
+        <button className={`${styles.googleButton}`}>
+          <img src={GoogleLogo} alt="Google logo" className={`${styles.googleLogo}`} onClick={googleLogin}/>
           {isLogin ? 'Sign in with Google' : 'Sign up with Google'}
         </button>
-      </div>
+      </div> */}
       <div className={`${styles.divider}`}>
         <span className={`${styles.dividerText}`}>or {isLogin ? 'Sign in' : 'Sign up'} with Email</span>
         <div className={`${styles.dividerLine}`}></div>
@@ -153,7 +275,7 @@ const Login: React.FC = () => {
               <label htmlFor="remember_me" className={`${styles.checkboxLabel}`}>Remember me</label>
             </div>
             <div className="text-sm">
-              <a href="#" className={`${styles.forgotPassword}`}>Forgot Password?</a>
+              <Link to="/forgotpassword" className={`${styles.forgotPassword}`}>Forgot Password?</Link>
             </div>
           </div>
         )}
