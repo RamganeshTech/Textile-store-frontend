@@ -16,7 +16,7 @@
 
 .product:hover {
     transform: scale(1.03);
-    cursor: pointer;
+    /* cursor: pointer; */
 }
 
 .imgcontainer {
@@ -32,6 +32,7 @@
     object-fit: cover;
     background-size: contain;
     background-position: contain;
+    cursor: pointer;
 }
 
 .imgcontainer button {
@@ -59,12 +60,14 @@
     overflow: hidden;
     line-clamp: 1;
     color: #374151;
+    cursor: pointer;
 }
 
 .descriptioncontainer p:nth-child(2) {
     font-size: clamp(14px, 2vw, 18px);
     font-weight: 550;
     color: #374151;
+    cursor: pointer;
 }
 
 .descriptioncontainer p:nth-child(2) span {
@@ -77,6 +80,8 @@
     gap: 3px;
     align-items: center;
     justify-content: start;
+    cursor: pointer;
+
 }
 
 .rating span {
