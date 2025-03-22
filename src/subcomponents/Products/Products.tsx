@@ -52,14 +52,19 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
     return (
         <div className={`${style.mainProduct}`}>
-            <Link to={`/product/${product.id}`}>
+            {/* <Link to={`/product/${product.id}`}> */}
            
             <section className={`${style.product}`}>
                 <div className={`${style.imgcontainer}`}>
-                    <img src={product.images[0]} alt="" />
+                <Link to={`/product/${product.id}`} >
+                    <img src={product.images[0]} alt=""  style={{ pointerEvents: "none" }} />
+                </Link>
                     <IconButton
                         sx={{ backgroundColor: "fff" }}
-                        onClick={() => setToFavourites(!toFavourites)}>
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();  
+                            setToFavourites(!toFavourites)}}>
                         {toFavourites ? (<FavoriteIcon sx={{
                             fill: `red`
                         }} />) :
@@ -71,6 +76,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
                 <div className={`${style.descriptioncontainer}`}>
                     {/* <p>kurtha with neet top and golden brown shawl golden brown shawl golden brown shawl</p> */}
+                    <Link to={`/product/${product.id}`}>
                     <p>{product.productName}</p>
                     <p>M.R.P <span>₹</span><span>{product.price}</span></p>
                     {/* <span className={`inline-flex`}>rating {<div className=''>{new Array(5).fill("⭐").map(ele => <>{ele}</>)}</div>}</span> */}
@@ -82,6 +88,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                             <StarRating rating={rating}  />
                         </span>
                     </div>
+                    </Link>
                     <Button variant='contained' className={`${style.addtocart}`}
                         sx={{
                             // height: "25%",
@@ -92,7 +99,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                     >Add to cart</Button>
                 </div>
             </section>
-            </Link>
+            {/* </Link> */}
         </div>
 
     )

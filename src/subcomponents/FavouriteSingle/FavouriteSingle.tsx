@@ -23,7 +23,7 @@ const FavouriteSingle = ({ item, setFavourites }: FavouriteSingleProps) => {
             <img src={item.productImg} alt={item.productTitle} className={styles.image} />
 
             <div className={styles.itemDetails}>
-                <h2>{item.productTitle} watcheswatches watches  watcheswatches watches  watcheswatches watches  watches watches</h2>
+                <h2>{item.productTitle} watcheswatches watches  watcheswatches watches  watcheswatches watches  watches watches Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellat nostrum dolore vitae ipsa, totam voluptatem sit mollitia ad earum dicta.</h2>
                 <p>Price: <span>${item.price.toFixed(2)}</span></p>
                 {/* <p>Rating: ⭐{item.rating}</p> */}
                 <p><StarRating rating={item.rating ?? 0} /></p>
