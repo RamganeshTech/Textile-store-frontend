@@ -8,158 +8,14 @@ import ForgotPassword from './components/ForgotPassword/ForgotPassword'
 import SingleProduct from './components/SingleProduct/SingleProduct'
 import AddToCart from './pages/AddToCart/AddToCart'
 import Favourite from './pages/Favourite/Favourite'
+import AllProducts from './pages/AllProducts/AllProducts'
 
 function App() {
 
   return (
     <>
       <Navbar />
-      {/* <div>
-        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-        <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      <div>Lorem ipsum dolor sit amet consectetur adipisicing elit. At, aperiam!</div>
-      </div> */}
+     
 
 
         <Routes>
@@ -169,6 +25,7 @@ function App() {
           <Route path='/product/:id' element={<SingleProduct />} />
           <Route path='/cart' element={<AddToCart />} />
           <Route path='/favourite' element={<Favourite />} />
+          <Route path='/allproducts' element={<AllProducts />} />
         </Routes>
         <Footer />
     </>

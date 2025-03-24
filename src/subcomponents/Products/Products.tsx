@@ -76,7 +76,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
                 <div className={`${style.descriptioncontainer}`}>
                     {/* <p>kurtha with neet top and golden brown shawl golden brown shawl golden brown shawl</p> */}
-                    <Link to={`/product/${product.id}`}>
+                    <Link to={`/product/${product.id}`} className='pt-[10px] pb-[10px] flex h-full flex-col justify-between '>
                     <p>{product.productName}</p>
                     <p>M.R.P <span>₹</span><span>{product.price}</span></p>
                     {/* <span className={`inline-flex`}>rating {<div className=''>{new Array(5).fill("⭐").map(ele => <>{ele}</>)}</div>}</span> */}

@@ -18,6 +18,7 @@ export type ReviewType = {
     description: string;
     reviews: ReviewType[];
     reviewStar: number;
+    category?:string;
   };
 
 
