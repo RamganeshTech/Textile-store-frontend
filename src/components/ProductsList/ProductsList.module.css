@@ -1,6 +1,6 @@
 .maincontainer {
     padding: clamp(10px, 2vw, 20px);
-    width: 100vw;
+    /* width: 100vw; */
     background: #fafafa;
 }
 

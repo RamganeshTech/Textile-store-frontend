@@ -4,6 +4,10 @@ import style from './Home.module.css'
 import Carousel from "../../components/Carousel/Carousel";
 import SubCarousel from "../../components/Subcarousel/SubCarousel";
 import ProductsList from "../../components/ProductsList/ProductsList";
+
+import products from '../../Utils/product';
+
+
 const Home = () => {
   
     const [navbarHeight, setNavbarHeight] = useState(0);
@@ -20,7 +24,7 @@ const Home = () => {
     <div className={`mt-[70px] ${style.maincontainer}`}>
         <Carousel />
         <SubCarousel />
-        <ProductsList />
+        <ProductsList products={products}/>
     </div>
   )
 }
