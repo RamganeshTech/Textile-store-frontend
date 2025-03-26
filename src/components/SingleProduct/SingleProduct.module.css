@@ -112,11 +112,11 @@
 }
 
 .sizeContainer button {
-    width: 5%;
+    width: 7%;
     height: 100%;
     vertical-align: middle;
     border: 2px solid #0a0a0a;
-    border-radius: 50%;
+    border-radius: 20%;
     padding: 5px;
     cursor: pointer;
     transition: all .3s;
@@ -407,13 +407,18 @@
 
 
     .sizeContainer button {
-        width: 15%;
+        width: 15% !important;
         height: 100%;
     }
 
+    /* .colorsContainer{
+        height: 6.5%;
+        border: 2px solid red;
+    } */
 
     .colorsContainer .colors {
         width: 10%;
+        /* height:100%; */
     }
 
     .quantityBtns {

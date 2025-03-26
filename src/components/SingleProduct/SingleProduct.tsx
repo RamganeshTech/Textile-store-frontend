@@ -10,11 +10,13 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 
 import { ProductType } from '../../Types/types';
 
-import products from '../../Utils/product';
+// import products from '../../Utils/product';
 import { Link, useParams } from 'react-router-dom';
 
 import { FaStar } from "react-icons/fa";
 import StarRating from '../StarRating/StarRating';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../store/store';
 
 type reviewprouducts = {
     reviewername: (string | null),
@@ -25,6 +27,9 @@ type reviewprouducts = {
 
 const SingleProduct = () => {
     let { id: paramsid } = useParams()
+
+
+    let products = useSelector((state:RootState)=> state.products.products)
 
     const [product, setProduct] = useState<ProductType | null>(null)
 
@@ -96,7 +101,9 @@ const SingleProduct = () => {
 
     useEffect(() => {
         setProduct(() => {
-            let product = products.find(({ id }) => id === Number(paramsid))
+            console.log(products)
+            let product = products.find(({ _id }) => _id === paramsid)
+            console.log(product)
             if (!product) {
                 return null
             }

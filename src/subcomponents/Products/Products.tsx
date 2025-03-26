@@ -23,7 +23,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
     const [toFavourites, setToFavourites] = useState<boolean>(false)
 
-    const [rating, setRating] = useState<number>(product.reviewStar); // Example rating
+    const [rating, setRating] = useState<number>(product.reviewStar); 
 
     // Function to render stars dynamically
     const renderStars = (rating: number) => {
@@ -49,6 +49,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         return stars;
     };
 
+    // console.log(product)
 
     return (
         <div className={`${style.mainProduct}`}>
@@ -56,7 +57,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
            
             <section className={`${style.product}`}>
                 <div className={`${style.imgcontainer}`}>
-                <Link to={`/product/${product.id}`} >
+                <Link to={`/product/${product._id}`} >
                     <img src={product.images[0]} alt=""  style={{ pointerEvents: "none" }} />
                 </Link>
                     <IconButton
@@ -75,11 +76,9 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                 </div>
 
                 <div className={`${style.descriptioncontainer}`}>
-                    {/* <p>kurtha with neet top and golden brown shawl golden brown shawl golden brown shawl</p> */}
-                    <Link to={`/product/${product.id}`} className='pt-[10px] pb-[10px] flex h-full flex-col justify-between '>
+                    <Link to={`/product/${product._id}`} className='pt-[10px] pb-[10px] flex h-full flex-col justify-between '>
                     <p>{product.productName}</p>
                     <p>M.R.P <span>₹</span><span>{product.price}</span></p>
-                    {/* <span className={`inline-flex`}>rating {<div className=''>{new Array(5).fill("⭐").map(ele => <>{ele}</>)}</div>}</span> */}
 
                     <div className={`${style.rating}`}>
                         <span>Rating: </span>

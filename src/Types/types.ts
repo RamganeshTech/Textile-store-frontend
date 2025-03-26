@@ -6,7 +6,7 @@ export type ReviewType = {
   };
   
   export type ProductType = {
-    id:number;
+    _id:string;
     productName: string;
     price: number;
     size: string;

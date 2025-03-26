@@ -3,12 +3,17 @@ import style from './AllProducts.module.css'
 import { CheckBox, Close } from '@mui/icons-material'
 import ProductsList from '../../components/ProductsList/ProductsList'
 import { IconButton, TextField } from '@mui/material'
-import products from '../../Utils/product'
+// import products from '../../Utils/product'
 import ProductsFullList from '../../components/ProductsFullList/ProductsFullList'
 import Checkbox from '@mui/material/Checkbox';
 import TuneIcon from '@mui/icons-material/Tune';
 import { Button } from '@mui/material';
 import FilterSideBar from '../../components/FilterSidebar/FilterSideBar'
+import { useSelector } from 'react-redux'
+import { AppDispatch, RootState } from '../../store/store'
+import { useDispatch } from 'react-redux'
+import { useFetchProducts } from '../../apiList/apiList'
+import { ProductType } from '../../Types/types'
 // import { IconButton } from '@mui/material';
 
 
@@ -21,16 +26,23 @@ const AllProducts = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
 
-  // Example filtering – adjust as needed
-  const filteredProducts = products.filter((product) =>
-    product.productName.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (selectedCategory ? (product.category?.toLowerCase() || '') === selectedCategory.toLowerCase() : true)
-  );
 
+  let dispatch = useDispatch<AppDispatch>()
+
+  // const products = useSelector((state:RootState)=> state.products.products)
+  let {data:products, isLoading, isError, error} = useFetchProducts()
+
+
+
+  console.log(products)
+
+  // Example filtering – adjust as needed
+  // const filteredProducts = products.filter((product:ProductType) =>
+  //   product.productName.toLowerCase().includes(searchTerm.toLowerCase()) &&
+  //   (selectedCategory ? (product.category?.toLowerCase() || '') === selectedCategory.toLowerCase() : true)
+  // );
 
   const sidebarRef = useRef<HTMLDivElement>(null);
-
-
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -38,9 +50,6 @@ const AllProducts = () => {
         setSidebarVisible(false);
       }
     }
-
-
-    console.log("clling sidebarVisible", sidebarVisible)
 
     if (sidebarVisible) {
       document.addEventListener('mousedown', handleClickOutside);
@@ -50,10 +59,6 @@ const AllProducts = () => {
 
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [sidebarVisible]);
-
-
-
-
 
   return (
     <main className={`${style.maincontainer} mt-[70px]`}>
