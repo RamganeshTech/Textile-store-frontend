@@ -8,7 +8,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 
 
-import { ProductType } from '../../Types/types';
+import { CartItem, ProductType } from '../../Types/types';
 
 // import products from '../../Utils/product';
 import { Link, useParams } from 'react-router-dom';
@@ -17,6 +17,9 @@ import { FaStar } from "react-icons/fa";
 import StarRating from '../StarRating/StarRating';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import { useAddToCart, useFetchCart, useRemoveFromCart, useRemoveQuantityFromCart } from '../../apiList/cartApi';
+import { useAddToFavourite, useFetchFavourite, useRemoveFavourite } from '../../apiList/favouriteApi';
+import { useFetchProducts } from '../../apiList/productApi';
 
 type reviewprouducts = {
     reviewername: (string | null),
@@ -28,13 +31,22 @@ type reviewprouducts = {
 const SingleProduct = () => {
     let { id: paramsid } = useParams()
 
+    const { data: products, isLoading, error } = useFetchProducts();
 
-    let products = useSelector((state:RootState)=> state.products.products)
+    let { data: cartItems, isLoading: cartLoading, isError: cartIsError, error: cartError } = useFetchCart()
+
+
+
+    // let products = useSelector((state: RootState) => state.products.products)
 
     const [product, setProduct] = useState<ProductType | null>(null)
 
-    const [quantity, setQuantity] = useState<number>(1)
-    const [toFavourites, setToFavourites] = useState<boolean>(false)
+    const [tempQuantity, setTempQuantity] = useState<number>(1)
+    const [isInCart, setIsInCart] = useState<boolean>(false);
+    const [currentQuantity, setCurrentQuantity] = useState<number>(0);
+
+
+    const [isFavourite, setIsFavourite] = useState<boolean>(false)
     const [review, setReview] = useState<reviewprouducts>({
         reviewername: null,
         review: null,
@@ -71,30 +83,69 @@ const SingleProduct = () => {
         setSelectedStars(star);
     };
 
-    const handleQuantity = (action: string) => {
+    // const handleQuantity = (action: string) => {
 
-        if (!product) return;
+    //     if (!product) return;
 
-        if (action === "increment") {
-            setQuantity(p => {
+    //     if (action === "increment") {
+    //         setQuantity(p => {
 
-                if (p >= product.availableStocks) {
-                    return p
-                }
+    //             if (p >= product.availableStocks) {
+    //                 return p
+    //             }
 
-                return p + 1
-            })
+    //             return p + 1
+    //         })
+    //     }
+
+    //     if (action === "decrement") {
+    //         setQuantity(p => {
+
+    //             if (p <= 1) {
+    //                 return 1
+    //             }
+
+    //             return p - 1
+    //         })
+    //     }
+    // }
+
+
+    let { mutate: addCartmutate } = useAddToCart()
+    const { mutate: removeFromCartMutation } = useRemoveFromCart();
+    const { mutate: removeSingleQuantity } = useRemoveQuantityFromCart()
+
+    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, } = useRemoveFavourite()
+
+    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, } = useAddToFavourite()
+
+    const { data: favourites, isLoading: favLoading, isError: favIsError } = useFetchFavourite();
+
+    const handleFavourite = () => {
+        // console.log("size from favourties", product.size)
+        // console.log("colors from favourties", product.color)
+        if (isFavourite) {
+
+            if (product)
+                removeFavourite({ productId: product._id, size: product.size, color: product.color });
+        } else {
+            if (product)
+                addFavourite({ productId: product._id, size: product.size, color: product.color });
         }
+        setIsFavourite(!isFavourite);
+    };
 
-        if (action === "decrement") {
-            setQuantity(p => {
+    const handleQuantity = (id: string, action: "increment" | "decrement") => {
+        const maxStock = product?.availableStocks || 0;
 
-                if (p <= 1) {
-                    return 1
-                }
-
-                return p - 1
-            })
+        console.log(maxStock)
+        if (action === "increment" && currentQuantity < maxStock) {
+            setCurrentQuantity(p => Math.min((p as number) + 1, maxStock))
+            addCartmutate({ productId: id, quantity: 1, price: product?.price }); // Send only the increment change
+        }
+        else if (action === "decrement" && currentQuantity > 1 ) {
+            setCurrentQuantity(p => Math.max((p as number) - 1, 1))
+            removeSingleQuantity({ id, quantity: 1 }); // Send only the decrement change
         }
     }
 
@@ -102,7 +153,7 @@ const SingleProduct = () => {
     useEffect(() => {
         setProduct(() => {
             console.log(products)
-            let product = products.find(({ _id }) => _id === paramsid)
+            let product = products?.find(({ _id }: { _id: string }) => _id === paramsid)
             console.log(product)
             if (!product) {
                 return null
@@ -112,6 +163,42 @@ const SingleProduct = () => {
 
         )
     }, [])
+
+
+    useEffect(() => {
+        if (cartItems && Array.isArray(cartItems)) {
+            const foundItem = cartItems.find((item: CartItem) => {
+                console.log(item)
+                return item.productId._id === product?._id});
+
+                console.log("foundItem", foundItem)
+                console.log("caling addtocat btn change functionity useeffect")
+                if (foundItem) {
+                    console.log("inside the cart items inside if part")
+                    setIsInCart(true);
+                    setTempQuantity(foundItem.quantity);
+                    setCurrentQuantity(foundItem.quantity)
+            } else {
+                console.log("inside the cart items inside else part")
+                setIsInCart(false);
+                setTempQuantity(1);
+                setCurrentQuantity(1);
+            }
+        }
+        console.log("cart")
+    }, [cartItems, product]);
+
+
+    useEffect(() => {
+        if (favourites && favourites.items && product) {
+            const exists = favourites.items.some((fav: any) => {
+                // console.log("favourites product Id",fav.productId)
+                // console.log("product._id",product._id)
+                return fav.productId._id === product._id
+            });
+            setIsFavourite(exists);
+        }
+    }, [favourites, product?._id]);
 
     if (!product) return;
 
@@ -133,8 +220,8 @@ const SingleProduct = () => {
                     <section className={`${style.imagecontainer}`}>
 
                         <aside className={`${style.sideimgContainer}`}>
-                            {product.images.map((image: string) =>
-                                <div className={`${style.singleSideImg}`} tabIndex={0}>
+                            {product.images.map((image: string, i: number) =>
+                                <div key={i} className={`${style.singleSideImg}`} tabIndex={0}>
                                     <img src={image} alt="image 1" />
                                 </div>
                             )}
@@ -153,7 +240,7 @@ const SingleProduct = () => {
 
                         <div className={`${style.ratingContainer}`}>
                             {/* <p>{product.reviewStar}</p> */}
-                            <p>Rating</p><span><StarRating rating={product.reviewStar} /></span> 
+                            <p>Rating</p><span><StarRating rating={product.reviewStar} /></span>
                         </div>
 
                         <div className={`${style.priceContainer}`}>
@@ -165,8 +252,8 @@ const SingleProduct = () => {
                         </div>
 
                         <div className={`${style.sizeContainer}`}>
-                            {product.availableSizes.map(size =>
-                                <button onClick={() => handleSizeSelect(size)}>
+                            {product.availableSizes.map((size, i) =>
+                                <button key={i} onClick={() => handleSizeSelect(size)}>
                                     <p>{size}</p>
                                 </button>
                             )}
@@ -183,7 +270,7 @@ const SingleProduct = () => {
                                     className={`${style.colors} ${selectedColor === color ? "selected" : ""}`}
                                     style={{
                                         backgroundColor: color,
-                                        border:"1px solid #0a0a0a",
+                                        border: "1px solid #0a0a0a",
                                         outline: selectedColor === color ? "3px solid white" : "none",
                                         boxShadow: selectedColor === color ? "0 0 5px rgba(0, 0, 0, 1)" : "none",
                                         // border: selectedColor === color ? "2px solid black" : "none",
@@ -201,12 +288,17 @@ const SingleProduct = () => {
                         <div className={`${style.quantityContainer}`}>
                             <p>Quantity</p>
                             <div className={`${style.quantityBtns}`}>
-                                <IconButton onClick={() => handleQuantity("increment")}>
-                                    <AddIcon />
-                                </IconButton>
-                                {quantity}
-                                <IconButton onClick={() => handleQuantity("decrement")}>
+                               
+                                <IconButton
+                                disabled={currentQuantity <= 1}
+                                onClick={() => handleQuantity(product._id, "decrement")}>
                                     <RemoveIcon />
+                                </IconButton>
+                                    {currentQuantity}
+                                <IconButton 
+                               disabled={currentQuantity >= product.availableStocks} 
+                                onClick={() => handleQuantity(product._id, "increment")}>
+                                    <AddIcon />
                                 </IconButton>
                             </div>
                         </div>
@@ -214,16 +306,28 @@ const SingleProduct = () => {
 
                         <section className={`${style.transactionBtns}`}>
                             <div>
-                                <Button variant='contained'
+                                {!isInCart ? <Button variant='contained'
                                     className={`${style.addToCartBtn}`}
+                                    onClick={() => addCartmutate({ productId: product._id, quantity: 1, price: product.price })}
+
                                 >
                                     Add to Cart
+                                </Button> 
+                                :
+                                <Button variant='contained'
+                                    className={`${style.addToCartBtn}`}
+                                    onClick={() => removeFromCartMutation(product._id)}
+
+                                >
+                                    Remove from Cart
                                 </Button>
+
+                                }
 
                                 <IconButton
                                     sx={{ backgroundColor: "fff" }}
-                                    onClick={() => setToFavourites(!toFavourites)}>
-                                    {toFavourites ? (<FavoriteIcon sx={{
+                                    onClick={() => handleFavourite()}>
+                                    {isFavourite ? (<FavoriteIcon sx={{
                                         fill: `red`,
 
                                     }} />) :
@@ -255,25 +359,25 @@ const SingleProduct = () => {
                 <div className={`${style.reviewMainContainer}`}>
 
                     <nav className={`${style.reviewNavbar}`}>
-                        <div 
-                        onClick={()=> {
-                            setshowUserReview(false)
-                            setactiveReview(false)
-                        }}
-                        className={`${activeReview ? "" : style.activeReviewComponent }`}
-                        tabIndex={0}>
+                        <div
+                            onClick={() => {
+                                setshowUserReview(false)
+                                setactiveReview(false)
+                            }}
+                            className={`${activeReview ? "" : style.activeReviewComponent}`}
+                            tabIndex={0}>
                             <p
-                            className={`${!activeReview ? `text-[#1976d2]` : ""}`}
+                                className={`${!activeReview ? `text-[#1976d2]` : ""}`}
                             >Review Our Product</p>
                         </div>
-                        <div onClick={()=> {
+                        <div onClick={() => {
                             setactiveReview(true)
                             setshowUserReview(true)
-                            }} 
+                        }}
                             className={`${activeReview ? style.activeReviewComponent : ""}`}
                             tabIndex={0}>
                             <p
-                            className={`${activeReview ? `text-[#1976d2]` : ""}`}
+                                className={`${activeReview ? `text-[#1976d2]` : ""}`}
                             > See Others Review</p>
                         </div>
                     </nav>
@@ -351,15 +455,15 @@ const SingleProduct = () => {
                                 {product.reviews.map(singleReview =>
                                     <div className={`${style.singleReviewContainer}`}>
                                         <div>
-                                        <StarRating rating={singleReview.stars} />
+                                            <StarRating rating={singleReview.stars} />
                                         </div>
-                                        <div  className={`${style.userinfoContainer}`}>
+                                        <div className={`${style.userinfoContainer}`}>
                                             <img src={singleReview.profileImg} alt="" />
                                             <p>{singleReview.ownerName}</p>
                                         </div>
 
                                         <div>
-                                          <p>{singleReview.description}</p>
+                                            <p>{singleReview.description}</p>
                                         </div>
                                     </div>
                                 )}
