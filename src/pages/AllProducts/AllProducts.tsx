@@ -12,7 +12,7 @@ import FilterSideBar from '../../components/FilterSidebar/FilterSideBar'
 import { useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../store/store'
 import { useDispatch } from 'react-redux'
-import { useFetchProducts } from '../../apiList/apiList'
+import { useFetchProducts } from '../../apiList/productApi'
 import { ProductType } from '../../Types/types'
 // import { IconButton } from '@mui/material';
 

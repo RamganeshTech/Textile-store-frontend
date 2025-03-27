@@ -9,6 +9,7 @@ import { Button } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import Api from '../../apiClient/apiClient';
 import { validateLogin, validateRegister } from '../../Utils/validation';
+import { loginUser, registerUser } from '../../apiList/userauthApi';
 
 const Login: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -23,6 +24,7 @@ const Login: React.FC = () => {
 
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   
@@ -30,25 +32,40 @@ const Login: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+
+
+
     try {
-
-      validateLogin({email, password})
-
-      const response = await Api.post("/login", { email, password });
-      // The backend should set an httpOnly, secure cookie with the token.
-      if (response.data?.success) {
-        console.log("Login successful:", response.data.user);
-        // Redirect to a protected route
-        navigate("/dashboard");
-      } else {
-        setError(response.data.message || "Login failed");
-      }
+      const data = await loginUser(email, password);
+      console.log("User logged in:", data);
+      alert("Login successful");
     } catch (err: any) {
       const msg =
         err.response?.data?.message || "An unexpected error occurred during login.";
-      console.error("Login error:", msg);
+      console.error("Login error:", err);
       setError(msg);
+    } finally {
+      setLoading(false);
     }
+
+
+    // try {
+
+    //   validateLogin({email, password})
+
+    //   const response = await Api.post("/login", { email, password });
+    //   if (response.data?.success) {
+    //     console.log("Login successful:", response.data.user);
+    //     navigate("/dashboard");
+    //   } else {
+    //     setError(response.data.message || "Login failed");
+    //   }
+    // } catch (err: any) {
+    //   const msg =
+    //     err.response?.data?.message || "An unexpected error occurred during login.";
+    //   console.error("Login error:", msg);
+    //   setError(msg);
+    // }
   };
 
 
@@ -124,17 +141,17 @@ const Login: React.FC = () => {
 
 
 
-  const fetchUserData = async ()=>{
-    // onAuthStateChanged it is going to do when user is loggedin the auth variable iwll be empty , when logged in this auth will contain the data fo users
-    // the user params will hold all the detail when the user is logging in like eamil and pass
-    auth.onAuthStateChanged(async (user)=>{
-      console.log(user)
-    })
-  }
+  // const fetchUserData = async ()=>{
+  //   // onAuthStateChanged it is going to do when user is loggedin the auth variable iwll be empty , when logged in this auth will contain the data fo users
+  //   // the user params will hold all the detail when the user is logging in like eamil and pass
+  //   // auth.onAuthStateChanged(async (user)=>{
+  //   //   console.log(user)
+  //   // })
+  // }
 
-  useEffect(()=>{
-    fetchUserData()
-  }, [])
+  // useEffect(()=>{
+  //   fetchUserData()
+  // }, [])
 
 
   // const logout = async ()=>{
@@ -156,25 +173,30 @@ const Login: React.FC = () => {
     try {
 
       validateRegister({email, password, phoneNumber, pincode, address, state:indianState, userName:name})
-      const response = await Api.post("/register", {
-        // Required fields
-        userName: name, // Pass the name input as userName, as defined in your UserModel
-        email,
-        password,
-        // Optional fields – if not provided, backend should default them to null
-        address: address || null,
-        pincode: pincode || null,
-        state: indianState || null,
-        phoneNumber: phoneNumber || null,
-      });
+      // const response = await Api.post("/register", {
+      //   // Required fields
+      //   userName: name, // Pass the name input as userName, as defined in your UserModel
+      //   email,
+      //   password,
+      //   // Optional fields – if not provided, backend should default them to null
+      //   address: address || null,
+      //   pincode: pincode || null,
+      //   state: indianState || null,
+      //   phoneNumber: phoneNumber || null,
+      // });
   
-      if (response.data?.success) {
-        console.log("Registration successful:", response.data.message);
-        // Optionally, switch to login view or automatically log the user in
-        setIsLogin(true);
-      } else {
-        setError(response.data.message || "Registration failed");
-      }
+      // if (response.data?.success) {
+      //   console.log("Registration successful:", response.data.message);
+      //   // Optionally, switch to login view or automatically log the user in
+      //   setIsLogin(true);
+      // } else {
+      //   setError(response.data.message || "Registration failed");
+      // }
+
+
+      const data = await registerUser({  userName:name, email, password , pincode, address, state:indianState});
+      console.log("User registered:", data);
+      alert("Registration successful");
     } catch (err: any) {
       const msg =
         err.response?.data?.message ||

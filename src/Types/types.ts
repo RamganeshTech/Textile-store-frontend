@@ -23,21 +23,22 @@ export type ReviewType = {
 
 
   export interface CartItem {
-    id: number;
-    productImg: string;
-    productTitle: string;
-    price: number;
-    availableStocks: number;
+    _id: string;
     quantity: number;
+    productId: ProductType
+    price:number
   }
   
 
   export interface FavouriteItem {
-    id: number;
-    productImg: string;
-    productTitle: string;
-    price: number;
-    availableStocks: number;
-    rating?:number;
+    _id: string;
+    // productImg: string;
+    // productTitle: string;
+    // price: number;
+    // availableStocks: number;
+    // rating?:number;
+    productId:ProductType,
+    size:string,
+    color:string,
   }
   

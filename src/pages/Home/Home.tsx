@@ -10,7 +10,7 @@ import ProductsList from "../../components/ProductsList/ProductsList";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "../../slices/products";
-import { useFetchProducts } from "../../apiList/apiList";
+import { useFetchProducts } from "../../apiList/productApi";
 import { AppDispatch, RootState } from "../../store/store";
 
 

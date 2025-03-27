@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import Api from "..//apiClient/apiClient"; // Axios instance
+import Api from "../apiClient/apiClient"; // Axios instance
 
 // Fetch function
 const fetchProducts = async () => {
@@ -14,5 +14,7 @@ export const useFetchProducts = () => {
         queryKey: ["products"],
         queryFn: fetchProducts,
         staleTime: 1 * 60 * 1000, // Cache for 5 minutes
+        refetchOnWindowFocus: false, // Prevent refetch on tab switch
+        // refetchOnReconnect: false, // Prevent refetch on internet reconnect
     });
 };

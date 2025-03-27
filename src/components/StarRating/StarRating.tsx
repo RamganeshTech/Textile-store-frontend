@@ -7,7 +7,7 @@ type RatingProps = {
 
 const StarRating: React.FC<RatingProps> = ({ rating }) => {
     return (
-        <div style={{ display: "flex", gap: "5px" }}>
+        <span style={{ display: "flex", gap: "5px" }}>
             {Array.from({ length: 5 }, (_, index) =>
                 index < rating ? (
                     <FaStar key={index} color="gold" size={20} /> 
@@ -15,7 +15,7 @@ const StarRating: React.FC<RatingProps> = ({ rating }) => {
                     <FaRegStar key={index} color="gray" size={20} /> 
                 )
             )}
-        </div>
+        </span>
     );
 };
 

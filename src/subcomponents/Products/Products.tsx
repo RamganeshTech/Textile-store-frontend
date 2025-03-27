@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import style from './Products.module.css'
 
 import { Button, IconButton } from '@mui/material'
@@ -14,6 +14,8 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import { ProductType } from '../../Types/types';
 import { Link } from 'react-router-dom';
 import StarRating from '../../components/StarRating/StarRating';
+import { useAddToCart } from '../../apiList/cartApi';
+import { useAddToFavourite, useFetchFavourite, useRemoveFavourite } from '../../apiList/favouriteApi';
 
 type singleProductprop = {
     product: ProductType
@@ -21,9 +23,9 @@ type singleProductprop = {
 
 const Products: React.FC<singleProductprop> = ({ product }) => {
 
-    const [toFavourites, setToFavourites] = useState<boolean>(false)
+    const [isFavourite, setIsFavourite] = useState<boolean>(false)
 
-    const [rating, setRating] = useState<number>(product.reviewStar); 
+    const [rating, setRating] = useState<number>(product.reviewStar);
 
     // Function to render stars dynamically
     const renderStars = (rating: number) => {
@@ -49,24 +51,73 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         return stars;
     };
 
-    // console.log(product)
+  
+
+
+    let { mutate: addCartmutate } = useAddToCart()
+
+    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, } = useRemoveFavourite()
+
+    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, } = useAddToFavourite()
+
+    const { data: favourites, isLoading, isError } = useFetchFavourite();
+
+
+    // const handleFavourite = () => {
+    //     if (!isFavourite) {
+    //         setIsFavourite(true)
+    //         addFavourite({ productId: product._id, size: product.size, color: product.color })
+    //     }
+    //     else {
+    //         setIsFavourite(false)
+    //         removeFavourite({ productId: product._id, size: product.size, color: product.color })
+    //     }
+    // }
+
+
+    const handleFavourite = () => {
+        console.log("size from favourties", product.size)
+        console.log("colors from favourties", product.color)
+        if (isFavourite) {
+
+           
+            removeFavourite({ productId: product._id, size: product.size, color: product.color });
+        } else {
+            addFavourite({ productId: product._id, size: product.size, color: product.color });
+        }
+        setIsFavourite(!isFavourite);
+    };
+
+
+    useEffect(() => {
+        if (favourites && favourites.items) {
+            const exists = favourites.items.some((fav:any) => {
+                // console.log("favourites product Id",fav.productId)
+                // console.log("product._id",product._id)
+                return fav.productId._id === product._id
+            });
+            setIsFavourite(exists);
+        }
+    }, [favourites, product._id]);
+
 
     return (
         <div className={`${style.mainProduct}`}>
             {/* <Link to={`/product/${product.id}`}> */}
-           
+
             <section className={`${style.product}`}>
                 <div className={`${style.imgcontainer}`}>
-                <Link to={`/product/${product._id}`} >
-                    <img src={product.images[0]} alt=""  style={{ pointerEvents: "none" }} />
-                </Link>
+                    <Link to={`/product/${product._id}`} >
+                        <img src={product.images[0]} alt="" style={{ pointerEvents: "none" }} />
+                    </Link>
                     <IconButton
                         sx={{ backgroundColor: "fff" }}
                         onClick={(e) => {
                             e.preventDefault();
-                            e.stopPropagation();  
-                            setToFavourites(!toFavourites)}}>
-                        {toFavourites ? (<FavoriteIcon sx={{
+                            e.stopPropagation();
+                            handleFavourite()
+                        }}>
+                        {isFavourite ? (<FavoriteIcon sx={{
                             fill: `red`
                         }} />) :
                             <FavoriteBorderIcon sx={{
@@ -77,18 +128,19 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
                 <div className={`${style.descriptioncontainer}`}>
                     <Link to={`/product/${product._id}`} className='pt-[10px] pb-[10px] flex h-full flex-col justify-between '>
-                    <p>{product.productName}</p>
-                    <p>M.R.P <span>₹</span><span>{product.price}</span></p>
+                        <p>{product.productName}</p>
+                        <p>M.R.P <span>₹</span><span>{product.price}</span></p>
 
-                    <div className={`${style.rating}`}>
-                        <span>Rating: </span>
-                        <span>
-                            {/* {renderStars(rating)} */}
-                            <StarRating rating={rating}  />
-                        </span>
-                    </div>
+                        <div className={`${style.rating}`}>
+                            <span>Rating: </span>
+                            <span>
+                                {/* {renderStars(rating)} */}
+                                <StarRating rating={rating} />
+                            </span>
+                        </div>
                     </Link>
                     <Button variant='contained' className={`${style.addtocart}`}
+                        onClick={() => addCartmutate({ productId: product._id, quantity: 1, price: product.price })}
                         sx={{
                             // height: "25%",
                             // width: "90%",
