@@ -72,8 +72,8 @@ const AddToCart: React.FC = () => {
       </div>
       <section>
         {cart && cart.length > 0 ? cart.map((item:CartItem, index:number) => {
-          console.log(`Rendering item: ${index}, Class: ${styles.cartItem}`);
-          console.log(item)
+          // console.log(`Rendering item: ${index}, Class: ${styles.cartItem}`);
+          // console.log(item)
           return (
             <AddToCartSingle key={item._id}
               item={item}

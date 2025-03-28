@@ -1,8 +1,17 @@
 export type ReviewType = {
-    ownerName: string;
-    profileImg: string;
-    description: string;
-    stars: number;
+    // userName: string;
+    // profileImg: string;
+    // description: string;
+    // stars: number;
+
+
+    _id?: string
+    userName: string,
+    stars: number,
+    description: string,
+    userId:string
+    profileImg:string,
+
   };
   
   export type ProductType = {

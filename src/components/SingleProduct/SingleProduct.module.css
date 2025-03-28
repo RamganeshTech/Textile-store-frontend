@@ -282,7 +282,7 @@
 }
 
 .reviewContainer .reviewheading {
-    font-size: clamp(18px, 2vw, 22px);
+    font-size: clamp(18px, 3vw, 28px);
     font-weight: 600;
     color: #313132;
 }

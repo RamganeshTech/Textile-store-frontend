@@ -11,7 +11,7 @@ export const addToCart = async (cartData:any)=>{
 
 export const getCart = async ()=>{
     let {data} = await Api.get('/cart/getcartitems')
-   console.log(data)
+  //  console.log(data)
 
     return data.data
 }
@@ -20,7 +20,7 @@ export const removeCartItems = async (cartdata:string)=>{
 try{
   console.log(cartdata)
     let {data} = await Api.delete(`/cart/deletecartitem/${cartdata}`)
-   console.log(data)
+  //  console.log(data)
 
     return data.data
 }

@@ -20,7 +20,7 @@ type AddToCartSingleProps = {
 }
 
 const AddToCartSingle = ({ item } : AddToCartSingleProps) => {
-
+  
   let dispatch = useDispatch<AppDispatch>()
 
   const [tempQuantity, setTempQuantity] = useState<number>(item.quantity)
@@ -37,7 +37,7 @@ const AddToCartSingle = ({ item } : AddToCartSingleProps) => {
     const currentQuantity = item.quantity;
     const maxStock = item.productId.availableStocks;
   
-    console.log(maxStock)
+    // console.log(maxStock)
     if (action === "increment" && tempQuantity < maxStock) {
       setTempQuantity(p=> Math.min((p as number)+1, maxStock))
       addCartmutate({ productId: id, quantity: 1, price: item.price }); // Send only the increment change

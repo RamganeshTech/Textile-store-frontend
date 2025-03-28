@@ -3,7 +3,7 @@ import Api from "../apiClient/apiClient";
 
 
 
-export const loginUser = async (email: string, password: string) => {
+export const loginUser = async (email: string, password: string, ) => {
     try {
       const response = await Api.post(`auth/userlogin`, { email, password });
       return response.data;

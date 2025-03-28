@@ -10,6 +10,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import Api from '../../apiClient/apiClient';
 import { validateLogin, validateRegister } from '../../Utils/validation';
 import { loginUser, registerUser } from '../../apiList/userauthApi';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../slices/user';
+// import { setUser } from '../../slices/auth';
 
 const Login: React.FC = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -27,6 +30,9 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+
+
+  const dispatch = useDispatch()
   
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -38,11 +44,17 @@ const Login: React.FC = () => {
     try {
       const data = await loginUser(email, password);
       console.log("User logged in:", data);
-      alert("Login successful");
+      
+      if (!data.user || !data.user.userId) {
+        throw new Error("Invalid response: Missing userId");
+      }
+
+      dispatch(setUser({ userId: data.user.userId, userName:data.user.userName, email: data.user.email, isAuthenticated:true }));
     } catch (err: any) {
       const msg =
         err.response?.data?.message || "An unexpected error occurred during login.";
       console.error("Login error:", err);
+      // dispatch(setUser({ userId: null, userName:null, email: null, isAuthenticated:false }));
       setError(msg);
     } finally {
       setLoading(false);
@@ -195,6 +207,13 @@ const Login: React.FC = () => {
 
 
       const data = await registerUser({  userName:name, email, password , pincode, address, state:indianState});
+
+      if (!data.user || !data.user.userId) {
+        throw new Error("Invalid response: Missing userId");
+      }
+
+      dispatch(setUser({ userId: data.user.userId, userName:data.user.userName, email: data.user.email, isAuthenticated:true }));
+
       console.log("User registered:", data);
       alert("Registration successful");
     } catch (err: any) {
@@ -202,6 +221,7 @@ const Login: React.FC = () => {
         err.response?.data?.message ||
         "An unexpected error occurred during registration.";
       console.error("Registration error:", msg);
+      dispatch(setUser({ userId: null, userName:null, email: null, isAuthenticated:false }));
       setError(msg);
     }
   };
