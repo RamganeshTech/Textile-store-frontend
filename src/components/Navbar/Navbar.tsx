@@ -9,15 +9,30 @@ import userlogo from '../../assets/userlogo.webp'
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
+import { RootState } from '../../store/store';
+import { useSelector } from 'react-redux';
 
 const Navbar: React.FC = () => {
+
+  const isAuthenticated = useSelector((state:RootState)=> state.user.isAuthenticated)
 
   const [isDropdownVisible, setDropdownVisible] = useState<Boolean>(false);
   const [ismainMenuVisble, setIsmainMenuVisble] = useState<Boolean>(false);
 
+  
+
   const sidebarRef = useRef<HTMLDivElement>(null);
 
   let navigate = useNavigate()
+
+  const handleNavbarNavigate = ()=>{
+    if(isAuthenticated){
+      navigate('userprofile')
+    }
+    else{
+      navigate('login')
+    }
+  }
 
 
   useEffect(() => {
@@ -37,6 +52,8 @@ const Navbar: React.FC = () => {
   }, [ismainMenuVisble]);
 
 
+
+
   return (
     <>
       <nav className="w-full  flex flex-col items-center justify-center fixed top-0 left-0 z-[999] bg-white shadow-lg">
@@ -52,10 +69,8 @@ const Navbar: React.FC = () => {
                 <span className={`${style.icon_bar}  ${ismainMenuVisble ? style.active : ""} ${style.three}`}></span>
               </button>
             </div>
-            {/* <img src={userlogo} alt="User" className="w-5 h-5" onClick={()=> navigate('login')} />
-            <p>Login</p> */}
-            <img src={userlogo} alt="User" className={`${style.hideMobile} w-5 h-5`} onClick={() => navigate('login')} />
-            <p className={`${style.hideMobile}`} onClick={() => navigate('login')}>Login</p>
+            <img src={userlogo} alt="User" className={`${style.hideMobile} w-5 h-5`} onClick={handleNavbarNavigate} />
+            <p className={`${style.hideMobile} text-nowrap`} onClick={handleNavbarNavigate}>{isAuthenticated ? 'My Profile': "Login"}</p>
           </div>
           <div className="flex gap-2 items-center justify-center">
             <img src="./src/assets/logo/build my business.png" alt="" className='w-[20%] h-[10%] md:w-[10%] md:h-[5%]' />
@@ -84,7 +99,7 @@ const Navbar: React.FC = () => {
         <ul>
           <li>Profile</li>
           <li><Link to="/cart">My Cart</Link></li>
-          <li><Link to="/login">Register</Link></li>
+          {isAuthenticated ? <li><Link to="/login">My Profile</Link></li> : <li><Link to="/login">Login</Link></li>}
           <li><Link to="/favourite">My Favourites</Link></li>
           <li>Logout</li>
         </ul>

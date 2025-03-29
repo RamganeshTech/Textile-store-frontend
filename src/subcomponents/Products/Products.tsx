@@ -12,9 +12,9 @@ import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 import { ProductType } from '../../Types/types';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import StarRating from '../../components/StarRating/StarRating';
-import { useAddToCart } from '../../apiList/cartApi';
+import { useAddToCart, useFetchCart, useRemoveFromCart } from '../../apiList/cartApi';
 import { useAddToFavourite, useFetchFavourite, useRemoveFavourite } from '../../apiList/favouriteApi';
 
 type singleProductprop = {
@@ -23,7 +23,10 @@ type singleProductprop = {
 
 const Products: React.FC<singleProductprop> = ({ product }) => {
 
+    let location = useLocation()
+
     const [isFavourite, setIsFavourite] = useState<boolean>(false)
+    const [isInCart, setIsInCart] = useState(false);
 
     const [rating, setRating] = useState<number>(product.reviewStar);
 
@@ -51,8 +54,8 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         return stars;
     };
 
-  
-
+    const { data: cartItems } = useFetchCart();
+    const { mutate: removeCartmutate } = useRemoveFromCart();
 
     let { mutate: addCartmutate } = useAddToCart()
 
@@ -62,25 +65,8 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
     const { data: favourites, isLoading, isError } = useFetchFavourite();
 
-
-    // const handleFavourite = () => {
-    //     if (!isFavourite) {
-    //         setIsFavourite(true)
-    //         addFavourite({ productId: product._id, size: product.size, color: product.color })
-    //     }
-    //     else {
-    //         setIsFavourite(false)
-    //         removeFavourite({ productId: product._id, size: product.size, color: product.color })
-    //     }
-    // }
-
-
     const handleFavourite = () => {
-        console.log("size from favourties", product.size)
-        console.log("colors from favourties", product.color)
         if (isFavourite) {
-
-           
             removeFavourite({ productId: product._id, size: product.size, color: product.color });
         } else {
             addFavourite({ productId: product._id, size: product.size, color: product.color });
@@ -89,9 +75,29 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
     };
 
 
+    const handleCart = () => {
+        if (isInCart) {
+            removeCartmutate(product._id);
+        } else {
+            addCartmutate({ productId: product._id, quantity: 1, price: product.price });
+        }
+        setIsInCart(!isInCart);
+    };
+
+
+
+    useEffect(() => {
+        if (cartItems) {
+            const exists = cartItems.some((item: any) => {
+                                return item.productId._id === product._id});
+            setIsInCart(exists);
+        }
+    }, [ cartItems, product._id]);
+
+
     useEffect(() => {
         if (favourites && favourites.items) {
-            const exists = favourites.items.some((fav:any) => {
+            const exists = favourites.items.some((fav: any) => {
                 // console.log("favourites product Id",fav.productId)
                 // console.log("product._id",product._id)
                 return fav.productId._id === product._id
@@ -139,7 +145,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                             </span>
                         </div>
                     </Link>
-                    <Button variant='contained' className={`${style.addtocart}`}
+                    {/* <Button variant='contained' className={`${style.addtocart}`}
                         onClick={() => addCartmutate({ productId: product._id, quantity: 1, price: product.price })}
                         sx={{
                             // height: "25%",
@@ -147,7 +153,16 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                             display: "flex",
                             margin: "5px auto",
                         }}
-                    >Add to cart</Button>
+                    >Add to cart</Button> */}
+
+                    <Button
+                        variant="contained"
+                        className={style.addtocart}
+                        onClick={handleCart}
+                        sx={{ display: "flex", margin: "5px auto" }}
+                    >
+                        {isInCart ? "Remove from Cart" : "Add to Cart"}
+                    </Button>
                 </div>
             </section>
             {/* </Link> */}

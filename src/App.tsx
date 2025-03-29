@@ -9,6 +9,9 @@ import SingleProduct from './components/SingleProduct/SingleProduct'
 import AddToCart from './pages/AddToCart/AddToCart'
 import Favourite from './pages/Favourite/Favourite'
 import AllProducts from './pages/AllProducts/AllProducts'
+import UserProfile from './pages/UserProfile/UserProfile'
+import ChangePassword from './components/ChangePassword/ChangePassword'
+import MyOrders from './components/MyOrders/MyOrders'
 
 function App() {
 
@@ -26,6 +29,13 @@ function App() {
           <Route path='/cart' element={<AddToCart />} />
           <Route path='/favourite' element={<Favourite />} />
           <Route path='/allproducts' element={<AllProducts />} />
+
+          <Route path='/userprofile' element={<UserProfile />}>
+          <Route path='changepassword' element={<ChangePassword />} />
+          <Route path='myorders' element={<MyOrders />} />
+          </Route>
+          
+
         </Routes>
         <Footer />
     </>
