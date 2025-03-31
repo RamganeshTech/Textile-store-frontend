@@ -82,6 +82,12 @@
     width: 100%;
     border-top: 1px solid #e2e8f0;
   }
+
+  .errormessage{
+    text-align: center;
+    color: rgb(240, 69, 69);
+    font-size: clamp(0.75rem, 1.5vw, 1rem);
+  }
   
   .form {
     display: flex;

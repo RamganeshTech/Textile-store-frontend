@@ -5,7 +5,7 @@ import { auth } from '../../Utils/firebase';
 
 
 import GoogleLogo from '../../assets/Google Logo.png'
-import { Button } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import Api from '../../apiClient/apiClient';
 import { validateLogin, validateRegister } from '../../Utils/validation';
@@ -26,6 +26,7 @@ const Login: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
 
   const [rememberMe, setRememberMe] = useState(false);
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -37,10 +38,10 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    // setError(null);
 
 
-
+    setLoading(true)
     try {
       const data = await loginUser(email, password);
       console.log("User logged in:", data);
@@ -49,38 +50,22 @@ const Login: React.FC = () => {
         throw new Error("Invalid response: Missing userId");
       }
 
+      setEmail("")
+      setPassword("")
       dispatch(setUser({ userId: data.user.userId, userName:data.user.userName, email: data.user.email, isAuthenticated:true }));
+      // navigate('/')
+      setError("")
+
     } catch (err: any) {
       const msg =
-        err.response?.data?.message || "An unexpected error occurred during login.";
+        err?.message || "An unexpected error occurred during login.";
       console.error("Login error:", err);
       // dispatch(setUser({ userId: null, userName:null, email: null, isAuthenticated:false }));
       setError(msg);
     } finally {
       setLoading(false);
     }
-
-
-    // try {
-
-    //   validateLogin({email, password})
-
-    //   const response = await Api.post("/login", { email, password });
-    //   if (response.data?.success) {
-    //     console.log("Login successful:", response.data.user);
-    //     navigate("/dashboard");
-    //   } else {
-    //     setError(response.data.message || "Login failed");
-    //   }
-    // } catch (err: any) {
-    //   const msg =
-    //     err.response?.data?.message || "An unexpected error occurred during login.";
-    //   console.error("Login error:", msg);
-    //   setError(msg);
-    // }
   };
-
-
 
   // const googleLogin = ()=>{
   //   const provider = new GoogleAuthProvider();
@@ -181,30 +166,10 @@ const Login: React.FC = () => {
 
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null);
+    setLoading(true)
     try {
 
       validateRegister({email, password, phoneNumber, pincode, address, state:indianState, userName:name})
-      // const response = await Api.post("/register", {
-      //   // Required fields
-      //   userName: name, // Pass the name input as userName, as defined in your UserModel
-      //   email,
-      //   password,
-      //   // Optional fields – if not provided, backend should default them to null
-      //   address: address || null,
-      //   pincode: pincode || null,
-      //   state: indianState || null,
-      //   phoneNumber: phoneNumber || null,
-      // });
-  
-      // if (response.data?.success) {
-      //   console.log("Registration successful:", response.data.message);
-      //   // Optionally, switch to login view or automatically log the user in
-      //   setIsLogin(true);
-      // } else {
-      //   setError(response.data.message || "Registration failed");
-      // }
-
 
       const data = await registerUser({  userName:name, email, password , pincode, address, state:indianState});
 
@@ -212,17 +177,25 @@ const Login: React.FC = () => {
         throw new Error("Invalid response: Missing userId");
       }
 
+      setEmail("")
+      setPassword("")
+      setName("")
       dispatch(setUser({ userId: data.user.userId, userName:data.user.userName, email: data.user.email, isAuthenticated:true }));
 
       console.log("User registered:", data);
-      alert("Registration successful");
+      // alert("Registration successful");
+    setError(null);
+      navigate('/')
     } catch (err: any) {
       const msg =
-        err.response?.data?.message ||
+        err?.message ||
         "An unexpected error occurred during registration.";
       console.error("Registration error:", msg);
       dispatch(setUser({ userId: null, userName:null, email: null, isAuthenticated:false }));
       setError(msg);
+    }
+    finally{
+      setLoading(false)
     }
   };
   
@@ -254,6 +227,11 @@ const Login: React.FC = () => {
         <span className={`${styles.dividerText}`}>or {isLogin ? 'Sign in' : 'Sign up'} with Email</span>
         <div className={`${styles.dividerLine}`}></div>
       </div>
+
+      {error && <div className={`${styles.errormessage}`}>
+        <p>*{error}</p>
+      </div>}
+
       <form className={`${styles.form}`} onSubmit={isLogin ? handleLogin : handleRegister}>
         {!isLogin && (
           <div>
@@ -327,7 +305,9 @@ const Login: React.FC = () => {
             type="submit"
             className={`${styles.loginButton}`}
           >
-            {isLogin ? 'Login' : 'Register'}
+            {isLogin ? (loading ? <CircularProgress size={29} sx={{color:"#fafafa"}} /> : 'Login') 
+            :
+             (loading ? <CircularProgress size={29} sx={{color:"#fafafa"}} /> : 'Register')}
           </Button>
         </div>
       </form>

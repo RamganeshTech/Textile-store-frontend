@@ -26,7 +26,7 @@ const Navbar: React.FC = () => {
   let navigate = useNavigate()
 
   const handleNavbarNavigate = ()=>{
-    if(!isAuthenticated){
+    if(isAuthenticated){
       navigate('userprofile')
     }
     else{

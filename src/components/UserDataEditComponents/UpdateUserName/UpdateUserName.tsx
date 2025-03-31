@@ -13,10 +13,11 @@ const UpdateUserName: React.FC = () => {
   let navigate = useNavigate()
 
   const [userName, setUserName] = useState<string>("");
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   
 
-  let {mutate, isPending, isError, error} = useChangeUserName();
+  let {mutate, isPending, isError, error,data} = useChangeUserName();
 
   let dispatch = useDispatch()
 
@@ -37,6 +38,13 @@ const UpdateUserName: React.FC = () => {
            console.log(data.message)
            const currentState = store.getState().user; 
             dispatch(setUser({...currentState,userName }))
+
+            setSuccessMessage(data.message);
+
+            // Clear success message after 3 seconds
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 3000);
           }       
          }
       })
@@ -51,16 +59,29 @@ const UpdateUserName: React.FC = () => {
   return (
     <div className={styles[`container`]}>
       <h2 className={styles[`title`]}>Change username</h2>
+
+
+      {successMessage && <div className={styles.successmessage}>{successMessage}</div>}
+
+
+
       <form onSubmit={handleSubmit} className={styles[`form`]}>
-        <TextField
+      <div className={`${styles.inputcontainer}`}>
+      <TextField
           label="Username"
           type="text"
           name="username"
           value={userName}
           onChange={handleChange}
           fullWidth
+          required
           className={styles[`inputField`]}
         />
+            {isError && <div className={`${styles.errormessage}`}>
+            <p>{error?.message}</p>
+            {/* <p>error ocuuere man man man</p> */}
+          </div>} 
+      </div>
         <Button
           type="submit"
           variant="contained"
