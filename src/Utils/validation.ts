@@ -51,5 +51,35 @@ const validateRegister = (payload: {
       );
     }
   };
-  
-  export { validateLogin, validateRegister };
+
+  const validateChangePassword = ({newPassword,
+    currentPassword,
+    confirmPassword,}:{newPassword:string, currentPassword:string, confirmPassword:string})=>{
+
+      if(!currentPassword){
+        throw new Error("Please Enter the Current password form")
+      }
+
+      if(currentPassword.length < 8){
+        throw new Error("Please enter password with atleast 8 length")
+      }
+
+      if(!newPassword){
+        throw new Error("Please Enter the New password form")
+      }
+
+
+      const strongPasswordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    
+    if (!strongPasswordRegex.test(newPassword)) {
+      throw new Error(
+        "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character"
+      );
+    }
+
+      if(newPassword !== confirmPassword){
+        throw new Error("new Password and Confirm password should be same")
+      }
+  }  
+  export { validateLogin, validateRegister , validateChangePassword};

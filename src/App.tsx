@@ -12,6 +12,11 @@ import AllProducts from './pages/AllProducts/AllProducts'
 import UserProfile from './pages/UserProfile/UserProfile'
 import ChangePassword from './components/ChangePassword/ChangePassword'
 import MyOrders from './components/MyOrders/MyOrders'
+import VerifyPassword from './components/VerifyPassword/VerifyPassword'
+import EditAccountinfo from './components/EditAccountInfo/EditAccountinfo'
+import UpdateUserEmail from './components/UserDataEditComponents/UpdateUserEmail/UpdateUserEmail'
+import UpdateUserName from './components/UserDataEditComponents/UpdateUserName/UpdateUserName'
+import UpdateUserPhoneNo from './components/UserDataEditComponents/UpdateUserPhoneNo/UpdateUserPhoneNo'
 
 function App() {
 
@@ -31,8 +36,15 @@ function App() {
           <Route path='/allproducts' element={<AllProducts />} />
 
           <Route path='/userprofile' element={<UserProfile />}>
+
+          <Route path='verifypassword' element={<VerifyPassword />} />
           <Route path='changepassword' element={<ChangePassword />} />
           <Route path='myorders' element={<MyOrders />} />
+          <Route path='editaccountinfo' element={<EditAccountinfo />} />
+          <Route path='editemail' element={<UpdateUserEmail />} />
+          <Route path='editphonenumber' element={<UpdateUserPhoneNo />} />
+          <Route path='editusername' element={<UpdateUserName />} />
+         
           </Route>
           
 

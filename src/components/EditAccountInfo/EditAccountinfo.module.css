@@ -40,14 +40,18 @@
   
   .listItem {
     display: block !important;
+    font-size: clamp(12px ,2vw, 24px) !important;
     cursor: pointer !important;
     padding: 15px;
+    text-align: center !important;
     /* border: 2px solid red; */
     width: 100% !important;
   }
-  
+
+
 
   
+
   @media (max-width:426px){
     .container{
         width: 80% !important;
@@ -69,6 +73,3 @@
         width: 50%;
     }
   }
-
-
-  

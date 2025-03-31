@@ -22,3 +22,14 @@ export const loginUser = async (email: string, password: string, ) => {
       throw error.response?.data || "Something went wrong";
     }
   };
+
+
+  export const logoutUser = async()=>{
+    try {
+      const response = await Api.post(`auth/logout`);
+      console.log(response.data)
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || "Something went wrong";
+    }
+  }

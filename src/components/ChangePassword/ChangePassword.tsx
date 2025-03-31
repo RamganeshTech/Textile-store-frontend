@@ -1,13 +1,24 @@
 import React, { useState } from "react";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, CircularProgress } from "@mui/material";
 import styles from "./ChangePassword.module.css";
+import { validateChangePassword } from "../../Utils/validation";
+import { useChangePassword } from "../../apiList/userprofileApi";
+import { useNavigate } from "react-router-dom";
 
 const ChangePassword: React.FC = () => {
+
+
+  let navigate = useNavigate()
+
   const [form, setForm] = useState({
     currentPassword: "",
     newPassword: "",
     confirmPassword: "",
   });
+
+  
+
+  let {mutate, isPending, error , isError} = useChangePassword();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -15,9 +26,28 @@ const ChangePassword: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Add logic to handle password change
-    console.log("Password Changed:", form);
+    try {
+      validateChangePassword(form)
+
+      mutate(form, {
+        onSuccess:(data)=>{
+          if (data.ok) {
+            console.log(data.message)
+          }       
+         }
+      })
+    }
+    catch (error) {
+      if(error instanceof Error){
+        console.log(error.message)
+      }   
   };
+}
+
+
+if(isError){
+  console.log(error)
+}
 
   return (
     <div className={styles[`container`]}>
@@ -55,7 +85,7 @@ const ChangePassword: React.FC = () => {
           variant="contained"
           className={styles[`submitButton`]}
         >
-          Update Password
+          {isPending ? <CircularProgress sx={{color:"#fafafa"}} size={25} /> : "Update Password"}
         </Button>
       </form>
     </div>
