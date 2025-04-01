@@ -1,8 +1,10 @@
 import React, { forwardRef, useState } from 'react'
 import style from '../../pages/AllProducts/AllProducts.module.css'
-import { IconButton, TextField } from '@mui/material'
+import { Button, IconButton, TextField } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox';
 import { Close } from '@mui/icons-material'
+import { FilterOptionsType } from '../../pages/AllProducts/AllProducts';
+import { useFilterProuducts } from '../../apiList/productApi';
 
 
 type FilterSideBarProp = {
@@ -11,6 +13,8 @@ type FilterSideBarProp = {
     setSidebarVisible: React.Dispatch<React.SetStateAction<boolean>>,
     setSelectedCategory: React.Dispatch<React.SetStateAction<string>>,
     selectedCategory: string,
+    setFilterOptions: React.Dispatch<React.SetStateAction<FilterOptionsType>>,
+    filterOptions:FilterOptionsType,
 }
 
 
@@ -28,7 +32,7 @@ const FilterCategory: React.FC<{ title: string; children: React.ReactNode }> = (
     );
 };
 
-const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ sidebarVisible, setSidebarVisible, setSelectedCategory, selectedCategory }, ref) => {
+const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ setFilterOptions, filterOptions, sidebarVisible, setSidebarVisible, setSelectedCategory, selectedCategory }, ref) => {
 
     const [value, setValue] = useState<number>(50); // Initial value
 
@@ -37,6 +41,9 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ sidebarVi
     };
 
 
+    //  let { mutate: searchMutate, data: searchData, isError: searchIsError, error: searchError, isPending: searchPending } = useSearchProducts()
+      let { mutate: applyFiltersMutate, data: filterData, isError: filterIsError, error: filterError, isPending: filterPending } = useFilterProuducts()
+    
     const percentage = value;
 
 
@@ -162,6 +169,9 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ sidebarVi
                     </section>
                 </FilterCategory>
             </div>
+            <div className={`${style.applybtncontainer}`}>
+            <Button variant='contained' className={`${style.applyBtn}`} onClick={()=> applyFiltersMutate(filterOptions)}>Apply</Button>
+          </div>
         </section>
     )
 }

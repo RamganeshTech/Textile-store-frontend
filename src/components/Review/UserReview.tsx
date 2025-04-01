@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import style from '../SingleProduct/SingleProduct.module.css'
 import { Button, TextField } from '@mui/material';
 import { FaStar } from 'react-icons/fa';
@@ -140,6 +140,8 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
     }
 
     const handleCancelUpdateReview = () => {
+        console.log("getting called")
+
         setIsEditing(false)
         setReviewCreated(true)
         setCurrentReview({
@@ -152,13 +154,29 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         })
     }
 
+    const containerRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+          if (containerRef.current && event.target instanceof Node && !containerRef.current.contains(event.target)) {
+            handleCancelUpdateReview();
+          }
+        };
+      
+        document.addEventListener("mousedown", handleClickOutside);
+      
+        return () => {
+          document.removeEventListener("mousedown", handleClickOutside);
+        };
+      }, [handleCancelUpdateReview]);
+      
 
     useEffect(() => {
         getCurrentReview()
         // console.log(currentReview)
     }, [reviewItems, user.userId])
     return (
-        <section className={`${style.reviewContainer}   !flex !justify-center !items-center`}>
+        <section ref={containerRef} className={`${style.reviewContainer}   !flex !justify-center !items-center`}>
             {/* <p className={`${style.reviewheading}`}>Review our product</p> */}
 
             {/* <span className={`${style.reviewStars}`}>
@@ -246,12 +264,12 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                         {isEditing ? (
                             <div className='w-full flex flex-col-reverse sm:!flex-row !justify-center !gap-[10px] !items-center '>
                                 {/* <Button variant='contained' color='error' className='!w-[20%] !py-0 !h-[40px] !text-lg' onClick={handleCancelUpdateReview}> */}
-                                <Button variant='contained' color='error' className='!w-[30%] sm:!w-[20%] md:!w-[30%] lg:!w-[20%] md:!text-[20px] sm:!text-[16px] sm:!h-[40px] !text-[16px] !h-[25px] sm:!text-2xl' onClick={handleCancelUpdateReview}>
+                                {/* <Button variant='contained' color='error' className='!w-[30%] sm:!w-[20%] md:!w-[30%] lg:!w-[20%] md:!text-[20px] sm:!text-[16px] sm:!h-[40px] !text-[16px] !h-[25px] sm:!text-2xl' onClick={handleCancelUpdateReview}>
                                     Cancel
-                                </Button>
+                                </Button> */}
 
                                 <Button variant='contained'  className=' sm:!h-[40px] !text-[16px] !p-[10px] !h-[25px] lg:!text-[20px] md:!text-[16px]  text-nowrap' onClick={handleEditReview}>
-                                    Update Review
+                                    POST
                                 </Button>
                             </div>
 

@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useState } from 'react'
 import style from './SingleProduct.module.css'
-import { Button, IconButton, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton, TextField } from '@mui/material';
 
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -38,7 +38,7 @@ const SingleProduct = () => {
 
     let { data: cartItems, isLoading: cartLoading, isError: cartIsError, error: cartError } = useFetchCart()
 
-    let {data:reviewItems, isLoading:reviewIsLoading,isError:reviewIsError, error:reviewError} = useFetchReview(paramsid as string)
+    let { data: reviewItems, isLoading: reviewIsLoading, isError: reviewIsError, error: reviewError } = useFetchReview(paramsid as string)
 
 
     // let products = useSelector((state: RootState) => state.products.products)
@@ -66,15 +66,6 @@ const SingleProduct = () => {
     const [showUsersReview, setshowUserReview] = useState<boolean>(true);
     const [activeReview, setactiveReview] = useState<boolean>(true);
 
-
-    // const handleReviewChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    //     const { name, value } = event.target;
-    //     setReview(prev => {
-    //         return { ...prev, [name]: value }
-    //     })
-    // }
-
-
     const handleColorSelect = (color: string) => {
         setSelectedColor(color);
     };
@@ -87,9 +78,9 @@ const SingleProduct = () => {
     //     setSelectedStars(star);
     // };
 
-    let { mutate: addCartmutate } = useAddToCart()
-    const { mutate: removeFromCartMutation } = useRemoveFromCart();
-    const { mutate: removeSingleQuantity } = useRemoveQuantityFromCart()
+    let { mutate: addCartmutate, isPending: addCartPending } = useAddToCart()
+    const { mutate: removeFromCartMutation, isPending: removeCartPending } = useRemoveFromCart();
+    const { mutate: removeSingleQuantity, isPending: removeQuantiytyPending } = useRemoveQuantityFromCart()
 
     let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, } = useRemoveFavourite()
 
@@ -173,6 +164,7 @@ const SingleProduct = () => {
             setIsFavourite(exists);
         }
     }, [favourites, product?._id]);
+
 
     if (!product) return;
 
@@ -268,7 +260,23 @@ const SingleProduct = () => {
                                     onClick={() => handleQuantity(product._id, "decrement")}>
                                     <RemoveIcon />
                                 </IconButton>
-                                {currentQuantity}
+
+                                <div style={{
+                                    width: "20%",  // Set fixed width so the layout doesn’t shift
+                                    height: "20%",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    // border:"2px solid red"
+                                }}>
+                                    {removeQuantiytyPending || addCartPending ? (
+                                        <CircularProgress size={15} thickness={4} sx={{ color: "#000" }} />
+                                    ) : (
+                                        currentQuantity
+                                    )}
+                                </div>
+
+                                {/* {(removeQuantiytyPending || !addCartPending) ? <CircularProgress size={50} thickness={5} sx={{ color: "#000", border: "2px solid red" }} /> : currentQuantity} */}
                                 <IconButton
                                     disabled={currentQuantity >= product.availableStocks}
                                     onClick={() => handleQuantity(product._id, "increment")}>
@@ -285,7 +293,7 @@ const SingleProduct = () => {
                                     onClick={() => addCartmutate({ productId: product._id, quantity: 1, price: product.price })}
 
                                 >
-                                    Add to Cart
+                                    {addCartPending ? <CircularProgress size={19} thickness={5} sx={{ color: "#fafafa" }} /> : "Add to Cart"}
                                 </Button>
                                     :
                                     <Button variant='contained'
@@ -293,7 +301,7 @@ const SingleProduct = () => {
                                         onClick={() => removeFromCartMutation(product._id)}
 
                                     >
-                                        Remove from Cart
+                                        {removeCartPending ? <CircularProgress size={19} thickness={5} sx={{ color: "#fafafa" }} /> : "Remove From Cart"}
                                     </Button>
 
                                 }
@@ -356,72 +364,72 @@ const SingleProduct = () => {
                         </div>
                     </nav>
 
-                    {!showUsersReview ? 
-                    // (<section className={`${style.reviewContainer}`}>
-                    //     {/* <p className={`${style.reviewheading}`}>Review our product</p> */}
+                    {!showUsersReview ?
+                        // (<section className={`${style.reviewContainer}`}>
+                        //     {/* <p className={`${style.reviewheading}`}>Review our product</p> */}
 
-                    //     {/* <span className={`${style.reviewStars}`}>
-                    //      {review.stars}
-                    // </span> */}
-
-
-                    //     <div className={`${style.reviewStars}`}>
-                    //         {[1, 2, 3, 4, 5].map((star) => (
-                    //             <FaStar
-                    //                 key={star}
-                    //                 size={24}
-                    //                 // className={selectedStars >= star ? style.activeStar : style.inactiveStar}
-                    //                 className={`
-                    //                     ${star <= (hoveredStars || selectedStars) ? style.activeStar : style.inactiveStar}
-                    //                     ${style.reviewstars}
-                    //                 `}
-                    //                 onMouseEnter={() => setHoveredStars(star)} // Hover effect
-                    //                 onMouseLeave={() => setHoveredStars(0)} // Reset hover
-                    //                 onClick={() => handleStarClick(star)}
-                    //             />
-                    //         ))}
-                    //     </div>
-
-                    //     <div className={`${style.reiviewDescription}`}>
-                    //         <textarea name="review" id="" placeholder='Write a Review' rows={1}
-                    //             value={review.review as string}
-                    //             onChange={handleReviewChange}
-                    //         >
-                    //         </textarea>
-                    //     </div>
-
-                    //     <div className={`${style.reviewerAccountInfo}`}>
-
-                    //         {/* <label htmlFor="">Name</label> */}
-                    //         <TextField type="text" name="reviewerName"
-                    //             placeholder='Enter Name'
-
-                    //             value={review.reviewername}
-                    //             onChange={handleReviewChange}
-                    //             className={`${style.reviewtextField}`}
-                    //         />
+                        //     {/* <span className={`${style.reviewStars}`}>
+                        //      {review.stars}
+                        // </span> */}
 
 
+                        //     <div className={`${style.reviewStars}`}>
+                        //         {[1, 2, 3, 4, 5].map((star) => (
+                        //             <FaStar
+                        //                 key={star}
+                        //                 size={24}
+                        //                 // className={selectedStars >= star ? style.activeStar : style.inactiveStar}
+                        //                 className={`
+                        //                     ${star <= (hoveredStars || selectedStars) ? style.activeStar : style.inactiveStar}
+                        //                     ${style.reviewstars}
+                        //                 `}
+                        //                 onMouseEnter={() => setHoveredStars(star)} // Hover effect
+                        //                 onMouseLeave={() => setHoveredStars(0)} // Reset hover
+                        //                 onClick={() => handleStarClick(star)}
+                        //             />
+                        //         ))}
+                        //     </div>
+
+                        //     <div className={`${style.reiviewDescription}`}>
+                        //         <textarea name="review" id="" placeholder='Write a Review' rows={1}
+                        //             value={review.review as string}
+                        //             onChange={handleReviewChange}
+                        //         >
+                        //         </textarea>
+                        //     </div>
+
+                        //     <div className={`${style.reviewerAccountInfo}`}>
+
+                        //         {/* <label htmlFor="">Name</label> */}
+                        //         <TextField type="text" name="reviewerName"
+                        //             placeholder='Enter Name'
+
+                        //             value={review.reviewername}
+                        //             onChange={handleReviewChange}
+                        //             className={`${style.reviewtextField}`}
+                        //         />
 
 
-                    //         {/* <label htmlFor="">Email</label> */}
-                    //         <TextField type="email" name="email"
-                    //             placeholder='Enter Email'
-                    //             value={review.email}
-                    //             onChange={handleReviewChange}
-                    //             className={`${style.reviewtextField}`}
 
 
-                    //         />
-                    //     </div>
+                        //         {/* <label htmlFor="">Email</label> */}
+                        //         <TextField type="email" name="email"
+                        //             placeholder='Enter Email'
+                        //             value={review.email}
+                        //             onChange={handleReviewChange}
+                        //             className={`${style.reviewtextField}`}
 
-                    //     <div className={`${style.submitContainer}`}>
-                    //         <Button variant='contained'>
-                    //             Submit
-                    //         </Button>
-                    //     </div>
-                    // </section>)
-                    <UserReview currentProductId={paramsid} reviewItems={reviewItems} />
+
+                        //         />
+                        //     </div>
+
+                        //     <div className={`${style.submitContainer}`}>
+                        //         <Button variant='contained'>
+                        //             Submit
+                        //         </Button>
+                        //     </div>
+                        // </section>)
+                        <UserReview currentProductId={paramsid} reviewItems={reviewItems} />
                         :
                         // <section className={`${style.othersMainReview}`}>
                         //     {/* <p> See Others Review</p> */}

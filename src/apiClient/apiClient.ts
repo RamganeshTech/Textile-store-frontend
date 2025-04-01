@@ -1,7 +1,4 @@
 import axios from 'axios';
-import { useSelector } from 'react-redux';
-import { RootState } from '../store/store';
-import useRefreshtoken from '../hooks/useRefreshtoken';
 import getRefreshtoken from '../Utils/refreshtoken';
 
 let Api = axios.create({
@@ -22,6 +19,11 @@ Api.interceptors.response.use(
     (response) => response, // If successful, just return the response
     async (error) => {
         const originalRequest = error.config;
+
+         // If the failing request is for the refresh token, reject immediately
+    if (originalRequest.url.includes('/auth/refreshtoken')) {
+        return Promise.reject(error);
+      }
 
         // Handle both 401 (Unauthorized) & 403 (Forbidden) errors
         if ((error.response?.status === 401 || error.response?.status === 403) && !originalRequest._retry) {

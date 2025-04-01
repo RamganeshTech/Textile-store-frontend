@@ -62,16 +62,16 @@ const AddToCart: React.FC = () => {
   const total = 3000
 
 
-  if (isLoading) return <div className="mt-[70px] h-[100vh] w-[100vw] flex items-center justify-center"><Loading /></div>
+  // if (isLoading) return <div className="mt-[70px] h-[100vh] w-[100vw] flex items-center justify-center"><Loading /></div>
 
   return (
     <main className={styles.container}>
       <div className={styles.heading}>
         <h1>Shopping Cart</h1>
-
       </div>
-      <section>
-        {cart && cart.length > 0 ? cart.map((item:CartItem, index:number) => {
+
+      {/* <section>
+        {!isLoading && cart && cart.length > 0 ? cart.map((item:CartItem) => {
           // console.log(`Rendering item: ${index}, Class: ${styles.cartItem}`);
           // console.log(item)
           return (
@@ -87,6 +87,22 @@ const AddToCart: React.FC = () => {
           </section>
 
         }
+      </section> */}
+
+      <section>
+      {!isLoading ? (
+  cart && cart.length > 0 ? (
+    cart.map((item: CartItem) => (
+      <AddToCartSingle key={item._id} item={item} />
+    ))
+  ) : (
+    <section className="h-[50vh] w-[100vw] flex items-center justify-center">
+      <p className="text-4xl">No cart items added yet...</p>
+    </section>
+  )
+) : <div className="mt-[70px] h-[50vh] w-[100vw] flex justify-center items-center">
+<Loading />
+</div>} 
       </section>
 
       {/* Total Section */}

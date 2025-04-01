@@ -170,7 +170,7 @@
     padding: 5px;
     border-radius: 12px;
     display: flex;
-    width: 15%;
+    width: 17%;
     align-items: center;
     justify-content: space-between;
 }
@@ -422,7 +422,7 @@
     }
 
     .quantityBtns {
-        width: 35%;
+        width: 37%;
     }
 
     .reviewerAccountInfo {

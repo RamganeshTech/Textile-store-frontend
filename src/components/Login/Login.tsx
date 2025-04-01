@@ -53,7 +53,7 @@ const Login: React.FC = () => {
       setEmail("")
       setPassword("")
       dispatch(setUser({ userId: data.user.userId, userName:data.user.userName, email: data.user.email, isAuthenticated:true }));
-      // navigate('/')
+      navigate('/')
       setError("")
 
     } catch (err: any) {

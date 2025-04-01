@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import style from './Products.module.css'
 
-import { Button, IconButton } from '@mui/material'
+import { Button, CircularProgress, IconButton } from '@mui/material'
 
 import img1 from '../../assets/subcarousel/S_BANNER_2.webp'
 
@@ -55,9 +55,9 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
     };
 
     const { data: cartItems } = useFetchCart();
-    const { mutate: removeCartmutate } = useRemoveFromCart();
+    const { mutate: removeCartmutate, isPending: removeCartPending } = useRemoveFromCart();
 
-    let { mutate: addCartmutate } = useAddToCart()
+    let { mutate: addCartmutate, isPending: addCartPending } = useAddToCart()
 
     let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, } = useRemoveFavourite()
 
@@ -89,10 +89,11 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
     useEffect(() => {
         if (cartItems) {
             const exists = cartItems.some((item: any) => {
-                                return item.productId._id === product._id});
+                return item.productId._id === product._id
+            });
             setIsInCart(exists);
         }
-    }, [ cartItems, product._id]);
+    }, [cartItems, product._id]);
 
 
     useEffect(() => {
@@ -105,7 +106,6 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
             setIsFavourite(exists);
         }
     }, [favourites, product._id]);
-
 
     return (
         <div className={`${style.mainProduct}`}>
@@ -159,9 +159,20 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                         variant="contained"
                         className={style.addtocart}
                         onClick={handleCart}
-                        sx={{ display: "flex", margin: "5px auto" }}
+                        sx={{ display: "flex", margin: "5px auto"}}
                     >
-                        {isInCart ? "Remove from Cart" : "Add to Cart"}
+                        {isInCart ? (
+                            removeCartPending ? (
+                                <CircularProgress size={24} sx={{ color: "#fafafa" }} />
+                            ) : (
+                                "Remove from Cart"
+                            )
+                        ) : addCartPending ? (
+                            <CircularProgress size={24} sx={{ color: "#fafafa" }} />
+                        ) : (
+                            "Add to Cart"
+                        )}
+
                     </Button>
                 </div>
             </section>

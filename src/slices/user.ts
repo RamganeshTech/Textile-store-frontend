@@ -22,7 +22,7 @@ const userSlice = createSlice({
       state.userId = action.payload.userId;
       state.userName = action.payload.userName;
       state.email = action.payload.email;
-      state.isAuthenticated = true;
+      state.isAuthenticated = action.payload.isAuthenticated;
     },
     logoutUser: (state) => {
       state.userId = null;

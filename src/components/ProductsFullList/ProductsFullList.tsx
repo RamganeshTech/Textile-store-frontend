@@ -12,7 +12,7 @@ interface ProductsDisplayProps {
 
 const ProductsDisplay: React.FC<ProductsDisplayProps> = ({ productsList }) => {
 
-  console.log(productsList)
+  // console.log(productsList)
   return (
     <div className={style.productsGrid}>
       {productsList && productsList.length > 0 ? (

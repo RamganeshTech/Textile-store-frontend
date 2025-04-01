@@ -51,7 +51,7 @@ const Navbar: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [ismainMenuVisble]);
 
-
+console.log("isAuthenticated", isAuthenticated)
 
 
   return (
@@ -74,7 +74,9 @@ const Navbar: React.FC = () => {
           </div>
           <div className="flex gap-2 items-center justify-center">
             <img src="./src/assets/logo/build my business.png" alt="" className='w-[20%] h-[10%] md:w-[10%] md:h-[5%]' />
-            <h4 className={`${style.companyheading} text-nowrap text-[#3182ce] font-semibold`}>BMB Fashion</h4>
+           <Link to={'/'}>
+           <h4 className={`${style.companyheading} text-nowrap text-[#3182ce] font-semibold`}>BMB Fashion</h4>
+           </Link> 
           </div>
           <div className="flex gap-4">
             {/* <SearchIcon /> */}

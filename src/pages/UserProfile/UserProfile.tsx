@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { List, ListItem, ListItemText, Divider } from "@mui/material";
+import { List, ListItem, ListItemText, Divider, Button, ListItemButton } from "@mui/material";
 import styles from "./UserProfile.module.css";
 import { useMutation } from "@tanstack/react-query";
 import { logoutUser } from "../../apiList/userauthApi";
@@ -15,18 +15,19 @@ const UserProfile: React.FC = () => {
 
   const [showUserProfile, setShowUserProfile] = useState<boolean>(false)
 
-  let {mutate:logout} = useMutation({
-    mutationFn:logoutUser,
-    onSuccess:data=>{
-      if(data.ok){
-        dispatch(setUser({isAuthenticated:false,userId: null, email: null, userName:null}))
+  let { mutate: logout } = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: data => {
+      if (data.ok) {
+        dispatch(setUser({ isAuthenticated: false, userId: null, email: null, userName: null }))
+        navigate('/')
       }
     }
   })
 
   useEffect(() => {
     let locationArr = location.pathname.split("/")
-    if(locationArr[locationArr.length - 1] == ''){
+    if (locationArr[locationArr.length - 1] == '') {
       locationArr.pop()
     }
     if (locationArr[locationArr.length - 1] == ("userprofile")) {
@@ -43,94 +44,88 @@ const UserProfile: React.FC = () => {
       {showUserProfile ? <div className={`${styles.container}`}>
         <div className={`${styles.titleDiv}`}>
           <h2 className={`${styles.title}`}>My Profile</h2>
-        <Divider />
+          <Divider />
         </div>
 
         <div className={`${styles.innerDiv}`}>
           <List className={`${styles.list}`}>
-            <ListItem
-              component="button"
+            <ListItemButton
               onClick={() => navigate("./verifypassword")}
-              className={`${styles.listItem}`}      
-               >
-              <ListItemText primary="Edit account info" 
-               sx={{
-                "& .MuiTypography-root": {
-                  fontSize: {
-                    xs: "18px",  // Small screens (mobile)
-                    sm: "22px",  // Tablets
-                    md: "22px",  // Medium screens
-                    lg: "24px",  // Large screens
-                    xl: "26px",  // Extra large screens
-                },
+              className={`${styles.listItem}`}
+            >
+              <ListItemText primary="Edit account info"
+                sx={{
+                  "& .MuiTypography-root": {
+                    fontSize: {
+                      xs: "18px",  // Small screens (mobile)
+                      sm: "22px",  // Tablets
+                      md: "22px",  // Medium screens
+                      lg: "24px",  // Large screens
+                      xl: "26px",  // Extra large screens
+                    },
                     textAlign: "center",
-                },
-              }}    
+                  },
+                }}
               />
-            </ListItem>
+            </ListItemButton>
             <Divider />
-            <ListItem
-              component="button"
+            <ListItemButton
               onClick={() => navigate("./changepassword")}
-              className={`${styles.listItem}`}      
-               >
-              <ListItemText primary="Change Password" 
-               sx={{
-                "& .MuiTypography-root": {
-                  fontSize: {
-                    xs: "18px",  // Small screens (mobile)
-                    sm: "22px",  // Tablets
-                    md: "22px",  // Medium screens
-                    lg: "24px",  // Large screens
-                    xl: "26px",
-                },
+              className={`${styles.listItem}`}
+            >
+              <ListItemText primary="Change Password"
+                sx={{
+                  "& .MuiTypography-root": {
+                    fontSize: {
+                      xs: "18px",  // Small screens (mobile)
+                      sm: "22px",  // Tablets
+                      md: "22px",  // Medium screens
+                      lg: "24px",  // Large screens
+                      xl: "26px",
+                    },
                     textAlign: "center",
-                },
-              }}    
+                  },
+                }}
               />
-            </ListItem>
+            </ListItemButton>
             <Divider />
-            <ListItem
-              component="button"
+            <ListItemButton
               onClick={() => navigate("./myorders")}
               className={`${styles.listItem}`}
             >
               <ListItemText primary="My Orders"
-               sx={{
-                "& .MuiTypography-root": {
-                  fontSize: {
-                    xs: "18px",  // Small screens (mobile)
-                    sm: "22px",  // Tablets
-                    md: "22px",  // Medium screens
-                    lg: "24px",  // Large screens
-                    xl: "26px",
-                },
+                sx={{
+                  "& .MuiTypography-root": {
+                    fontSize: {
+                      xs: "18px",  // Small screens (mobile)
+                      sm: "22px",  // Tablets
+                      md: "22px",  // Medium screens
+                      lg: "24px",  // Large screens
+                      xl: "26px",
+                    },
                     textAlign: "center",
-                },
-              }}    
+                  },
+                }}
               />
-            </ListItem>
+            </ListItemButton>
             <Divider />
-            <ListItem
-              component="button"
-              onClick={()=> logout()}
-              className={`${styles.listItem}`}
-            >
-              <ListItemText primary="Logout"
-               sx={{
-                "& .MuiTypography-root": {
-                  fontSize: {
-                    xs: "18px",  // Small screens (mobile)
-                    sm: "22px",  // Tablets
-                    md: "22px",  // Medium screens
-                    lg: "24px",  // Large screens
-                    xl: "26px",
-                },
+            <ListItemButton onClick={() => logout()} className={styles.listItem}>
+              <ListItemText
+                primary="Logout"
+                sx={{
+                  "& .MuiTypography-root": {
+                    fontSize: {
+                      xs: "18px",
+                      sm: "22px",
+                      md: "22px",
+                      lg: "24px",
+                      xl: "26px",
+                    },
                     textAlign: "center",
-                },
-              }}    
+                  },
+                }}
               />
-            </ListItem>
+            </ListItemButton>
           </List>
         </div>
       </div>
