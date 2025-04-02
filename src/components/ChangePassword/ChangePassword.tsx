@@ -16,6 +16,10 @@ const ChangePassword: React.FC = () => {
     confirmPassword: "",
   });
 
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  
+
   
 
   let {mutate, isPending, error , isError} = useChangePassword();
@@ -33,13 +37,27 @@ const ChangePassword: React.FC = () => {
         onSuccess:(data)=>{
           if (data.ok) {
             console.log(data.message)
+
+            setErrorMessage("")
+            setSuccessMessage(data.message);
+
+            // Clear success message after 3 seconds
+            setTimeout(() => {
+              setSuccessMessage(null);
+            }, 3000);
           }       
+         },
+
+         onError:(data)=>{
+          setErrorMessage(data.message)
          }
       })
     }
     catch (error) {
       if(error instanceof Error){
         console.log(error.message)
+        setSuccessMessage("")
+        setErrorMessage(error.message)
       }   
   };
 }
@@ -52,6 +70,10 @@ if(isError){
   return (
     <div className={styles[`container`]}>
       <h2 className={styles[`title`]}>Change Password</h2>
+
+      {!errorMessage && successMessage && <div className={styles.successmessage}>{successMessage}</div>}
+      {!successMessage && errorMessage && <div className={styles.errormessage}>{errorMessage}</div>}
+  
       <form onSubmit={handleSubmit} className={styles[`form`]}>
         <TextField
           label="Current Password"

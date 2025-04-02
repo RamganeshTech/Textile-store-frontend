@@ -74,6 +74,7 @@ const UpdateUserPhoneNo: React.FC = () => {
             value={PhoneNo}
             onChange={handleChange}
             fullWidth
+            required
             className={styles[`inputField`]}
           />
           {isError && <div className={`${styles.errormessage}`}>

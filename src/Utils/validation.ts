@@ -57,7 +57,7 @@ const validateRegister = (payload: {
     confirmPassword,}:{newPassword:string, currentPassword:string, confirmPassword:string})=>{
 
       if(!currentPassword){
-        throw new Error("Please Enter the Current password form")
+        throw new Error("Please Enter the Current password")
       }
 
       if(currentPassword.length < 8){
@@ -65,7 +65,7 @@ const validateRegister = (payload: {
       }
 
       if(!newPassword){
-        throw new Error("Please Enter the New password form")
+        throw new Error("Please Enter the New password")
       }
 
 

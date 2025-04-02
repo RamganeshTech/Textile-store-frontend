@@ -16,7 +16,7 @@ const FavouriteItems: React.FC = () => {
 
   let {data:favourites, isLoading, isError} = useFetchFavourite()
 
-  console.log(favourites?.items)
+  console.log(favourites.items)
 
 
   // if(isLoading){
@@ -32,7 +32,11 @@ const FavouriteItems: React.FC = () => {
       <Loading />
     </div>) }
 
-      {favourites?.items && favourites?.items?.length === 0 ? (
+      {Array.isArray(favourites) ? 
+      <section className="h-[50vh] w-[100vw] flex items-center justify-center">
+      <p className="text-4xl">No Favourite Items added yet...</p>
+    </section>
+      :favourites?.items && favourites?.items?.length === 0 ? (
          <section className="h-[50vh] w-[100vw] flex items-center justify-center">
          <p className="text-4xl">No Favourite Items added yet...</p>
        </section>

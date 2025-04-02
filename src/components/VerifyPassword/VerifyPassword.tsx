@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, Button } from "@mui/material";
+import { TextField, Button, CircularProgress } from "@mui/material";
 import styles from "./VerifyPassword.module.css";
 import { data, Navigate, useNavigate } from "react-router-dom";
 import { useVerifyPassword } from "../../apiList/userprofileApi";
@@ -12,7 +12,8 @@ const VerifyPassword = () => {
     password: "",
   });
 
-
+      const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  
 
   let { mutate, isPending, isError, error, reset, data } = useVerifyPassword()
 
@@ -35,8 +36,13 @@ const VerifyPassword = () => {
       mutate(form.password, {
         onSuccess: (data) => {
           if (data.ok) {
+            setErrorMessage("")
             navigate('../editaccountinfo')
           }
+        }, 
+
+        onError:(data)=>{
+        setErrorMessage(data.message)
         }
       })
       console.log("Password Changed:", form);
@@ -44,6 +50,7 @@ const VerifyPassword = () => {
     catch (error) {
       if (error instanceof Error) {
         console.log(error.message)
+        setErrorMessage(error.message)
       }
 
     }
@@ -60,7 +67,7 @@ console.log(data)
     <div className={styles.container}>
       <h2 className={styles[`title`]}>Verify Password</h2>
 
-     {data && <div>{data?.message}</div>}
+      {data && <div className={styles.successmessage}>{data?.message}</div>}
 
       <form onSubmit={handleSubmit} className={styles[`form`]}>
         {/* <TextField
@@ -80,7 +87,7 @@ console.log(data)
             value={form.password}
             onChange={handleChange}
             fullWidth
-            required
+            // required
             className={styles[`inputField`]}
             // sx={{
             //   height: { xs: 30, sm: 40, md: 50, lg: 60 },
@@ -125,9 +132,9 @@ console.log(data)
           />
 
 
-          {!isError && <div className={`${styles.errormessage}`}>
-            {/* <p>{error?.message}</p> */}
-            <p>error ocuuere man man man</p>
+          {errorMessage && <div className={`${styles.errormessage}`}>
+            <p>*{errorMessage}</p>
+            {/* <p>error ocuuere man man man</p> */}
           </div>}
         </div>
 
@@ -138,7 +145,7 @@ console.log(data)
           variant="contained"
           className={styles[`submitButton`]}
         >
-          {!isPending ? "verify" : "loading"}
+          {!isPending ? "verify" : <CircularProgress size={24} thickness={6} sx={{color:"#fafafa"}} />}
         </Button>
       </form>
     </div>

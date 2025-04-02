@@ -41,7 +41,8 @@ const UpdateUserEmail: React.FC = () => {
               setSuccessMessage(null);
             }, 3000);
           }
-        }
+        },
+
       })
     }
     catch (error) {
@@ -74,6 +75,7 @@ const UpdateUserEmail: React.FC = () => {
             value={email}
             onChange={handleChange}
             fullWidth
+            required
             className={styles[`inputField`]}
           />
           {isError && <div className={`${styles.errormessage}`}>

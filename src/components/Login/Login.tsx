@@ -173,9 +173,9 @@ const Login: React.FC = () => {
 
       const data = await registerUser({  userName:name, email, password , pincode, address, state:indianState});
 
-      if (!data.user || !data.user.userId) {
-        throw new Error("Invalid response: Missing userId");
-      }
+      // if (!data.user || !data.user.userId) {
+      //   throw new Error("Invalid response: Missing userId");
+      // }
 
       setEmail("")
       setPassword("")

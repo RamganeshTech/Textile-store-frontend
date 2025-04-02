@@ -114,7 +114,8 @@
 .displayProducts{
     width: 100%;
     overflow: scroll;
-    /* max-height: 105vh; */
+    max-height: 145vh;
+    /* border: 2px solid red; */
 }
 
 .searchBarMain{
@@ -238,71 +239,95 @@ gap: 5px;
     text-transform: none;
   }
 
-  .slider-container {
+  /* .slider-container {
     width: 300px;
     margin: 20px;
     text-align: center;
 }
 
 .blue-slider {
-    -webkit-appearance: none; /* Override default CSS styles */
+    -webkit-appearance: none; 
     appearance: none;
     width: 100%;
     height: 4px;
-    background: transparent; /* Make the background transparent */
+    background: transparent; 
     cursor: pointer;
 }
 
-/* Track */
+
 .blue-slider::-webkit-slider-runnable-track {
     height: 4px;
     border-radius: 5px;
-    background: #ccc; /* Default unfilled color */
+    background: #ccc; 
 }
 
-/* Thumb */
+
 .blue-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     width: 16px;
     height: 16px;
     background: white;
-    border: 2px solid #3182ce; /* Blue border */
+    border: 2px solid #3182ce; 
     border-radius: 50%;
     cursor: pointer;
-    margin-top: -6px; /* Aligns thumb properly */
+    margin-top: -6px; 
 }
 
-/* Firefox Specific */
+
 .blue-slider::-moz-range-track {
     height: 4px;
     border-radius: 5px;
-    background: #ccc; /* Default unfilled color */
+    background: #ccc; 
 }
 
 .blue-slider::-moz-range-thumb {
     width: 16px;
     height: 16px;
     background: white;
-    border: 2px solid #3182ce; /* Blue border */
+    border: 2px solid #3182ce; 
     border-radius: 50%;
     cursor: pointer;
-}
+} */
 
-/* Dynamic background based on value */
-.blue-slider {
+/* .blue-slider {
     background: linear-gradient(to right, #3182ce 0%, #3182ce var(--value, 50%), #ccc var(--value, 50%), #ccc 100%);
 }
-  
+   */
 
+   .slidercontainer {
+    width: 100% !important;
+    max-width: 200px;
+    /* margin: auto; */
+    /* padding: 20px; */
+    /* border: 2px solid red; */
+    display: flex;
+    justify-content: center;
+    align-items: start; 
+   margin-left: 0px !important;
+   flex: 0;
+
+  }
+  
+  .labels {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+    
+.priceinputfield{
+    display: flex;
+    gap: 10px !important;
+}
 
 .custom-input {
-    width: 10% !important; /* Adjust width */
-    max-width: 100px; /* Ensures it doesn’t grow too big */
-    min-width: 15px; /* Prevents it from becoming too small */
+    /* width: 10% !important;  */
+    /* max-width: 100px;  */
+    /* min-width: 15px;  */
   }
   
   .custom-input .MuiInputBase-root {
     height: 20px !important;
+    padding: 0 !important;
   }
   
   .custom-input .MuiInputBase-input {
@@ -320,6 +345,9 @@ gap: 5px;
         flex-direction: column;
         flex: 1;
         flex-grow: 1;
+        /* border: 2px solid red; */
+        min-height: 100vh;
+
     }
 
      .mobileViewFilter{
@@ -383,7 +411,7 @@ gap: 5px;
 }
 
 
-@media (max-width:768px){
+@media (max-width:769px){
 
     .filters{
         width: 30%;

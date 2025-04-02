@@ -1,8 +1,8 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import style from './AllProducts.module.css'
 import { CheckBox, Close, SearchOffOutlined, SearchOutlined } from '@mui/icons-material'
 import ProductsList from '../../components/ProductsList/ProductsList'
-import { IconButton, TextField } from '@mui/material'
+import { IconButton, Radio, TextField } from '@mui/material'
 // import products from '../../Utils/product'
 import ProductsFullList from '../../components/ProductsFullList/ProductsFullList'
 import Checkbox from '@mui/material/Checkbox';
@@ -17,6 +17,11 @@ import { ProductType } from '../../Types/types'
 import axios, { AxiosError } from 'axios'
 import Loading from '../../components/LoadingState/Loading'
 import { arrival, availabilities, categories, sizes } from '../../constants/filterConstants'
+
+import Slider from "rc-slider";
+import "rc-slider/assets/index.css";
+
+
 // import { IconButton } from '@mui/material';
 
 
@@ -24,12 +29,12 @@ import { arrival, availabilities, categories, sizes } from '../../constants/filt
 
 export interface FilterOptionsType {
   category: String[],
-  Min: (number | null),
-  Max: (number | null),
+  Min: number,
+  Max: number,
   sizes: String[],
   colors: String[],
   availability: String[],
-  arrival: string[]
+  arrival: (string | null)
 }
 
 const AllProducts = () => {
@@ -38,14 +43,15 @@ const AllProducts = () => {
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<string>('');
 
+
   const [filterOptions, setFilterOptions] = useState<FilterOptionsType>({
     category: [],
-    Min: null,
-    Max: null,
+    Min: 0,
+    Max: 100000,
     sizes: [],
     colors: [],
     availability: [],
-    arrival: []
+    arrival: null
   })
 
   let dispatch = useDispatch<AppDispatch>()
@@ -61,7 +67,7 @@ const AllProducts = () => {
 
   // console.log("searcherror", searchError)
   const handleSearch = () => {
-    searchMutate({search:searchTerm, filter:filterOptions})
+    searchMutate({ search: searchTerm, filter: filterOptions })
   }
 
 
@@ -74,10 +80,44 @@ const AllProducts = () => {
     return "An unexpected error occurred.";
   }
 
+  const handleRangeChange = (value: number | number[]) => {
+    if (Array.isArray(value) && value.length === 2) {
+      setFilterOptions((prev) => ({
+        ...prev,
+        Min: value[0],
+        Max: value[1],
+      }));
+    }
+  };
+
+
+  const maxPrice = useMemo(() => {
+    return products?.length > 0
+      ? Math.max(...products.map((p: ProductType) => p.price))
+      : 10000;  // Default max if no products are there
+  }, [products]);
+
+  const minPrice = useMemo(() => 0, [])
+
+
+  console.log("searchData", searchData)
+
+  useEffect(() => {
+    if (searchData?.products?.length > 0) {
+      const prices = searchData.products.map((p: any) => p.price);
+      const minPrice = Math.min(...prices);
+      const maxPrice = Math.max(...prices);
+
+      setFilterOptions(prev => ({
+        ...prev,
+        Min: prev.Min === 0 ? minPrice : prev.Min, // Update only if default
+        Max: prev.Max === 10000 ? maxPrice : prev.Max, // Update only if default
+      }));
+    }
+  }, [products, searchMutate]);
 
   const sidebarRef = useRef<HTMLDivElement>(null);
 
-  console.log("searchData", searchData)
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (sidebarRef.current && !sidebarRef.current.contains(event.target as Node)) {
@@ -133,7 +173,7 @@ const AllProducts = () => {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault()
-                  searchMutate({search:searchTerm, filter:filterOptions})
+                  searchMutate({ search: searchTerm, filter: filterOptions })
                 }
               }}
             />
@@ -152,7 +192,7 @@ const AllProducts = () => {
 
 
         {/* SIDEBAR FILTER */}
-        <FilterSideBar ref={sidebarRef} filterOptions={filterOptions} setFilterOptions={setFilterOptions} sidebarVisible={sidebarVisible} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} setSidebarVisible={setSidebarVisible} />
+        <FilterSideBar ref={sidebarRef} maxPrice={maxPrice} minPrice={minPrice} handleSearch={handleSearch} handleRangeChange={handleRangeChange} searchTerm={searchTerm} filterOptions={filterOptions} setFilterOptions={setFilterOptions} sidebarVisible={sidebarVisible} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} setSidebarVisible={setSidebarVisible} />
 
         {/* THE BELOW FILTER IS FOR LARGE DEIVCES */}
         <section className={`${style.filters}`}>
@@ -160,12 +200,7 @@ const AllProducts = () => {
 
             <div className={` ${style.filterscategory} ${style.productcategory}`}>
               <p>Product Category</p>
-              {/* <section>
-                <CheckBox color='primary' />
-                <div>
-                  <label htmlFor="">kurtha</label>
-                </div>
-              </section> */}
+
 
               {categories && categories.map(item =>
                 <section>
@@ -183,21 +218,6 @@ const AllProducts = () => {
 
                 </section>
               )}
-
-              {/* <section>
-                <Checkbox color='primary' onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setFilterOptions((prev) => ({
-                    ...prev,
-                    category: e.target.checked
-                      ? [...prev.category, "Chudithar"] // Add "kurtha" when checked
-                      : prev.category.filter((item) => item !== "Chudithar"), // Remove "kurtha" when unchecked
-                  }))
-                } />
-                <div>
-                  <label htmlFor="">Chudithar</label>
-                </div>
-              </section> */}
-
             </div>
 
 
@@ -221,30 +241,6 @@ const AllProducts = () => {
 
                 </section>
               )}
-
-              {/* <section>
-                <Checkbox color='primary' onChange={(e) => setFilterOptions(p => {
-                  return {
-                    ...p,
-                    availability: e.target.checked ?
-                      ([...p.availability, "out of stock"])
-                      :
-                      p.availability.filter(item => item !== "out of stock")
-                  }
-                })} />
-                <div>
-                  <label htmlFor="">Out of Stock</label>
-                </div>
-              </section> */}
-
-              {/* <section>
-                <CheckBox color='primary' />
-                <div>
-                  <label htmlFor="">Available</label>
-                </div>
-
-              </section> */}
-
             </div>
 
 
@@ -253,7 +249,7 @@ const AllProducts = () => {
               <p>Product Size</p>
 
               {sizes && sizes.map(item =>
-                  <section>
+                <section>
                   <Checkbox id={item} color='primary' onChange={(e) => setFilterOptions(p => {
                     return {
                       ...p,
@@ -261,7 +257,7 @@ const AllProducts = () => {
                         ([...p.sizes, item])
                         : p.sizes.filter(size => size !== item)
                     }
-  
+
                   }
                   )} />
                   <div>
@@ -269,133 +265,111 @@ const AllProducts = () => {
                   </div>
                 </section>
               )}
-
-              {/* <section>
-                <Checkbox color='primary' onChange={(e) => setFilterOptions(p => {
-                  return {
-                    ...p,
-                    sizes: e.target.checked ?
-                      ([...p.sizes, 'XS'])
-                      : p.sizes.filter(size => size !== 'XS')
-                  }
-
-                }
-                )} />
-                <div>
-                  <label htmlFor="">XS</label>
-                </div>
-
-              </section>
-
-              <section>
-                <CheckBox color='primary' />
-                <div>
-                  <label htmlFor="">S</label>
-                </div>
-
-              </section>
-
-              <section>
-                <CheckBox color='primary' />
-                <div>
-                  <label htmlFor="">M</label>
-                </div>
-
-              </section>
-
-              <section>
-                <CheckBox color='primary' />
-                <div>
-                  <label htmlFor="">L</label>
-                </div>
-
-              </section>
-
-
-              <section>
-                <CheckBox color='primary' />
-                <div>
-                  <label htmlFor="">XL</label>
-                </div>
-
-              </section>
-
-              <section>
-                <CheckBox color='primary' />
-                <div>
-                  <label htmlFor="">XXl</label>
-                </div>
-
-              </section> */}
-
             </div>
 
 
             <div className={` ${style.filterscategory} ${style.productcategory}`}>
-              <p>Arraival</p>
+              <p>Arrival</p>
 
-              {arrival && arrival.map(item=>
-                <section>
-                <Checkbox id={item} color='primary' onChange={(e)=> setFilterOptions(p=>{
-                  return {
-                    ...p,
-                    arrival: e.target.checked ?
-                    ([...p.arrival, item])
-                    :
-                    p.arrival.filter(arrivalItem => item !== arrivalItem)
-                  }
-                })} />
-                <div>
-                  <label htmlFor={item}>{item}</label>
-                </div>
-              </section>
+              {arrival && arrival.map(item =>
+                <section key={item}>
+                  <Radio name='arrival' id={item} color='success'
+                    checked={filterOptions.arrival === item}
+                    value={item}
+                    // sx={{color:"blue"}}
+                    onClick={() => setFilterOptions(p => {
+                      return {
+                        ...p,
+                        arrival: p.arrival === item ? null : item
+                      }
+                    })} />
+                  <div>
+                    <label htmlFor={item}>{item}</label>
+                  </div>
+                </section>
               )}
-              {/* <section>
-                <CheckBox color='primary' />
-                <div>
-                  <label htmlFor="">Newest</label>
-                </div>
-
-              </section> 
-
-              <section>
-                <CheckBox color='primary' />
-                <div>
-                  <label htmlFor="">Oldest</label>
-                  {/* <span>{`(76)`}</span>
-                </div>
-
-              </section> */}
-
             </div>
 
 
 
             <div className={` ${style.filterscategory} ${style.productcategory}`}>
               <p>Price</p>
-              <section className='flex-col '>
-                <input type="range" />
-                <div className='flex-col col-end-6 w-[100%] '>
+              <section className='flex-col w-[100%]'>
+                <div className={style.slidercontainer}>
+                  <Slider
+                    range
+                    min={minPrice}
+                    max={maxPrice}
+                    step={100}
+                    value={[filterOptions.Min, filterOptions.Max]}
+                    onChange={handleRangeChange}
+                    trackStyle={[{ backgroundColor: "teal", height: 5 }]}
+                    handleStyle={[
+                      { backgroundColor: "white", borderColor: "teal" },
+                      { backgroundColor: "white", borderColor: "teal" },
+                    ]}
+                    // style={{ width: "80%" }}
+                  />
+                </div>
+
+
+                <div className={`${style.priceinputfield} flex-col col-end-6 w-[100%] `}>
                   <TextField
                     placeholder="Min"
                     className="custom-input"
-                    onChange={(e)=> setFilterOptions(p=>{
+                    value={filterOptions.Min}
+                    onChange={(e) => setFilterOptions(p => {
                       return {
                         ...p,
                         Min: Number(e.target.value)
                       }
                     })}
+                    sx={{
+                      width: {
+                        xs: "80%",
+                        sm: "80%",
+                        md: "80%",
+                        lg: "100%",
+                      },
+                      "& .MuiInputBase-input": {
+                        height: {
+                          xs: "10px",
+                          sm: "10px",
+                          md: "10px",
+                          lg: "15px",
+                          xl: "15px",
+                        },
+                      }
+                    }}
                   />
 
                   <TextField
                     placeholder="Max"
                     className="custom-input"
-                    onChange={(e)=> setFilterOptions(p=>{
+                    value={filterOptions.Max}
+                    onChange={(e) => setFilterOptions(p => {
                       return {
                         ...p,
                         Max: Number(e.target.value)
                       }
                     })}
+                    sx={{
+                      width: {
+                        xs: "80%",
+                        sm: "80%",
+                        md: "80%",
+                        lg: "100%",
+                      },
+                      "& .MuiInputBase-input": {
+                        height: {
+                          xs: "10px",
+                          sm: "10px",
+                          md: "10px",
+                          lg: "15px",
+                          xl: "15px",
+                        },
+                      }
+                    }}
                   />
                 </div>
               </section>
@@ -409,7 +383,7 @@ const AllProducts = () => {
           </div> */}
 
           <div className={`${style.applybtncontainer}`}>
-            <Button variant='contained' className={`${style.applyBtn}`} onClick={()=>     searchMutate({search:searchTerm, filter:filterOptions})}>Apply</Button>
+            <Button variant='contained' className={`${style.applyBtn}`} onClick={() => searchMutate({ search: searchTerm, filter: filterOptions })}>Apply</Button>
           </div>
         </section>
 
@@ -432,7 +406,7 @@ const AllProducts = () => {
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault()
-                  searchMutate({search:searchTerm, filter:filterOptions})
+                  searchMutate({ search: searchTerm, filter: filterOptions })
                 }
               }}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -453,10 +427,10 @@ const AllProducts = () => {
           </div>
             :
             <section className="h-[100vh] w-[100%] flex items-center justify-center">
-              <p className="text-xl lg:text-4xl sm:text-2xl">{getErrorMessage(searchError)}</p>
+              <p className="text-2xl lg:text-4xl sm:text-2xl">{getErrorMessage(searchError)}</p>
             </section>)
             :
-            <section className="w-[100%] flex items-center justify-center">
+            <section className="h-[100vh] w-[100%] flex items-center justify-center">
               <Loading />
             </section>
           }

@@ -1,7 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import Api from "../apiClient/apiClient"; // Axios instance
 import { queryClient } from './../QueryClient/queryClient';
-import { FilterOptionsState } from "@mui/material";
 import { FilterOptionsType } from "../pages/AllProducts/AllProducts";
 
 // Fetch function
@@ -14,6 +13,7 @@ const fetchProducts = async () => {
 
 const searchProducts = async ({search, filter}:{search:string, filter:any}) => {
     // try {
+    console.log("calling hte search prodcs")
         const { data } = await Api.get(`/searchproducts?search=${search}&filter=${encodeURIComponent(JSON.stringify(filter))}`);
         console.log(data)
         return data.data;
@@ -47,6 +47,11 @@ export const useFetchProducts = () => {
 export const useSearchProducts = () => {
     return useMutation({
         mutationFn: searchProducts,
+        // onSuccess: () => {
+        //     queryClient.invalidateQueries({
+        //         queryKey: ['products']
+        //     }); // ✅ Ensure UI refresh
+        // },
     })
 }
 
