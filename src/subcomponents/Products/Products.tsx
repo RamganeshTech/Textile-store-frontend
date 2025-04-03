@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import style from './Products.module.css'
 
-import { Button, IconButton } from '@mui/material'
+import { Button, CircularProgress, IconButton } from '@mui/material'
 
 import img1 from '../../assets/subcarousel/S_BANNER_2.webp'
 
@@ -12,8 +12,10 @@ import StarIcon from "@mui/icons-material/Star";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 import { ProductType } from '../../Types/types';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import StarRating from '../../components/StarRating/StarRating';
+import { useAddToCart, useFetchCart, useRemoveFromCart } from '../../apiList/cartApi';
+import { useAddToFavourite, useFetchFavourite, useRemoveFavourite } from '../../apiList/favouriteApi';
 
 type singleProductprop = {
     product: ProductType
@@ -21,9 +23,12 @@ type singleProductprop = {
 
 const Products: React.FC<singleProductprop> = ({ product }) => {
 
-    const [toFavourites, setToFavourites] = useState<boolean>(false)
+    let location = useLocation()
 
-    const [rating, setRating] = useState<number>(product.reviewStar); // Example rating
+    const [isFavourite, setIsFavourite] = useState<boolean>(false)
+    const [isInCart, setIsInCart] = useState(false);
+
+    const [rating, setRating] = useState<number>(product.reviewStar);
 
     // Function to render stars dynamically
     const renderStars = (rating: number) => {
@@ -49,18 +54,76 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         return stars;
     };
 
+    const { data: cartItems } = useFetchCart();
+    const { mutate: removeCartmutate, isPending: removeCartPending } = useRemoveFromCart();
+
+    let { mutate: addCartmutate, isPending: addCartPending } = useAddToCart()
+
+    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, } = useRemoveFavourite()
+
+    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, } = useAddToFavourite()
+
+    const { data: favourites, isLoading, isError } = useFetchFavourite();
+
+    const handleFavourite = () => {
+        if (isFavourite) {
+            removeFavourite({ productId: product._id, size: product.size, color: product.color });
+        } else {
+            addFavourite({ productId: product._id, size: product.size, color: product.color });
+        }
+        setIsFavourite(!isFavourite);
+    };
+
+
+    const handleCart = () => {
+        if (isInCart) {
+            removeCartmutate(product._id);
+        } else {
+            addCartmutate({ productId: product._id, quantity: 1, price: product.price });
+        }
+        setIsInCart(!isInCart);
+    };
+
+
+
+    useEffect(() => {
+        if (cartItems) {
+            const exists = cartItems.some((item: any) => {
+                return item.productId._id === product._id
+            });
+            setIsInCart(exists);
+        }
+    }, [cartItems, product._id]);
+
+
+    useEffect(() => {
+        if (favourites && favourites.items) {
+            const exists = favourites.items.some((fav: any) => {
+                // console.log("favourites product Id",fav.productId)
+                // console.log("product._id",product._id)
+                return fav.productId._id === product._id
+            });
+            setIsFavourite(exists);
+        }
+    }, [favourites, product._id]);
 
     return (
         <div className={`${style.mainProduct}`}>
-            <Link to={`/product/${product.id}`}>
-           
+            {/* <Link to={`/product/${product.id}`}> */}
+
             <section className={`${style.product}`}>
                 <div className={`${style.imgcontainer}`}>
-                    <img src={product.images[0]} alt="" />
+                    <Link to={`/product/${product._id}`} >
+                        <img src={product.images[0]} alt="" style={{ pointerEvents: "none" }} />
+                    </Link>
                     <IconButton
                         sx={{ backgroundColor: "fff" }}
-                        onClick={() => setToFavourites(!toFavourites)}>
-                        {toFavourites ? (<FavoriteIcon sx={{
+                        onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleFavourite()
+                        }}>
+                        {isFavourite ? (<FavoriteIcon sx={{
                             fill: `red`
                         }} />) :
                             <FavoriteBorderIcon sx={{
@@ -70,29 +133,50 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                 </div>
 
                 <div className={`${style.descriptioncontainer}`}>
-                    {/* <p>kurtha with neet top and golden brown shawl golden brown shawl golden brown shawl</p> */}
-                    <p>{product.productName}</p>
-                    <p>M.R.P <span>₹</span><span>{product.price}</span></p>
-                    {/* <span className={`inline-flex`}>rating {<div className=''>{new Array(5).fill("⭐").map(ele => <>{ele}</>)}</div>}</span> */}
+                    <Link to={`/product/${product._id}`} className='pt-[10px] pb-[10px] flex h-full flex-col justify-between '>
+                        <p>{product.productName}</p>
+                        <p>M.R.P <span>₹</span><span>{product.price}</span></p>
 
-                    <div className={`${style.rating}`}>
-                        <span>Rating: </span>
-                        <span>
-                            {/* {renderStars(rating)} */}
-                            <StarRating rating={rating}  />
-                        </span>
-                    </div>
-                    <Button variant='contained' className={`${style.addtocart}`}
+                        <div className={`${style.rating}`}>
+                            <span>Rating: </span>
+                            <span>
+                                {/* {renderStars(rating)} */}
+                                <StarRating rating={rating} />
+                            </span>
+                        </div>
+                    </Link>
+                    {/* <Button variant='contained' className={`${style.addtocart}`}
+                        onClick={() => addCartmutate({ productId: product._id, quantity: 1, price: product.price })}
                         sx={{
                             // height: "25%",
                             // width: "90%",
                             display: "flex",
                             margin: "5px auto",
                         }}
-                    >Add to cart</Button>
+                    >Add to cart</Button> */}
+
+                    <Button
+                        variant="contained"
+                        className={style.addtocart}
+                        onClick={handleCart}
+                        sx={{ display: "flex", margin: "5px auto"}}
+                    >
+                        {isInCart ? (
+                            removeCartPending ? (
+                                <CircularProgress size={24} sx={{ color: "#fafafa" }} />
+                            ) : (
+                                "Remove from Cart"
+                            )
+                        ) : addCartPending ? (
+                            <CircularProgress size={24} sx={{ color: "#fafafa" }} />
+                        ) : (
+                            "Add to Cart"
+                        )}
+
+                    </Button>
                 </div>
             </section>
-            </Link>
+            {/* </Link> */}
         </div>
 
     )

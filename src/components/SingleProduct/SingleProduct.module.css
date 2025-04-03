@@ -112,11 +112,11 @@
 }
 
 .sizeContainer button {
-    width: 5%;
+    width: 7%;
     height: 100%;
     vertical-align: middle;
     border: 2px solid #0a0a0a;
-    border-radius: 50%;
+    border-radius: 20%;
     padding: 5px;
     cursor: pointer;
     transition: all .3s;
@@ -170,7 +170,7 @@
     padding: 5px;
     border-radius: 12px;
     display: flex;
-    width: 15%;
+    width: 17%;
     align-items: center;
     justify-content: space-between;
 }
@@ -282,7 +282,7 @@
 }
 
 .reviewContainer .reviewheading {
-    font-size: clamp(18px, 2vw, 22px);
+    font-size: clamp(18px, 3vw, 28px);
     font-weight: 600;
     color: #313132;
 }
@@ -407,17 +407,22 @@
 
 
     .sizeContainer button {
-        width: 15%;
+        width: 15% !important;
         height: 100%;
     }
 
+    /* .colorsContainer{
+        height: 6.5%;
+        border: 2px solid red;
+    } */
 
     .colorsContainer .colors {
         width: 10%;
+        /* height:100%; */
     }
 
     .quantityBtns {
-        width: 35%;
+        width: 37%;
     }
 
     .reviewerAccountInfo {

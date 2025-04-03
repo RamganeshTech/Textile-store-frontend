@@ -4,18 +4,24 @@ import style from './ProductsList.module.css'
 import EastIcon from '@mui/icons-material/East';
 import Products from '../../subcomponents/Products/Products';
 
-import products from '../../Utils/product';
+import { Link } from 'react-router-dom';
+import { ProductType } from '../../Types/types';
 
-const ProductsList: React.FC = () => {
+export type ProductsListProp = {
+    products:ProductType[],
+    width?: string,
+}
 
-
+const ProductsList:React.FC<ProductsListProp> = ({products, width="w-[100%]"}) => {
 
     return (
-        <main className={`${style.maincontainer}`}>
-            <div className={`${style.viewallcontainer}`}>
+        <main className={`${style.maincontainer} ${width}`}>
+           <Link to={'/allproducts'}>
+           <div className={`${style.viewallcontainer}`}>
                 <p>View all</p>
                 <span><EastIcon /></span>
             </div>
+            </Link>
 
             <section className={`${style.productslist}`}>
                 <div className={`${style.innerDiv}`}>

@@ -1,0 +1,361 @@
+
+.productsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr) ;
+    gap: 20px;
+    /* border: 2px solid #000 ; */
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 20px 0;
+  }
+  
+
+  /* .productCard {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    width: 100%;
+  } */
+  
+
+
+/* DESIGB FOR PRODUCTS COMPOENNET */
+
+.mainProduct{
+  width: 80%;
+}
+
+
+.product {
+  border: 2px solid rgb(241, 13, 180);
+  width: 100%;
+  height: 420px;
+  /* height: 70%; */
+  box-shadow: 2px 5px 5px #0a0a0a61;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: 0.2s all;
+}
+
+.product:hover {
+  transform: scale(1.03);
+  /* cursor: pointer; */
+}
+
+.imgcontainer {
+  width: 100%;
+  height: 60%;
+  /* border: 2px solid rgb(115, 109, 151); */
+  position: relative;
+}
+
+.imgcontainer img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  background-size: contain;
+  background-position: contain;
+  cursor: pointer;
+}
+
+.imgcontainer button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.descriptioncontainer {
+  display: flex;
+  flex-direction: column;
+  /* border: 2px solid rgb(115, 109, 151); */
+  padding: clamp(5px, 2vw, 10px);
+  height: 40%;
+}
+
+.descriptioncontainer p:first-child {
+  font-weight: 500;
+  font-size: clamp(16px, 2vw, 22px);
+  color: #0a0a0a;
+  width: clamp(250px, 4vw, 350px);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  overflow: hidden;
+  line-clamp: 1;
+  color: #374151;
+  cursor: pointer;
+}
+
+.descriptioncontainer p:nth-child(2) {
+  font-size: clamp(14px, 2vw, 18px);
+  font-weight: 550;
+  color: #374151;
+  cursor: pointer;
+}
+
+.descriptioncontainer p:nth-child(2) span {
+  font-size: clamp(18px, 4vw, 28px);
+  font-weight: 500;
+}
+
+.rating{
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  justify-content: start;
+  cursor: pointer;
+
+}
+
+.rating span {
+  font-weight: 500;
+  color: #374151;
+}
+
+.staricon {
+  width: clamp(1px, 2vw, 2px);
+  font-size: clamp(1px, 2vw, 2px);
+}
+/* background-color: #1976d2; */
+
+.addtocart {
+  position: relative;
+  overflow: hidden;
+  background-color: #0c0d0d;
+  width: 90%;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 5px auto;
+  color: white;
+  font-size: 16px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+}
+
+.addtocart:hover{
+  /* background-color: #003a73; */
+  /* background-color: #05294e; */
+  background-color: #033261;
+
+}
+
+.addtocart::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  /* Start from outside (right side) */
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  transition: transform 0.5s ease-in-out;
+  transform: translateX(0);
+  opacity: 0;
+}
+
+.addtocart:hover::after {
+  transform: translateX(200%);
+  /* Move shine across button */
+  opacity: 1;
+}
+
+
+@media (max-width: 426px) {
+
+  
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr) !important;
+  gap: 10px;
+  /* border: 2px solid #000; */
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+
+  .mainProduct {
+      width: 100% !important;
+      height: 200px;
+      display: flex;
+      /* border: 2px solid red; */
+      border-radius: 16px;
+  }
+
+  .product{
+      width: 100% !important;
+      /* border: 2px solid black; */
+      max-width: 100% !important;
+      flex-grow: 1;
+  }
+
+  .imgcontainer {
+      height: 100%;
+      width: 40%;
+  }
+
+  .descriptioncontainer {
+      height: 100%;
+      width: 100%;
+      flex: 1;
+  }
+
+}
+
+  @media (max-width: 768px) {
+
+    
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  /* border: 2px solid #000; */
+  place-items: center;
+  width: 100%;
+  height: 100%;
+}
+
+
+      .product {
+          width: 100%;
+          height: 200px;
+          display: flex;
+      }
+
+      .imgcontainer {
+          height: 100%;
+          width: 40%;
+      }
+
+      .descriptioncontainer {
+          height: 100%;
+          width: 60%;
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+      }
+
+      .imgcontainer button {
+          top: 3px;
+          right: 3px;
+      }
+
+      .descriptioncontainer p:first-child {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          line-clamp: 2;
+          font-size: 22px;
+          width: 100%;
+          overflow: hidden;
+          line-height: 24px;
+      }
+
+
+      .descriptioncontainer p:nth-child(2) {
+          font-size: 18px;
+          font-weight: 550;
+          color: #374151;
+      }
+
+      .descriptioncontainer p:nth-child(2) span {
+          font-size: 25px;
+          font-weight: 500;
+      }
+
+
+      .rating span:nth-child(1) {
+          display: none;
+      }
+
+      .staricon {
+          width: 100px;
+          font-size: 1px;
+      }
+
+      .addtocart {
+          width: 90%;
+          height: 40px;
+      }
+  }
+
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .product {
+      max-width: 220px;
+      height: 350px;
+  }
+
+  .imgcontainer {
+     height: 50%;
+  }
+
+  .imgcontainer button {
+      top: 3px;
+      right: 3px;
+  }
+
+ 
+
+  .descriptioncontainer{
+      height: 50%;
+  }
+
+  .descriptioncontainer p:first-child {
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+      line-clamp: 1;
+      font-size: 20px;
+      width: 100%;
+      overflow: hidden;
+
+  }
+
+  .descriptioncontainer p:nth-child(2) {
+      font-size: 18px;
+      font-weight: 500;
+      color: #374151;
+  }
+
+  .descriptioncontainer p:nth-child(2) span {
+      font-size: 28px;
+      font-weight: 500;
+  }
+
+  .rating span:nth-child(1) {
+      display: none;
+  }
+
+  .staricon {
+      width: 100px;
+      font-size: 1px;
+  }
+
+
+  .addtocart {
+      width: 90%;
+      height: 30px;
+  }
+}
+
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .product {
+      max-width: 260px;
+  }
+}
+
+
+@media (min-width: 1440px) {
+  .product {
+      max-width: 300px;
+  }
+}

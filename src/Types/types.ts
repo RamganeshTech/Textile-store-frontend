@@ -1,12 +1,21 @@
 export type ReviewType = {
-    ownerName: string;
-    profileImg: string;
-    description: string;
-    stars: number;
+    // userName: string;
+    // profileImg: string;
+    // description: string;
+    // stars: number;
+
+
+    _id?: string
+    userName: string,
+    stars: number,
+    description: string,
+    userId:string
+    profileImg:string,
+
   };
   
   export type ProductType = {
-    id:number;
+    _id:string;
     productName: string;
     price: number;
     size: string;
@@ -18,25 +27,27 @@ export type ReviewType = {
     description: string;
     reviews: ReviewType[];
     reviewStar: number;
+    category?:string;
   };
 
 
   export interface CartItem {
-    id: number;
-    productImg: string;
-    productTitle: string;
-    price: number;
-    availableStocks: number;
+    _id: string;
     quantity: number;
+    productId: ProductType
+    price:number
   }
   
 
   export interface FavouriteItem {
-    id: number;
-    productImg: string;
-    productTitle: string;
-    price: number;
-    availableStocks: number;
-    rating?:number;
+    _id: string;
+    // productImg: string;
+    // productTitle: string;
+    // price: number;
+    // availableStocks: number;
+    // rating?:number;
+    productId:ProductType,
+    size:string,
+    color:string,
   }
   

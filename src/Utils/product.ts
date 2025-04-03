@@ -2,7 +2,7 @@ import { FavouriteItem, ProductType } from "../Types/types";
 
 const products: ProductType[] = [
     {
-      id:1,
+      __id:"1",
       productName: "Nadhiya - flared cotton anarkali suit set in white",
       price: 1299,
       size: "M",
@@ -29,17 +29,19 @@ const products: ProductType[] = [
         "https://picsum.photos/200/302?random=3",
       ],
       description: `A lightweight and stylish floral summer dress, perfect for casual outings. 
-      PLENTY OF STORAGE: There are two chest pockets on this women's hooded flannel, making it easy to bring all your favorite things with you. VERSATILE: The Lumber Jane Hooded Flannel is a heavyweight shirt that you can wear open or snapped, depending on your mood. With it's jersey lined hood, it's as warm and comfortable as your favorite hoodie! RELAXED FIT: The women's hooded flannel was made with a relaxed fit for the days you want some room for layering or just want that extra bit of comfort. 100% SATISFACTION GUARANTEE: Designed in the USA, Legendary Whitetails is an American small business. We take pride in all our products. Love it or send it back!
+      PLENTY OF STORAGE: There are two chest pockets on this women's hooded flannel, making it easy to bring all your favorite things with you. VERSATILE: The Lumber Jane Hooded Flannel is a heavyweight shirt that you can wear open or snapped, depending on your mood. With it's jersey lined hood, it's as warm and comfortable as your favorite hoodie! RELAXED FIT: The women's hooded flannel was made with a relaxed fit for the days you want some room for layering or just want that extra bit of comfort. 100% SATISFACTION GUARANTEE: Designed in the USA, Legendary Whitetails is an American small business. We take pr_ide in all our products. Love it or send it back!
       `,
       reviews: [
         {
-          ownerName: "Sophia Carter",
+          user_Id:"1",
+          userName: "Sophia Carter",
           profileImg: "https://picsum.photos/50/50?random=4",
           description: "Absolutely love this dress! The fabric is soft and comfortable.",
           stars: 5,
         },
         {
-          ownerName: "Emily Brown",
+          user_Id:"2",
+          userName: "Emily Brown",
           profileImg: "https://picsum.photos/51/51?random=5",
           description: "The fit is perfect, but the color was slightly different from the picture.",
           stars: 4,
@@ -47,7 +49,7 @@ const products: ProductType[] = [
       ],
     },
     {
-      id:2,
+      _id:"2",
       productName: "High-Waist Jeans",
       price: 1599,
       size: "L",
@@ -63,13 +65,15 @@ const products: ProductType[] = [
       description: "Classic high-waist skinny jeans that enhance your silhouette.",
       reviews: [
         {
-          ownerName: "Olivia White",
+          user_Id:"1",
+          userName: "Olivia White",
           profileImg: "https://picsum.photos/52/52?random=8",
           description: "Great quality jeans, very comfortable for daily wear!",
           stars: 5,
         },
         {
-          ownerName: "Ava Green",
+          user_Id:"2",
+          userName: "Ava Green",
           profileImg: "https://picsum.photos/53/53?random=9",
           description: "Good fit, but the fabric is a little stiff at first.",
           stars: 4,
@@ -77,7 +81,7 @@ const products: ProductType[] = [
       ],
     },
     {
-      id:3,
+      _id:3,
       productName: "Casual Crop Top",
       price: 799,
       size: "S",
@@ -93,7 +97,8 @@ const products: ProductType[] = [
       description: "Trendy and comfortable cotton crop top for everyday wear.",
       reviews: [
         {
-          ownerName: "Mia Johnson",
+          user_Id:"1",
+          userName: "Mia Johnson",
           profileImg: "https://picsum.photos/54/54?random=12",
           description: "Super cute and stylish! Goes well with jeans and skirts.",
           stars: 5,
@@ -101,7 +106,7 @@ const products: ProductType[] = [
       ],
     },
     {
-      id:4,
+      _id:4,
       productName: "Elegant Evening Gown",
       price: 2999,
       size: "M",
@@ -117,7 +122,8 @@ const products: ProductType[] = [
       description: "An elegant evening gown with a flowing silhouette for special occasions.",
       reviews: [
         {
-          ownerName: "Isabella Martin",
+          user_Id:"1",
+          userName: "Isabella Martin",
           profileImg: "https://picsum.photos/55/55?random=15",
           description: "Absolutely stunning! Got so many compliments.",
           stars: 5,
@@ -129,7 +135,7 @@ const products: ProductType[] = [
 
   export const favouriteItems: FavouriteItem[] = [
     {
-      id: 1,
+      _id: 1,
       productImg: "https://picsum.photos/200/300?random=4",
       productTitle: "Stylish Jacket",
       price: 49.99,
@@ -137,7 +143,7 @@ const products: ProductType[] = [
       rating: 4.5,
     },
     {
-      id: 2,
+      _id: 2,
       productImg: "https://picsum.photos/200/300?random=1",
       productTitle: "Casual Sneakers",
       price: 59.99,
@@ -145,7 +151,7 @@ const products: ProductType[] = [
       rating: 4.2,
     },
     {
-      id: 3,
+      _id: 3,
       productImg: "https://picsum.photos/200/300?random=2",
       productTitle: "Leather Handbag",
       price: 89.99,
@@ -153,7 +159,7 @@ const products: ProductType[] = [
       rating: 4.8,
     },
     {
-      id: 4,
+      _id: 4,
       productImg: "https://picsum.photos/200/300?random=3",
       productTitle: "Smart Watch",
       price: 129.99,
