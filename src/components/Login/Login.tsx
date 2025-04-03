@@ -52,7 +52,7 @@ const Login: React.FC = () => {
 
       setEmail("")
       setPassword("")
-      dispatch(setUser({ userId: data.user.userId, userName:data.user.userName, email: data.user.email, isAuthenticated:true }));
+      dispatch(setUser({ userId: data.user.userId, userName:data.user.userName, email: data.user.email, isAuthenticated:true , address: data.user.address, phoneNumber: data.user.phoneNumber}));
       navigate('/')
       setError("")
 
@@ -180,7 +180,7 @@ const Login: React.FC = () => {
       setEmail("")
       setPassword("")
       setName("")
-      dispatch(setUser({ userId: data.user.userId, userName:data.user.userName, email: data.user.email, isAuthenticated:true }));
+      dispatch(setUser({ userId: data.user.userId, userName:data.user.userName, email: data.user.email, isAuthenticated:true, address: data.user.address, phoneNumber: data.user.phoneNumber }));
 
       console.log("User registered:", data);
       // alert("Registration successful");
@@ -191,7 +191,7 @@ const Login: React.FC = () => {
         err?.message ||
         "An unexpected error occurred during registration.";
       console.error("Registration error:", msg);
-      dispatch(setUser({ userId: null, userName:null, email: null, isAuthenticated:false }));
+      dispatch(setUser({ userId: null, userName:null, email: null, isAuthenticated:false, address: null, phoneNumber: null }));
       setError(msg);
     }
     finally{
@@ -274,6 +274,7 @@ const Login: React.FC = () => {
               className={`${styles.input}`}
               placeholder="Min. 6 character"
               value={password}
+              
               onChange={(e) => setPassword(e.target.value)}
             />
             <div className={`${styles.eyeIcon}`}>
@@ -299,7 +300,7 @@ const Login: React.FC = () => {
             </div>
           </div>
         )}
-        <div>
+        <div className='!mt-[10px]'>
           <Button
           variant='contained'
             type="submit"

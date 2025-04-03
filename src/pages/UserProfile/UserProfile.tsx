@@ -19,7 +19,7 @@ const UserProfile: React.FC = () => {
     mutationFn: logoutUser,
     onSuccess: data => {
       if (data.ok) {
-        dispatch(setUser({ isAuthenticated: false, userId: null, email: null, userName: null }))
+        dispatch(setUser({ isAuthenticated: false, userId: null, email: null, userName: null, address: null, phoneNumber: null  }))
         navigate('/')
       }
     }

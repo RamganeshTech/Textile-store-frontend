@@ -1,0 +1,175 @@
+.maincontainer {
+    margin-top: 70px;
+    padding: 20px;
+    background-color: #fffffa;
+    border-radius: 8px;
+    /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
+    width: 100vw;
+    /* height: 90vh; */
+}
+
+.innerDiv{
+    display: flex;
+    gap: 5px;
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    justify-content: space-between;
+    align-items: center;
+    /* border: 2px solid red; */
+}
+
+.inputfields {
+    width: 50%;
+    /* border: 2px solid red; */
+
+}
+
+.inputfields .inputform{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    width: 100%;
+    /* border: 2px solid rgb(0, 85, 255); */
+}
+
+.inputform h1{
+    font-size: clamp(16px, 4vw, 28px);
+    text-align: center;
+
+}
+
+.inputform .individualTextDiv{
+    width: 70%;
+    height: 80px;
+    /* border: 2px solid rgb(255, 0, 47); */
+
+}
+
+.inputform .individualTextDiv > p.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px; 
+}
+
+.inputform .individualTextDiv .inputfield{
+    width: 100% !important;
+    height: 60% !important;
+}
+
+
+.cartDiv{
+    width: 50%;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    flex-direction: column;
+    /* border: 2px solid red; */
+    height: 90%;
+    gap: 10px;
+    padding: 10px;
+}
+
+.cartinnerDiv{
+    background: #ffffff;
+    width: 50%;
+    border-radius: 16px;
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.267);
+}
+
+.cartinnerDiv div:nth-child(1){
+   background: #1976d2;
+   color: #ffffff;
+   text-align: center;
+   border-top-left-radius: 16px;
+   border-top-right-radius: 16px;
+   padding: 5px 0;
+}
+
+.cartDiv div:not(:first-child){
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cartinnerDiv div p{
+    font-size: clamp(12px, 2.5vw, 24px);
+    font-weight: 500;
+}
+
+.cartinnerDiv div span{
+    font-size: 20px;    
+}
+
+
+@media (max-width: 426px) {
+
+
+
+    .innerDiv{
+        flex-direction: column;
+    }
+
+    .inputfields{
+        width: 100% !important;
+        /* border: 2px solid red; */
+    }
+
+    .inputform{
+        gap: 0px;
+    }
+
+    .inputfields h1{
+        font-size: 24px;
+    }
+
+    .individualTextDiv {
+        width: 100% !important;
+        height: 70px !important;
+    }
+
+    .individualTextDiv .inputfield{
+        height: 20% !important;
+    }
+
+    .cartDiv{
+        width: 100% !important;
+    }
+
+
+    .cartinnerDiv{
+        width: 100%;
+        /* border: 2px solid red; */
+    }
+
+    .cartinnerDiv div:nth-child(1) p{
+        font-size: 25px;
+    }
+
+    .cartinnerDiv div p{
+        font-size:18px;
+        font-weight: 500;
+    }
+    
+    .cartinnerDiv div span{
+        font-size: 20px;    
+    }
+}
+
+@media (max-width: 768px) {
+
+    .inputfields{
+        width: 70%;
+        /* border: 2px solid red; */
+    }
+    .cartDiv{
+        width: 40%;
+        /* border: 2px solid red; */
+
+    }
+    .cartinnerDiv{
+        width: 100%;
+    }
+}

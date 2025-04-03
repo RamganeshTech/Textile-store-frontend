@@ -17,6 +17,7 @@ import EditAccountinfo from './components/EditAccountInfo/EditAccountinfo'
 import UpdateUserEmail from './components/UserDataEditComponents/UpdateUserEmail/UpdateUserEmail'
 import UpdateUserName from './components/UserDataEditComponents/UpdateUserName/UpdateUserName'
 import UpdateUserPhoneNo from './components/UserDataEditComponents/UpdateUserPhoneNo/UpdateUserPhoneNo'
+import Payment from './pages/Payment/Payment'
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
           <Route path='/cart' element={<AddToCart />} />
           <Route path='/favourite' element={<Favourite />} />
           <Route path='/allproducts' element={<AllProducts />} />
+          <Route path='/payment' element={<Payment />} />
 
           <Route path='/userprofile' element={<UserProfile />}>
 
