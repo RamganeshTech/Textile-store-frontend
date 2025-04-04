@@ -16,13 +16,15 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { FaStar } from "react-icons/fa";
 import StarRating from '../StarRating/StarRating';
 import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { AppDispatch, RootState } from '../../store/store';
 import { useAddToCart, useFetchCart, useRemoveFromCart, useRemoveQuantityFromCart } from '../../apiList/cartApi';
 import { useAddToFavourite, useFetchFavourite, useRemoveFavourite } from '../../apiList/favouriteApi';
 import { useFetchProducts } from '../../apiList/productApi';
 import UserReview from '../Review/UserReview';
 import OthersReview from '../Review/OthersReview';
 import { useFetchReview } from '../../apiList/reviewApi';
+import { setItems } from '../../slices/buyItems';
+import { useDispatch } from 'react-redux';
 
 type reviewprouducts = {
     reviewername: (string | null),
@@ -34,6 +36,7 @@ type reviewprouducts = {
 const SingleProduct = () => {
     let { id: paramsid } = useParams()
     let navigate = useNavigate()
+    const dispatch = useDispatch<AppDispatch>();
 
     const { data: products, isLoading, error } = useFetchProducts();
 
@@ -117,6 +120,12 @@ const SingleProduct = () => {
         }
     }
 
+    const handleBuyItem = ()=>{
+        if(product){
+            dispatch(setItems({itemId: product._id, singleQuantityPrice:product.price, quantity: currentQuantity, size: selectedSize, color:selectedColor }));
+        }
+        navigate('/payment')
+    }
 
     useEffect(() => {
         setProduct(() => {
@@ -321,7 +330,7 @@ const SingleProduct = () => {
                                 </IconButton>
                             </div>
 
-                            <Button variant='contained' className={`${style.buynowBtn}`} onClick={()=> navigate('/payment')}>
+                            <Button variant='contained' className={`${style.buynowBtn}`} onClick={()=> handleBuyItem()}>
                                 Buy Now
                             </Button>
                         </section>

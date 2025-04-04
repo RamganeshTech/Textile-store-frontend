@@ -91,7 +91,6 @@ const VerifyPassword = () => {
             fullWidth
             // required
             className={styles[`inputField`]}
-
           />
 
           <Box

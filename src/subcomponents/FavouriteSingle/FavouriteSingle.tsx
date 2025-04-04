@@ -88,8 +88,6 @@ const FavouriteSingle = ({ item, }: FavouriteSingleProps) => {
 
                     <IconButton disabled={removefavpending} className={styles.deleteBtn} onClick={() => handleRemove(item.productId._id)}>
                         {removefavpending ? <CircularProgress size={24} thickness={4} sx={{ color: "#fafafa" }} /> : <DeleteOutline />}
-
-
                     </IconButton>
                 </div>
             </div>

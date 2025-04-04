@@ -3,8 +3,12 @@ import style from './Payment.module.css'
 import { Button, TextField } from '@mui/material'
 import { validateChangePassword, validateDeliveryDetails } from '../../Utils/validation'
 import { useSelector } from 'react-redux'
-import { RootState } from '../../store/store'
+import { AppDispatch, RootState } from '../../store/store'
 import { useFetchCart } from '../../apiList/cartApi'
+
+import { useDispatch } from "react-redux";
+import { setItems } from '../../slices/buyItems';
+import { useCreateOrder } from '../../apiList/paymentApi'
 
 export interface BookinginfoType {
     username: string
@@ -93,6 +97,11 @@ const Payment = () => {
         // Proceed with form submission logic here
         console.log("Form submitted successfully!", bookingInfo);
     };
+
+
+    const {data:createOrder, isPending``:createorderIsPending, isError:createorderIsError} = useCreateOrder()
+    
+
 
     useEffect(() => {
         // Create the new booking object using user data, defaulting to empty strings if not present

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import styles from "./AddToCart.module.css"; // Import CSS module
 import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
-import { IconButton } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 
 import { CartItem } from "../../Types/types";
 import AddToCartSingle from "../../subcomponents/AddtoCartSingle/AddToCartSingle";
@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { useFetchCart } from "../../apiList/cartApi";
 import { setCarts } from "../../slices/cart";
 import Loading from "../../components/LoadingState/Loading";
+import { setItems } from "../../slices/buyItems";
 
 // Define TypeScript interface for CartItem
 
@@ -57,24 +58,34 @@ const AddToCart: React.FC = () => {
   // }, [cart, dispatch])
 
 
-console.log("cart Items", cart)
+  console.log("cart Items", cart)
 
 
-const totalAmount = useMemo(() => {
-  if (!cart) return 0;
+  const totalAmount = useMemo(() => {
+    if (!cart) return 0;
 
-  return cart.reduce((sum: number, item: any) => {
-    return sum + (item.productId.price * item.quantity);
-  }, 0);
-}, [cart]);
+    return cart.reduce((sum: number, item: any) => {
+      return sum + (item.productId.price * item.quantity);
+    }, 0);
+  }, [cart]);
 
-const totalQuantity = useMemo(() => {
-  if (!cart) return 0;
+  const totalQuantity = useMemo(() => {
+    if (!cart) return 0;
 
-  return cart.reduce((sum: number, item: any) => {
-    return sum + item.quantity;
-  }, 0);
-}, [cart]);
+    return cart.reduce((sum: number, item: any) => {
+      return sum + item.quantity;
+    }, 0);
+  }, [cart]);
+
+  
+  useEffect(() => {
+    if (cart && cart.length > 0) {
+      cart.forEach((item: any) => {
+        dispatch(setItems({ itemId: item.productId._id, singleQuantityPrice:item.price,  quantity: item.quantity, size: null, color: null }));
+      //   dispatch(setItems({ itemId: product._id, quantity: currentQuantity, size: selectedSize, color:selectedColor }));
+      });
+    }
+  }, [cart, dispatch]);
 
 
   return (
@@ -88,19 +99,19 @@ const totalQuantity = useMemo(() => {
           </div>} */}
 
       <section>
-      {!isLoading ? (
-  cart && cart.length > 0 ? (
-    cart.map((item: CartItem) => (
-      <AddToCartSingle key={item._id} item={item} />
-    ))
-  ) : (
-    <section className="h-[50vh] w-[100vw] flex items-center justify-center">
-      <p className="text-4xl">No cart items added yet...</p>
-    </section>
-  )
-) : <div className="mt-[70px] h-[50vh] w-[100vw] flex justify-center items-center">
-<Loading />
-</div>} 
+        {!isLoading ? (
+          cart && cart.length > 0 ? (
+            cart.map((item: CartItem) => (
+              <AddToCartSingle key={item._id} item={item} />
+            ))
+          ) : (
+            <section className="h-[50vh] w-[100vw] flex items-center justify-center">
+              <p className="text-4xl">No cart items added yet...</p>
+            </section>
+          )
+        ) : <div className="mt-[70px] h-[50vh] w-[100vw] flex justify-center items-center">
+          <Loading />
+        </div>}
       </section>
 
 
@@ -108,6 +119,19 @@ const totalQuantity = useMemo(() => {
       {cart && cart.length > 0 && <section className={styles.totalContainer}>
         <p>Total Price: <span>${totalAmount.toFixed(2)}</span> </p>
         <p>Total Items: <span>{totalQuantity}</span> </p>
+        <Button variant="contained" className={styles.addtoCartBtn}
+          sx={{
+            width: {
+              xs: "100%",
+              sm: "190px",
+              md: "190px",
+              lg: "190px",
+              xl: "143px !important"
+            }
+          }}
+        >
+          Add to checkout
+        </Button>
       </section>}
     </main>
   );
