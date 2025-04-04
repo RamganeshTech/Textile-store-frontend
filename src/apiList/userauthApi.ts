@@ -33,3 +33,14 @@ export const loginUser = async (email: string, password: string, ) => {
       throw error.response?.data || "Something went wrong";
     }
   }
+
+
+  export const isAuthenticatedUser = async()=>{
+    try {
+      const response = await Api.get(`auth/isuserauthenticated`);
+      console.log(response.data)
+      return response.data;
+    } catch (error: any) {
+      throw error.response?.data || "Something went wrong";
+    }
+  }

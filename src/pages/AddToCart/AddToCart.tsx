@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styles from "./AddToCart.module.css"; // Import CSS module
 import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
@@ -57,12 +57,25 @@ const AddToCart: React.FC = () => {
   // }, [cart, dispatch])
 
 
-  // Calculate total price
-  // const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const total = 3000
+console.log("cart Items", cart)
 
 
-  // if (isLoading) return <div className="mt-[70px] h-[100vh] w-[100vw] flex items-center justify-center"><Loading /></div>
+const totalAmount = useMemo(() => {
+  if (!cart) return 0;
+
+  return cart.reduce((sum: number, item: any) => {
+    return sum + (item.productId.price * item.quantity);
+  }, 0);
+}, [cart]);
+
+const totalQuantity = useMemo(() => {
+  if (!cart) return 0;
+
+  return cart.reduce((sum: number, item: any) => {
+    return sum + item.quantity;
+  }, 0);
+}, [cart]);
+
 
   return (
     <main className={styles.container}>
@@ -70,24 +83,9 @@ const AddToCart: React.FC = () => {
         <h1>Shopping Cart</h1>
       </div>
 
-      {/* <section>
-        {!isLoading && cart && cart.length > 0 ? cart.map((item:CartItem) => {
-          // console.log(`Rendering item: ${index}, Class: ${styles.cartItem}`);
-          // console.log(item)
-          return (
-            <AddToCartSingle key={item._id}
-              item={item}
-            //  setCart={setCarts}
-            />
-          )
-        }) :
-
-          <section className="h-[50vh] w-[100vw] flex items-center justify-center">
-            <p className="text-4xl">No cart Items added yet...</p>
-          </section>
-
-        }
-      </section> */}
+      {/* {!isLoading && isError &&  <div className="h-[45vh] sm:h-[80vh] xs:w-[100vw] flex justify-center items-center">
+          <p className="text-xl sm:text-2xl lg:text-4xl">{error ? (error as unknown as Error).message : "Something went wrong"}</p>
+          </div>} */}
 
       <section>
       {!isLoading ? (
@@ -105,10 +103,11 @@ const AddToCart: React.FC = () => {
 </div>} 
       </section>
 
+
       {/* Total Section */}
-      {reduxCart && reduxCart.length > 0 && <section className={styles.totalContainer}>
-        <p>Total Price: <span>${total.toFixed(2)}</span> </p>
-        <p>Total Items: <span>{cart && cart.length > 0 && cart.reduce((sum: number, item: any) => sum + item.quantity, 0)}</span> </p>
+      {cart && cart.length > 0 && <section className={styles.totalContainer}>
+        <p>Total Price: <span>${totalAmount.toFixed(2)}</span> </p>
+        <p>Total Items: <span>{totalQuantity}</span> </p>
       </section>}
     </main>
   );

@@ -42,19 +42,8 @@ const FilterCategory: React.FC<{ title: string; children: React.ReactNode }> = (
 
 const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSearch, minPrice, maxPrice, handleRangeChange, searchTerm, setFilterOptions, filterOptions, sidebarVisible, setSidebarVisible, setSelectedCategory, selectedCategory }, ref) => {
 
-  const [value, setValue] = useState<number>(50); // Initial value
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(Number(event.target.value));
-  };
-
-
   //  let { mutate: searchMutate, data: searchData, isError: searchIsError, error: searchError, isPending: searchPending } = useSearchProducts()
   //   let { mutate: applyFiltersMutate, data: filterData, isError: filterIsError, error: filterError, isPending: filterPending } = useFilterProuducts()
-
-  const percentage = value;
-
-
 
   return (
     <section id='sidebar' ref={ref} className={`${style.sidebar} ${sidebarVisible ? style.visible : ''}`}>

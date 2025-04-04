@@ -6,11 +6,15 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
 import userlogo from '../../assets/userlogo.webp'
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { data, Link, Navigate, useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
-import { IconButton } from '@mui/material';
-import { RootState } from '../../store/store';
+import { CircularProgress, IconButton } from '@mui/material';
+import { AppDispatch, RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
+import { useMutation } from '@tanstack/react-query';
+import { setUser } from '../../slices/user';
+import { useDispatch } from 'react-redux';
+import { logoutUser } from '../../apiList/userauthApi';
 
 const Navbar: React.FC = () => {
 
@@ -19,6 +23,7 @@ const Navbar: React.FC = () => {
   const [isDropdownVisible, setDropdownVisible] = useState<Boolean>(false);
   const [ismainMenuVisble, setIsmainMenuVisble] = useState<Boolean>(false);
 
+  const dispatch = useDispatch<AppDispatch>()
   
 
   const sidebarRef = useRef<HTMLDivElement>(null);
@@ -33,6 +38,26 @@ const Navbar: React.FC = () => {
       navigate('login')
     }
   }
+
+  const handleCloseSideBar = ()=>{
+    console.log("hellow orkdfjslkl")
+    setIsmainMenuVisble(false)
+  }
+
+  let { mutate: handleLogout, isPending:logoutpending } = useMutation({
+    mutationFn: logoutUser,
+    onSuccess: data => {
+      if (data.ok) {
+        console.log("getting called")
+        dispatch(setUser({ isAuthenticated: false, userId: null, email: null, userName: null, address: null, phoneNumber: null  }))
+        setIsmainMenuVisble(false)
+        navigate('/')
+      }
+    },
+    onError:(error)=>{
+      console.log(error)
+    }
+  })
 
 
   useEffect(() => {
@@ -99,11 +124,12 @@ console.log("isAuthenticated", isAuthenticated)
         </IconButton>
        </div>
         <ul>
-          <li>Profile</li>
-          <li><Link to="/cart">My Cart</Link></li>
-          {isAuthenticated ? <li><Link to="/login">My Profile</Link></li> : <li><Link to="/login">Login</Link></li>}
-          <li><Link to="/favourite">My Favourites</Link></li>
-          <li>Logout</li>
+          <li onClick={handleCloseSideBar}><Link to="/cart">My Cart</Link></li>
+          {isAuthenticated ? <li onClick={handleCloseSideBar}><Link to="/userprofile">My Profile</Link></li> : <li onClick={handleCloseSideBar}><Link to="/login">Login</Link></li>}
+          <li onClick={handleCloseSideBar}><Link to="/favourite">My Favourites</Link></li>
+          <li onClick={()=> handleLogout()}>
+            {logoutpending ? <CircularProgress size={25} thickness={5} sx={{color:"#222220", margin:"0px auto", width:"100%", display:"block"}} /> : "Logout"}
+          </li>
         </ul>
       </div>
 

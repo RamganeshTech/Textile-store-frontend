@@ -2,7 +2,7 @@ import React, { ReactNode, useState } from 'react'
 // import styles from '../../components/AddToCart/AddToCart.module.css'
 import styles from '../../pages/AddToCart/AddToCart.module.css'
 import RemoveIcon from '@mui/icons-material/Remove';
-import { IconButton } from '@mui/material';
+import { Button, CircularProgress, IconButton } from '@mui/material';
 import { CartItem } from '../../Types/types';
 import AddIcon from '@mui/icons-material/Add';
 import { useDispatch } from 'react-redux';
@@ -10,6 +10,7 @@ import { AppDispatch } from '../../store/store';
 import { setCarts, updateQuantity } from '../../slices/cart';
 import { addToCart, removeCartItems, useAddToCart, useRemoveFromCart, useRemoveQuantityFromCart } from '../../apiList/cartApi';
 import { useMutation } from '@tanstack/react-query';
+import { isPending } from '@reduxjs/toolkit';
 
 
 
@@ -26,10 +27,10 @@ const AddToCartSingle = ({ item } : AddToCartSingleProps) => {
   const [tempQuantity, setTempQuantity] = useState<number>(item.quantity)
 
 
-  const { mutate: handleDelete } = useRemoveFromCart(); 
+  const { mutate: handleDelete, isPending:deleteCartPending } = useRemoveFromCart(); 
 
-  let {mutate:addCartmutate} = useAddToCart()
-  let {mutate:removeQuantitymutate} = useRemoveQuantityFromCart()
+  let {mutate:addCartmutate ,isPending:addcartPending} = useAddToCart()
+  let {mutate:removeQuantitymutate, isPending:removecartPending} = useRemoveQuantityFromCart()
   
 
   // Function to handle quantity changes
@@ -64,7 +65,13 @@ const AddToCartSingle = ({ item } : AddToCartSingleProps) => {
             onClick={() => handleQuantity(item.productId._id, "decrement")}>
               <RemoveIcon />
             </IconButton>
-            {item.quantity}
+            {/* {item.quantity} */}
+
+            {removecartPending || addcartPending ? (
+                                        <CircularProgress size={15} thickness={4} sx={{ color: "#000" }} />
+                                    ) : (
+                                      (item.quantity)
+                                    )}
             <IconButton className={styles.iconBtn} 
               // disabled={item.quantity >= item.productId.availableStocks} // Disable if stock limit is reached
               disabled={tempQuantity >= item.productId.availableStocks}  // Prevents exceeding stock
@@ -74,9 +81,18 @@ const AddToCartSingle = ({ item } : AddToCartSingleProps) => {
           </div>
 
           {/* Delete Button */}
-          <button className={styles.deleteBtn} onClick={() => handleDelete(item.productId._id)}>
-            Delete
-          </button>
+          <Button variant="contained" disabled={deleteCartPending} className={styles.deleteBtn} onClick={() => handleDelete(item.productId._id)}
+               sx={{
+                backgroundColor: "#ff4d4d !important", // Ensures same background even when disabled
+                color: "white",
+                "&.Mui-disabled": {
+                  backgroundColor: "#ff4d4d", // Same color when disabled
+                  opacity: 0.9, // Optional: Adjust opacity
+                },
+              }}
+            >
+            {deleteCartPending ? <CircularProgress size={24} thickness={4} sx={{color: "#fafafa"}} /> : "delete" }
+          </Button>
         </div>
       </div>
     )

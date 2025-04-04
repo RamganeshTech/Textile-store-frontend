@@ -14,9 +14,9 @@ const FavouriteItems: React.FC = () => {
 
   // let favouritesStore = useSelector((state:RootState)=> state.favourite.favourites)
 
-  let {data:favourites, isLoading, isError} = useFetchFavourite()
+  let {data:favourites, isLoading, isError, error} = useFetchFavourite()
 
-  console.log(favourites.items)
+  console.log(favourites)
 
 
   // if(isLoading){
@@ -28,7 +28,13 @@ const FavouriteItems: React.FC = () => {
   return (
     <main className={styles.container}>
       <h1 className={styles.heading}>Favourite Items</h1>
-{ isLoading &&  ( <div className="mt-[70px] h-[50vh] w-[100vw] flex justify-center items-center">
+
+      {!isLoading && isError &&  <div className="h-[45vh] sm:h-[80vh] xs:w-[100vw] flex justify-center items-center">
+          <p className="text-xl sm:text-2xl lg:text-4xl">{error ? (error as unknown as Error).message : "Something went wrong"}</p>
+          </div>}
+
+
+{ isLoading && !isError && ( <div className="mt-[70px] h-[50vh] w-[100vw] flex justify-center items-center">
       <Loading />
     </div>) }
 

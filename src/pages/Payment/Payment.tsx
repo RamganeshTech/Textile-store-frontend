@@ -1,9 +1,10 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react'
 import style from './Payment.module.css'
 import { Button, TextField } from '@mui/material'
 import { validateChangePassword, validateDeliveryDetails } from '../../Utils/validation'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store/store'
+import { useFetchCart } from '../../apiList/cartApi'
 
 export interface BookinginfoType {
     username: string
@@ -46,13 +47,29 @@ const Payment = () => {
 
     let user = useSelector((state: RootState) => state.user)
 
-
+      let { data: cart , isLoading, isError, error } = useFetchCart()
+    
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         let { name, value } = e.target
         setBookingInfo((p) => ({ ...p, [name]: value }))
     }
 
+   const totalAmount = useMemo(() => {
+     if (!cart) return 0;
+   
+     return cart.reduce((sum: number, item: any) => {
+       return sum + (item.productId.price * item.quantity);
+     }, 0);
+   }, [cart]);
+   
+   const totalQuantity = useMemo(() => {
+     if (!cart) return 0;
+   
+     return cart.reduce((sum: number, item: any) => {
+       return sum + item.quantity;
+     }, 0);
+   }, [cart]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -81,7 +98,7 @@ const Payment = () => {
         // Create the new booking object using user data, defaulting to empty strings if not present
         const newBookingInfo: BookinginfoType = {
             username: user.userName || '',
-            doorno: user.address?.doorNo || '',
+            doorno: user.address?.doorno || '',
             street: user.address?.street || '',
             state: user.address?.state || '',
             district: user.address?.district || '',
@@ -92,7 +109,6 @@ const Payment = () => {
         };
 
 
-        console.log(newBookingInfo,)
         console.log(newBookingInfo,)
 
         let newErrors: Partial<Record<keyof BookinginfoType, string>> = {};
@@ -163,12 +179,12 @@ const Payment = () => {
 
                         <div>
                             <p>Total Amount</p>
-                            <span>₹2000</span>
+                            <span>₹{totalAmount}</span>
                         </div>
 
                         <div>
                             <p>Total Items</p>
-                            <span>3</span>
+                            <span>{totalQuantity}</span>
                         </div>
 
                         <div className='w-[100%] !flex !justify-center '>

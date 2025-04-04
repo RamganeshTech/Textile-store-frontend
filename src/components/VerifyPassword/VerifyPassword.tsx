@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { TextField, Button, CircularProgress } from "@mui/material";
+import { TextField, Button, CircularProgress, Box, IconButton } from "@mui/material";
 import styles from "./VerifyPassword.module.css";
 import { data, Navigate, useNavigate } from "react-router-dom";
 import { useVerifyPassword } from "../../apiList/userprofileApi";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const VerifyPassword = () => {
 
@@ -12,8 +13,9 @@ const VerifyPassword = () => {
     password: "",
   });
 
-      const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false)
+
 
   let { mutate, isPending, isError, error, reset, data } = useVerifyPassword()
 
@@ -39,10 +41,10 @@ const VerifyPassword = () => {
             setErrorMessage("")
             navigate('../editaccountinfo')
           }
-        }, 
+        },
 
-        onError:(data)=>{
-        setErrorMessage(data.message)
+        onError: (data) => {
+          setErrorMessage(data.message)
         }
       })
       console.log("Password Changed:", form);
@@ -58,7 +60,7 @@ const VerifyPassword = () => {
 
 
   // console.log(error, isError)
-console.log(data)
+  console.log(data)
   if (isError) {
     console.log(error, isError)
   }
@@ -82,55 +84,58 @@ console.log(data)
         <div className={`${styles.inputcontainer}`}>
           <TextField
             label="password"
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
             value={form.password}
             onChange={handleChange}
             fullWidth
             // required
             className={styles[`inputField`]}
-            // sx={{
-            //   height: { xs: 30, sm: 40, md: 50, lg: 60 },
-            //   "& .MuiOutlinedInput-root": {
-            //     height: { xs: 30, sm: 40, md: 50, lg: 60 }, // Wrapper height
-            //     "& input": {
-            //       height: { xs: 30, sm: 40, md: 50, lg: 60 }, // Input field height
-            //     },
-            //   },
-            //   "& .MuiInputLabel-root": {
-            //     top: "1px", // Adjusts the placeholder position
-            //     fontSize: "14px"
-            //   },
-            //   "& .MuiOutlinedInput-input": {
-            //     padding: "12px 14px", // Adjusts input padding
-            //   },
-            //   "& .MuiInputLabel-shrink": {
-            //     // transform: "translate(14px, -10px) scale(0.85)", // Fixes label shrink position
-            //   },
-            // }}
 
-
-
-            // sx={{
-            //   height: { xs: 40, sm: 50, md: 60, lg: 70 }, // Adjusts input height
-            //   "& .MuiOutlinedInput-root": {
-            //     height: { xs: 40, sm: 50, md: 60, lg: 70 }, // Wrapper height
-            //     "& input": {
-            //       height: "100%", // Makes sure input takes full height
-            //       padding: "12px 14px", // Fix text alignment inside input
-            //     },
-            //   },
-            //   "& .MuiInputLabel-root": {
-            //     transform: "translate(14px, 14px) scale(1)", // Default position
-            //     fontSize: "14px",
-            //     transition: "all 0.2s ease-out",
-            //   },
-            //   "& .MuiInputLabel-root.Mui-focused, & .MuiInputLabel-root.MuiFormLabel-filled": {
-            //     transform: "translate(14px, -8px) scale(0.85)", // Moves label slightly up
-            //   },
-            // }}
           />
 
+          <Box
+            sx={{
+              position: 'absolute',
+              right: '10px',
+              top: '50%',
+              transform: 'translateY(-50%)',
+              zIndex: 1,
+            }}
+          >
+            <IconButton
+              aria-label="toggle password visibility"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <VisibilityOff sx={{
+                    height:{
+                      xs:"20px",
+                      sm:"20px",
+                      md:"20px",
+                      lg:"25px"
+                    },
+                    width:{
+                      xs:"20px",
+                      sm:"20px",
+                      md:"20px",
+                      lg:"25px",
+                    }
+                  }} /> : <Visibility sx={{
+                    height:{
+                      xs:"20px",
+                      sm:"20px",
+                      md:"20px",
+                      lg:"25px"
+                    },
+                    width:{
+                      xs:"20px",
+                      sm:"20px",
+                      md:"20px",
+                      lg:"25px",
+                    }
+                  }} />}
+            </IconButton>
+          </Box>
 
           {errorMessage && <div className={`${styles.errormessage}`}>
             <p>*{errorMessage}</p>
@@ -145,7 +150,7 @@ console.log(data)
           variant="contained"
           className={styles[`submitButton`]}
         >
-          {!isPending ? "verify" : <CircularProgress size={24} thickness={6} sx={{color:"#fafafa"}} />}
+          {!isPending ? "verify" : <CircularProgress size={24} thickness={6} sx={{ color: "#fafafa" }} />}
         </Button>
       </form>
     </div>

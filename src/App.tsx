@@ -18,9 +18,10 @@ import UpdateUserEmail from './components/UserDataEditComponents/UpdateUserEmail
 import UpdateUserName from './components/UserDataEditComponents/UpdateUserName/UpdateUserName'
 import UpdateUserPhoneNo from './components/UserDataEditComponents/UpdateUserPhoneNo/UpdateUserPhoneNo'
 import Payment from './pages/Payment/Payment'
+import useIsAuthenticated from './hooks/useIsAuthenticated'
 
 function App() {
-
+  useIsAuthenticated()
   return (
     <>
       <Navbar />

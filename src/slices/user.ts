@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface userAddress {
   street: (string | null);
-  doorNo: (string | null);
+  doorno: (string | null);
   landmark: (string | null);
   state: (string | null);
   district: (string | null);
@@ -25,7 +25,7 @@ const initialState: UserState = {
   phoneNumber: null,
   address: {
     street: null,
-    doorNo: null,
+    doorno: null,
     landmark: null,
     state: null,
     district: null,
@@ -44,12 +44,12 @@ const userSlice = createSlice({
       state.isAuthenticated = action.payload.isAuthenticated;
       state.phoneNumber = action.payload?.phoneNumber ?? null
       state.address = action.payload?.address ?? {
-        street: null,
-        doorNo: null,
-        landmark: null,
-        state: null,
-        district: null,
-        pincode: null
+        street: action.payload.address?.street || null,
+        doorno: action.payload.address?.doorno || null,
+        landmark: action.payload.address?.landmark || null,
+        state: action.payload.address?.state || null,
+        district: action.payload.address?.district || null,
+        pincode: action.payload.address?.pincode || null
       }
     },
     logoutUser: (state) => {
@@ -59,7 +59,7 @@ const userSlice = createSlice({
       state.isAuthenticated = false;
       state.address = {
         street: null,
-        doorNo: null,
+        doorno: null,
         landmark: null,
         state: null,
         district: null,

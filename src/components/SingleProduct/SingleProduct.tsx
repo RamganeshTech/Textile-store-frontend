@@ -11,7 +11,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { CartItem, ProductType } from '../../Types/types';
 
 // import products from '../../Utils/product';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import { FaStar } from "react-icons/fa";
 import StarRating from '../StarRating/StarRating';
@@ -33,6 +33,7 @@ type reviewprouducts = {
 
 const SingleProduct = () => {
     let { id: paramsid } = useParams()
+    let navigate = useNavigate()
 
     const { data: products, isLoading, error } = useFetchProducts();
 
@@ -320,7 +321,7 @@ const SingleProduct = () => {
                                 </IconButton>
                             </div>
 
-                            <Button variant='contained' className={`${style.buynowBtn}`}>
+                            <Button variant='contained' className={`${style.buynowBtn}`} onClick={()=> navigate('/payment')}>
                                 Buy Now
                             </Button>
                         </section>
