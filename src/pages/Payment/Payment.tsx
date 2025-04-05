@@ -99,9 +99,7 @@ const Payment = () => {
     };
 
 
-    const {data:createOrder, isPending``:createorderIsPending, isError:createorderIsError} = useCreateOrder()
-    
-
+    // const {data:createOrder, isPending``:createorderIsPending, isError:createorderIsError} = useCreateOrder()
 
     useEffect(() => {
         // Create the new booking object using user data, defaulting to empty strings if not present

@@ -13,37 +13,6 @@ import { setCarts } from "../../slices/cart";
 import Loading from "../../components/LoadingState/Loading";
 import { setItems } from "../../slices/buyItems";
 
-// Define TypeScript interface for CartItem
-
-
-// Sample Shopping Cart Data
-// const initialCart: CartItem[] = [
-//   {
-//     _id: "1",
-//     productImg:  "https://picsum.photos/200/300?random=1",
-//     productTitle: "Wireless Headphones",
-//     price: 59.99,
-//     availableStocks: 10,
-//     quantity: 1,
-//   },
-//   {
-//     _id: "2",
-//     productImg:  "https://picsum.photos/200/300?random=2",
-//     productTitle: "Smartwatch",
-//     price: 129.99,
-//     availableStocks: 5,
-//     quantity: 2,
-//   },
-//   {
-//     _id: "3",
-//     productImg:  "https://picsum.photos/200/300?random=3",
-//     productTitle: "Gaming Mouse",
-//     price: 39.99,
-//     availableStocks: 15,
-//     quantity: 1,
-//   },
-// ];
-
 const AddToCart: React.FC = () => {
   // const [cart, setCart] = useState<CartItem[]>(initialCart);
 
@@ -52,14 +21,7 @@ const AddToCart: React.FC = () => {
 
   let dispatch = useDispatch<AppDispatch>()
 
-  // useEffect(() => {
-  //   console.log(cart)
-  //   dispatch(setCarts(cart))
-  // }, [cart, dispatch])
-
-
   console.log("cart Items", cart)
-
 
   const totalAmount = useMemo(() => {
     if (!cart) return 0;

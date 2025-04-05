@@ -16,7 +16,7 @@ const FavouriteItems: React.FC = () => {
 
   let {data:favourites, isLoading, isError, error} = useFetchFavourite()
 
-  console.log(favourites)
+  // console.log(favourites)
 
 
   // if(isLoading){

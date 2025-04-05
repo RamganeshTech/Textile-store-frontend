@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import styles from '../../pages/Favourite/Favourite.module.css'
 import { FavouriteItem } from '../../Types/types'
 import { Button, CircularProgress, IconButton } from '@mui/material'
@@ -12,9 +12,16 @@ type FavouriteSingleProps = {
     // setFavourites: React.Dispatch<React.SetStateAction<FavouriteItem[]>>,
 }
 
+// if (isFavourite) {
+//     removeFavourite({ productId: product._id, size: selectedSize, color: selectedColor });
+// } else {
+//     addFavourite({ productId: product._id, size: selectedSize, color: selectedColor });
+// }
+
 const FavouriteSingle = ({ item, }: FavouriteSingleProps) => {
 
-    const [isInCart, setIsInCart] = useState(false);
+    // const [isInCart, setIsInCart] = useState(false);
+    // console.log("favourite current item", item, )
 
     const { data: cartItems } = useFetchCart();
 
@@ -22,41 +29,57 @@ const FavouriteSingle = ({ item, }: FavouriteSingleProps) => {
     let { mutate: addCartmutate, isPending: addcartPending } = useAddToCart()
     const { mutate: removeCartmutate, isPending: removeCartPending } = useRemoveFromCart();
 
+     const isInCart = useMemo(() => {
+            return cartItems?.some((cartitem: any) => cartitem.productId._id === item.productId._id && cartitem.size === item.size && cartitem.color === item.color) || false;
+        }, [cartItems, item._id]);
+
+        // const isInCart = cartItems?.some((cartitem: any) =>{
+        //     // console.log("usememo cartItem", cartitem.productId)
+        //     // console.log("usememo favourite indiviitem", item.productId)
+        //     return cartitem.productId._id === item.productId._id && cartitem.size === item.size && cartitem.color === item.color
+        // } )
+
     const handleRemove = (id: string) => {
         // setFavourites(prev => prev.filter(item => item._id !== id));
-        console.log("favourite items id", id)
+        // console.log("favourite items id", id)
         removeFavourite({ productId: id, size: item.size, color: item.color })
 
     };
 
     const handleCart = () => {
+        console.log("isInCart", isInCart)
         if (isInCart) {
-            removeCartmutate(item.productId._id);
+            removeCartmutate({productId:item.productId._id, size:item.size, color:item.color});
         } else {
-            addCartmutate({ productId: item.productId._id, quantity: 1, price: item.productId.price })
+            addCartmutate({ productId: item.productId._id, quantity: 1, price: item.productId.price, size:item.size, color:item.color })
         }
-        setIsInCart(!isInCart);
+        // setIsInCart(!isInCart);
     };
 
+    console.log(isInCart)
 
-    useEffect(() => {
-        console.log(cartItems)
-        if (cartItems) {
-            const exists = cartItems.some((cartitem: any) => {
-                return cartitem.productId._id === item.productId._id
-            });
-            setIsInCart(exists);
-        }
-    }, [cartItems, item._id]);
+    // useEffect(() => {
+    //     console.log(cartItems)
+    //     if (cartItems) {
+    //         const exists = cartItems.some((cartitem: any) => {
+    //             return cartitem.productId._id === item.productId._id
+    //         });
+    //         setIsInCart(exists);
+    //     }
+    // }, [cartItems, item._id]);
 
     return (
         <div key={item?._id} className={styles.favouriteItem}>
-            <img src={item?.productId.images[0]} alt={item?.productId.productName} className={styles.image} />
+            <img src={item?.image} alt={item?.productId.productName} className={styles.image} />
 
             <div className={styles.itemDetails}>
                 <h2>{item.productId.productName} watcheswatches watches  watcheswatches watches  watcheswatches watches  watches watches Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellat nostrum dolore vitae ipsa, totam voluptatem sit mollitia ad earum dicta.</h2>
                 <p>Price: <span>${item?.productId.price?.toFixed(2)}</span></p>
-                {/* <p>Rating: ⭐{item.rating}</p> */}
+                <div className='flex gap-[5px] items-center'>
+        <p>size: <span className=' !font-semibold !text-[16px] sm:!text-[18px] md:!text-[20px]'>{item.size}</span></p>
+        {/* {" "} */}
+        <p>color: <span className=' !font-semibold  !text-[16px] sm:!text-[18px] md:!text-[20px]'>{item.color}</span></p>
+        </div>
                 <p><StarRating rating={item?.productId.reviewStar ?? 0} /></p>
 
                 <div className={`${styles.btncontainer}`}>
