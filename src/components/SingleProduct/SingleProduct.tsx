@@ -25,6 +25,7 @@ import OthersReview from '../Review/OthersReview';
 import { useFetchReview } from '../../apiList/reviewApi';
 import { setItems } from '../../slices/buyItems';
 import { useDispatch } from 'react-redux';
+import Loading from '../LoadingState/Loading';
 
 type reviewprouducts = {
     reviewername: (string | null),
@@ -38,7 +39,7 @@ const SingleProduct = () => {
     let navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>();
 
-    const { data: products, isLoading, error } = useFetchProducts();
+    const { data: products, isLoading: singleProductLoading, error } = useFetchProducts();
 
     let { data: cartItems, isLoading: cartLoading, isError: cartIsError, error: cartError } = useFetchCart()
 
@@ -51,6 +52,7 @@ const SingleProduct = () => {
     // const [tempQuantity, setTempQuantity] = useState<number>(1)
     const [isInCart, setIsInCart] = useState<boolean>(false);
     const [currentQuantity, setCurrentQuantity] = useState<number>(0);
+    const [customLoading, setCustomLoading] = useState<boolean>(false)
 
 
     // const [isFavourite, setIsFavourite] = useState<boolean>(false)
@@ -128,6 +130,7 @@ const SingleProduct = () => {
 
 
     useEffect(() => {
+        setCustomLoading(true)
         if (products) {
             const found = products.find(({ _id }: { _id: string }) => _id === paramsid);
             if (found) {
@@ -142,6 +145,8 @@ const SingleProduct = () => {
             } else {
                 setProduct(null);
             }
+        setCustomLoading(false)
+
             console.log("singleProduct", product)
         }
 
@@ -194,7 +199,7 @@ const SingleProduct = () => {
         if(favourites && favourites.items && product){
             return favourites?.items.some(
               (fav:any) =>{
-                console.log("favourites", fav.productId)
+                // console.log("favourites", fav.productId)
                 return fav.productId._id === product._id &&
                 fav.size === selectedSize &&
                 fav.color === selectedColor
@@ -249,6 +254,14 @@ const SingleProduct = () => {
         navigate('/payment')
     }
 
+    // console.log(reviewError)
+    // console.log(reviewIsLoading)
+
+     if (singleProductLoading || customLoading) {
+        return <div className='mt-[70px] w-[100vw] h-[100vh]  flex items-center justify-center'>
+            <Loading />
+        </div>
+    }
 
     if (!product) return;
 
@@ -477,7 +490,7 @@ const SingleProduct = () => {
                     {!showUsersReview ?
                         <UserReview currentProductId={paramsid} reviewItems={reviewItems} />
                         :
-                        <OthersReview reviewItems={reviewItems} product={product} />
+                        <OthersReview reviewItems={reviewItems} reviewIsError={reviewIsError} reviewIsLoading={reviewIsLoading} reviewError={reviewError} product={product} />
                     }
                 </div>
             </main>

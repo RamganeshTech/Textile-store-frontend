@@ -16,9 +16,15 @@ interface UpdateOrDeleteReviewType {
 }
 
 const fetchReview = async (productId:string)=>{
-    let {data} = await Api.get(`/review/getallreviews/${productId}`)
+    try{
+        let {data} = await Api.get(`/review/getallreviews/${productId}`)
     console.log(data)
     return data.data;
+    }
+    catch(error){
+        console.log("error ocurrent during fetvhing review", error)
+        throw error;
+    }
 }
 
 const createReview = async (reviewData:ReviewType)=>{

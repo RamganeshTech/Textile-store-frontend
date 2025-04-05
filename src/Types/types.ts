@@ -5,7 +5,6 @@ export type ReviewType = {
     description: string,
     userId:string
     profileImg:string,
-
   };
   
   export type ProductType = {
