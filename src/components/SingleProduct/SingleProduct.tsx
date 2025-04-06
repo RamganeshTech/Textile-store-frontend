@@ -200,9 +200,9 @@ const SingleProduct = () => {
             return favourites?.items.some(
               (fav:any) =>{
                 // console.log("favourites", fav.productId)
-                return fav.productId._id === product._id &&
-                fav.size === selectedSize &&
-                fav.color === selectedColor
+                return fav?.productId?._id === product._id &&
+                fav?.size === selectedSize &&
+                fav?.color === selectedColor
               }
 
             );

@@ -80,11 +80,11 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
     }, [product.colorVariants, firstSelectedColor]);
 
     const isInCart = useMemo(() => {
-        return cartItems?.some((item: any) => item.productId._id === product._id) || false;
+        return cartItems?.some((item: any) => item?.productId?._id === product._id) || false;
     }, [cartItems, product._id]);
 
     const isFavourite = useMemo(() => {
-        return favourites?.items?.some((fav: any) => fav.productId._id === product._id) || false;
+        return favourites?.items?.some((fav: any) => fav?.productId?._id === product._id) || false;
     }, [favourites, product._id]);
 
     const handleCart = () => {

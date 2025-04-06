@@ -23,16 +23,16 @@ const UpdateUserEmail: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (!email) {
-        throw new Error("Please enter the Email")
-      }
+      // if (!email) {
+      //   throw new Error("Please enter the Email")
+      // }
 
 
       mutate(email, {
         onSuccess: (data) => {
           if (data.ok) {
             console.log(data.message)
-            dispatch(setUser({ isAuthenticated: true, userId: null, email: email, userName: null }))
+            dispatch(setUser(({email: email})))
 
             setSuccessMessage(data.message);
 
@@ -46,6 +46,9 @@ const UpdateUserEmail: React.FC = () => {
       })
     }
     catch (error) {
+      // so if you wnat to handle that custom throw error message it will be catched here 
+      // (that is outiside of the mutate will be caught here the bakcend will be caught in 
+      // error variable itself form the mutation)
       if (error instanceof Error) {
         console.log(error.message)
       }
@@ -79,7 +82,7 @@ const UpdateUserEmail: React.FC = () => {
             className={styles[`inputField`]}
           />
           {isError && <div className={`${styles.errormessage}`}>
-            <p>{error?.message}</p>
+            <p>{(error as any)?.response?.data?.message || error?.message || "Something went wrong"}</p>
             {/* <p>error ocuuere man man man</p> */}
           </div>}
         </div>

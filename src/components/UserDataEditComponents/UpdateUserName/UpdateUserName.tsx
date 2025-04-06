@@ -28,9 +28,9 @@ const UpdateUserName: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-     if(!userName){
-        throw new Error("Please enter the Username")
-     }
+    //  if(!userName){
+    //     throw new Error("Please enter the Username")
+    //  }
      
      mutate(userName, {
        onSuccess:(data)=>{
@@ -78,7 +78,7 @@ const UpdateUserName: React.FC = () => {
           className={styles[`inputField`]}
         />
             {isError && <div className={`${styles.errormessage}`}>
-            <p>{error?.message}</p>
+            <p>{(error as any)?.response?.data?.message || error?.message || "Something went wrong"}</p>
             {/* <p>error ocuuere man man man</p> */}
           </div>} 
       </div>

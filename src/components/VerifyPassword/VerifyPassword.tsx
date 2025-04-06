@@ -43,8 +43,9 @@ const VerifyPassword = () => {
           }
         },
 
-        onError: (data) => {
-          setErrorMessage(data.message)
+        onError: (data:any) => {
+          const message = data?.response?.data.message || data?.message || "Something went wrong";
+          setErrorMessage(message)
         }
       })
       console.log("Password Changed:", form);

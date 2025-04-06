@@ -10,7 +10,7 @@ import { RootState } from '../../store/store';
 type reviewprouducts = {
     reviewername: (string | null),
     review: (string | null),
-    email: (string | null),
+    // email: (string | null),
     // stars: (number | null)
 }
 
@@ -31,7 +31,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
     const [review, setReview] = useState<reviewprouducts>({
         reviewername: null,
         review: null,
-        email: null,
+        // email: null,
         // stars: null
     })
 
@@ -121,7 +121,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
             userId: "",
             _id: ""
         });
-        setReview({ reviewername: null, review: null, email: null });
+        setReview({ reviewername: null, review: null,});
         // setIsEditing(false)
     }
 
@@ -145,7 +145,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
     const handleCancelUpdateReview = () => {
         console.log("getting called")
         setIsEditing(false)
-        setReviewCreated(true)
+        // setReviewCreated(true)
         // setCurrentReview({
         //     userName: "",
         //     description: "",
@@ -162,7 +162,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         setReview({
             reviewername: yourReview?.userName || null,
             review: yourReview?.description || null,
-            email: user.email || ""
+            // email: user.email || ""
         })
         setSelectedStars(yourReview?.stars || 0)
         // Ensure form appears
@@ -269,7 +269,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                             className={`${style.reviewtextField}`}
                         />
 
-                        <TextField type="email" name="email"
+                        {/* <TextField type="email" name="email"
                             label="Email"
                             placeholder='Enter Email'
 
@@ -284,7 +284,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                                     lg: "10px"
                                 }
                             }}
-                        />
+                        /> */}
                     </div>
 
                     <div className={`${style.submitContainer}`}>

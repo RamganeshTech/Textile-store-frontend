@@ -37,20 +37,32 @@ const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
-    setUser: (state, action: PayloadAction<UserState>) => {
-      state.userId = action.payload.userId;
-      state.userName = action.payload.userName;
-      state.email = action.payload.email;
-      state.isAuthenticated = action.payload.isAuthenticated;
-      state.phoneNumber = action.payload?.phoneNumber ?? null
-      state.address = action.payload?.address ?? {
-        street: action.payload.address?.street || null,
-        doorno: action.payload.address?.doorno || null,
-        landmark: action.payload.address?.landmark || null,
-        state: action.payload.address?.state || null,
-        district: action.payload.address?.district || null,
-        pincode: action.payload.address?.pincode || null
+    setUser: (state, action: PayloadAction<Partial<UserState>>) => {
+      // state.userId = action.payload.userId;
+      // state.userName = action.payload.userName;
+      // state.email = action.payload.email;
+      // state.isAuthenticated = action.payload.isAuthenticated;
+      // state.phoneNumber = action.payload?.phoneNumber ?? null
+      // state.address = action.payload?.address ?? {
+      //   street: action.payload.address?.street || null,
+      //   doorno: action.payload.address?.doorno || null,
+      //   landmark: action.payload.address?.landmark || null,
+      //   state: action.payload.address?.state || null,
+      //   district: action.payload.address?.district || null,
+      //   pincode: action.payload.address?.pincode || null
+      // }
+    return {
+      ...state,
+      ...action.payload,
+      address: {
+        street: action.payload.address?.street ?? state.address?.street ?? null,
+        doorno: action.payload.address?.doorno ?? state.address?.doorno ?? null,
+        landmark: action.payload.address?.landmark ?? state.address?.landmark ?? null,
+        state: action.payload.address?.state ?? state.address?.state ?? null,
+        district: action.payload.address?.district ?? state.address?.district ?? null,
+        pincode: action.payload.address?.pincode ?? state.address?.pincode ?? null
       }
+      } 
     },
     logoutUser: (state) => {
       state.userId = null;
