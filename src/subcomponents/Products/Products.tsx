@@ -124,7 +124,8 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
             <section className={`${style.product}`}>
                 <div className={`${style.imgcontainer}`}>
                     <Link to={`/product/${product._id}`} >
-                        <img src={productImage ? productImage : notAvailableimage} alt="" style={{ pointerEvents: "none" }} />
+                        <img loading={location.pathname.includes('allproducts') ? 'lazy' : "eager"} 
+                        src={productImage ? productImage : notAvailableimage} alt="" style={{ pointerEvents: "none" }} />
                     </Link>
                     <IconButton
                         sx={{ backgroundColor: "fff" }}
