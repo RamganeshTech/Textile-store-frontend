@@ -11,12 +11,6 @@ export type ReviewType = {
     _id:string;
     productName: string;
     price: number;
-    // size: string;
-    // availableSizes: string[];
-    // color: string;
-    // availableColors: string[];
-    // availableStocks: number;
-    // images: string[];
     description: string;
     reviews: ReviewType[];
     category?:string;

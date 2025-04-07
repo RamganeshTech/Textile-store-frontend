@@ -56,8 +56,7 @@
 }
 
 .singleSideImg:focus {
-    /* border: 2px solid #0a0a0a; */
-    outline: 2px solid #0a0a0a;
+    /* outline: 2px solid #0a0a0a; */
 }
 
 .mainImgContainer {

@@ -1,5 +1,6 @@
 import Api from "../apiClient/apiClient";
 import { useMutation } from "@tanstack/react-query";
+import { userAddress } from "../slices/user";
 
 
 `/profile/updateemail',
@@ -59,6 +60,15 @@ export const updateUserEmail = async(email:string)=>{
     }
   }
 
+  export const updateAddress = async(userData:userAddress)=>{
+    try {
+      const response = await Api.patch(`/profile/updateaddress`, userData);
+      return response.data;
+    } catch (error: any) {
+      throw error;
+    }
+  }
+
 
 export const useChangePassword = ()=>{
    return useMutation({
@@ -97,3 +107,12 @@ export const useVerifyPassword = ()=>{
        
      })
  }
+
+
+
+ export const useChangeAddress = ()=>{
+  return useMutation({
+       mutationFn: updateAddress,
+     
+   })
+}

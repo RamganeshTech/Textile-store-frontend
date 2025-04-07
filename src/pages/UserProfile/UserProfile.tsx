@@ -90,6 +90,25 @@ const UserProfile: React.FC = () => {
             </ListItemButton>
             <Divider />
             <ListItemButton
+              onClick={() => navigate("./editaddress")}
+              className={`${styles.listItem}`}
+            >
+              <ListItemText primary="Edit Address"
+                sx={{
+                  "& .MuiTypography-root": {
+                    fontSize: {
+                      xs: "18px",  // Small screens (mobile)
+                      sm: "22px",  // Tablets
+                      md: "22px",  // Medium screens
+                      lg: "24px",  // Large screens
+                      xl: "26px",
+                    },
+                    textAlign: "center",
+                  },
+                }}
+              />
+            </ListItemButton>
+            {/* <ListItemButton
               onClick={() => navigate("./myorders")}
               className={`${styles.listItem}`}
             >
@@ -107,7 +126,7 @@ const UserProfile: React.FC = () => {
                   },
                 }}
               />
-            </ListItemButton>
+            </ListItemButton> */}
             <Divider />
             <ListItemButton onClick={() => logout()} className={styles.listItem}>
               <ListItemText

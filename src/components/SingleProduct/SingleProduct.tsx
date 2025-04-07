@@ -49,19 +49,15 @@ const SingleProduct = () => {
 
     const [product, setProduct] = useState<ProductType | null>(null)
 
-    // const [tempQuantity, setTempQuantity] = useState<number>(1)
     const [isInCart, setIsInCart] = useState<boolean>(false);
     const [currentQuantity, setCurrentQuantity] = useState<number>(0);
     const [customLoading, setCustomLoading] = useState<boolean>(false)
 
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    // const [isFavourite, setIsFavourite] = useState<boolean>(false)
-    // const [review, setReview] = useState<reviewprouducts>({
-    //     reviewername: null,
-    //     review: null,
-    //     email: null,
-    //     stars: null
-    // })
+   
+      
+
     const [selectedColor, setSelectedColor] = useState<string>("");
     const [selectedSize, setSelectedSize] = useState<string>("");
 
@@ -80,54 +76,6 @@ const SingleProduct = () => {
     const { data: favourites, isLoading: favLoading, isError: favIsError } = useFetchFavourite();
     let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, } = useAddToFavourite()
     let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, } = useRemoveFavourite()
-
-    // useEffect(() => {
-    //     setProduct(() => {
-    //         // console.log(products)
-    //         let product = products?.find(({ _id }: { _id: string }) => _id === paramsid)
-    //         // console.log(product)
-    //         if (!product) {
-    //             return null
-    //         }
-    //         return product
-    //     }
-    //     )
-    // }, [])
-
-
-
-    // useEffect(() => {
-    //     if (cartItems && Array.isArray(cartItems)) {
-    //         const foundItem = cartItems.find((item: CartItem) => {
-    //             // console.log(item)
-    //             return item.productId._id === product?._id
-    //         });
-
-    //         // console.log("foundItem", foundItem)
-    //         // console.log("caling addtocat btn change functionity useeffect")
-    //         if (foundItem) {
-    //             setIsInCart(true);
-    //             // setTempQuantity(foundItem.quantity);
-    //             setCurrentQuantity(foundItem.quantity)
-    //         } else {
-    //             setIsInCart(false);
-    //             // setTempQuantity(1);
-    //             setCurrentQuantity(1);
-    //         }
-    //     }
-    // }, [cartItems, product]);
-
-    // useEffect(() => {
-    //     if (favourites && favourites.items && product) {
-    //         const exists = favourites.items.some((fav: any) => {
-    //             // console.log("favourites product Id",fav.productId)
-    //             // console.log("product._id",product._id)
-    //             return fav.productId._id === product._id
-    //         });
-    //         setIsFavourite(exists);
-    //     }
-    // }, [favourites, product?._id]);
-
 
     useEffect(() => {
         setCustomLoading(true)
@@ -153,9 +101,7 @@ const SingleProduct = () => {
 
     }, [products, paramsid]);
 
-    // console.log("singleProduct", product)
     console.log("favourites", favourites)
-
 
     useEffect(() => {
         if (cartItems && product) {
@@ -176,24 +122,12 @@ const SingleProduct = () => {
         }
     }, [cartItems, product, selectedSize, selectedColor]);
 
-
-    // Update favourite state based on favourites data
-    // useEffect(() => {
-    //     if (favourites && favourites.items && product) {
-    //         const exists = favourites.items.some((fav: any) => fav.productId._id === product._id && fav.color === selectedColor && fav.size === selectedSize);
-    //         isFavourite = exists
-    //     }
-    // }, [favourites, product?._id]);
-
-
-    
-    
-      
+  
 
     const availableStock = useMemo(() => product?.sizeVariants.find(sv => sv.size === selectedSize)
         ?.colors.find(c => c.color === selectedColor)?.availableStock || 0, [product, selectedSize, selectedColor])
 
-    const selectedColorImages = useMemo(() => product?.colorVariants.find(cv => cv.color === selectedColor)?.images || [], [product, selectedColor])
+    const selectedColorImages = useMemo(() => product?.colorVariants.find(cv => cv.color === selectedColor)?.images || [], [product,selectedSize,selectedColor])
 
     let isFavourite = useMemo(() => {
         if(favourites && favourites.items && product){
@@ -254,6 +188,13 @@ const SingleProduct = () => {
         navigate('/payment')
     }
 
+      // selected image
+      useEffect(() => {
+        if (selectedColorImages.length > 0) {
+          setSelectedImage(selectedColorImages[0]);
+        }
+      }, [selectedColorImages]);
+
     // console.log(reviewError)
     // console.log(reviewIsLoading)
 
@@ -287,7 +228,10 @@ const SingleProduct = () => {
                             )} */}
 
                             {selectedColorImages.map((image: string, i: number) => (
-                                <div key={i} className={`${style.singleSideImg}`} tabIndex={0}>
+                                <div key={i} className={`${style.singleSideImg}`} 
+                                onClick={() => setSelectedImage(image)}
+                                style={{ border: selectedImage === image ? '2px solid black' : 'none' }}
+                                tabIndex={0}>
                                     <img src={image} alt={`Side image ${i}`} />
                                 </div>
                             ))}
@@ -295,7 +239,7 @@ const SingleProduct = () => {
 
                         <div className={`${style.mainImgContainer}`}>
                             {/* <img src={product.images[0]} alt="Selected Image" /> */}
-                            {selectedColorImages.length > 0 ? (
+                            { selectedImage ? <img src={selectedImage} alt="Selected" /> : selectedColorImages.length > 0 ? (
                                 <img src={selectedColorImages[0]} alt="Selected" />
                             ) : (
                                 <div>No image available</div>
