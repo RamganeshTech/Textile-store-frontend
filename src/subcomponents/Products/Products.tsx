@@ -1,21 +1,19 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import style from './Products.module.css'
 
 import { Button, CircularProgress, IconButton } from '@mui/material'
 
-import img1 from '../../assets/subcarousel/S_BANNER_2.webp'
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 import { ProductType } from '../../Types/types';
 import { Link, useLocation } from 'react-router-dom';
 import StarRating from '../../components/StarRating/StarRating';
 import { useAddToCart, useFetchCart, useRemoveFromCart } from '../../apiList/cartApi';
 import { useAddToFavourite, useFetchFavourite, useRemoveFavourite } from '../../apiList/favouriteApi';
+import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
+import { AxiosError } from 'axios';
 
 type singleProductprop = {
     product: ProductType
@@ -34,32 +32,34 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
     const { data: cartItems } = useFetchCart();
     const { mutate: removeCartmutate, isPending: removeCartPending } = useRemoveFromCart();
 
-    let { mutate: addCartmutate, isPending: addCartPending } = useAddToCart()
+    let { mutate: addCartmutate, isPending: addCartPending, isError: addCartIsError, error: addCartError , reset:addcartResetError} = useAddToCart()
 
-    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, } = useRemoveFavourite()
+    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, reset:removeFavResetError } = useRemoveFavourite()
 
-    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, } = useAddToFavourite()
+    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, reset:addFavResetError  } = useAddToFavourite()
 
     const { data: favourites, isLoading, isError } = useFetchFavourite();
 
     const handleFavourite = () => {
 
-        const firstAvailable = product.sizeVariants.find(sizeVariant =>
-            sizeVariant.colors.some(color => color.availableStock > 0)
-        );
+        // const firstAvailable = product.sizeVariants.map(sizeVariant =>
+        //     sizeVariant.colors.find(color => color.availableStock > 0)
+        // );
 
-        const selectedSize = firstAvailable?.size || '';
-        const selectedColor = firstAvailable?.colors.find(c => c.availableStock > 0)?.color || '';
+        // product.colorVariants.find(colors=> colors.color === firstAvailable?.colors.)
 
-        if (!selectedSize || !selectedColor) {
-            console.warn("No available size/color found for this product.");
-            return;
-        }
+        // const selectedSize = firstAvailable?.size || '';
+        // const selectedColor = firstAvailable?.colors.find(c => c.availableStock > 0)?.color || '';
+
+        // if (!selectedSize || !selectedColor) {
+        //     console.warn("No available size/color found for this product.");
+        //     return;
+        // }
 
         if (isFavourite) {
-            removeFavourite({ productId: product._id, size: selectedSize, color: selectedColor });
+            removeFavourite({ productId: product._id, });
         } else {
-            addFavourite({ productId: product._id, size: selectedSize, color: selectedColor });
+            addFavourite({ productId: product._id,});
         }
         // setIsFavourite(!isFavourite);
     };
@@ -88,38 +88,44 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
     }, [favourites, product._id]);
 
     const handleCart = () => {
-        if (isInCart) {
+        console.log("addCartPending", addCartPending)
+        if (isInCart && !removeCartPending) {
             removeCartmutate({productId: product._id, size: firstSelectedSize, color:firstSelectedColor });
-        } else {
+        } else if(!addCartPending) {
             addCartmutate({ productId: product._id, quantity: 1, price: product.price, size: firstSelectedSize, color:firstSelectedColor });
         }
         // setIsInCart(!isInCart);
     };
-    
-    // useEffect(() => {
-    //     if (cartItems) {
-    //         const exists = cartItems.some((item: any) => {
-    //             return item.productId._id === product._id
-    //         });
-    //         setIsInCart(exists);
-    //     }
-    // }, [cartItems, product._id]);
 
-
-    // useEffect(() => {
-    //     if (favourites && favourites.items) {
-    //         const exists = favourites.items.some((fav: any) => {
-    //             // console.log("favourites product Id",fav.productId)
-    //             // console.log("product._id",product._id)
-    //             return fav.productId._id === product._id
-    //         });
-    //         setIsFavourite(exists);
-    //     }
-    // }, [favourites, product._id]);
-
+    // console.log(addCartError && (AxiosError(addCartError))?.status)
+    console.log(addCartError)
     return (
         <div className={`${style.mainProduct}`}>
-            {/* <Link to={`/product/${product.id}`}> */}
+
+             {addCartIsError &&   [401, 403].includes((addCartError as any)?.response?.status)  && 
+             <ErrorComponent message={(addCartError as any)?.response?.data?.message || addCartError?.message as string} 
+             showLoginButton={true} onClose={()=> { 
+              addcartResetError()
+             }
+            }/>}
+
+           {addFavIsError && [401, 403].includes((addFavError as any)?.response?.status) && <ErrorComponent 
+           message={(addFavError as any)?.response?.data?.message || addFavError?.message as string}
+           showLoginButton={true}
+           onClose={()=> { 
+              addFavResetError()
+             }
+            } />}
+
+
+            {removeFavIsError && [401, 403].includes((removeFavError as any)?.response?.status) && <ErrorComponent 
+            message={(removeFavError as any)?.response?.data?.message || removeFavError?.message as string}
+            showLoginButton={true} 
+            onClose={()=> { 
+                removeFavResetError()
+               }
+              } 
+            />}
 
             <section className={`${style.product}`}>
                 <div className={`${style.imgcontainer}`}>
@@ -151,20 +157,10 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                         <div className={`${style.rating}`}>
                             <span>Rating: </span>
                             <span>
-                                {/* {renderStars(rating)} */}
                                 <StarRating rating={rating} />
                             </span>
                         </div>
                     </Link>
-                    {/* <Button variant='contained' className={`${style.addtocart}`}
-                        onClick={() => addCartmutate({ productId: product._id, quantity: 1, price: product.price })}
-                        sx={{
-                            // height: "25%",
-                            // width: "90%",
-                            display: "flex",
-                            margin: "5px auto",
-                        }}
-                    >Add to cart</Button> */}
 
                     <Button
                         variant="contained"
@@ -187,7 +183,6 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                     </Button>
                 </div>
             </section>
-            {/* </Link> */}
         </div>
 
     )

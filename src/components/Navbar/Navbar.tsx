@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [ismainMenuVisble]);
 
-console.log("isAuthenticated", isAuthenticated)
+// console.log("isAuthenticated", isAuthenticated)
 
 
   return (

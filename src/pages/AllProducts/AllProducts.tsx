@@ -47,7 +47,7 @@ const AllProducts = () => {
   const [filterOptions, setFilterOptions] = useState<FilterOptionsType>({
     category: [],
     Min: 0,
-    Max: 100000,
+    Max: Infinity,
     sizes: [],
     colors: [],
     availability: [],
@@ -60,6 +60,8 @@ const AllProducts = () => {
   let { data: products, isLoading, isError, error } = useFetchProducts()
 
   let { mutate: searchMutate, data: searchData, isError: searchIsError, error: searchError, isPending: searchPending } = useSearchProducts()
+  // searchData = []
+  // products = []
   // let { mutate: applyFiltersMutate, data: filterData, isError: filterIsError, error: filterError, isPending: filterPending } = useFilterProuducts()
 
 
@@ -71,7 +73,7 @@ const AllProducts = () => {
   }
 
 
-  console.log("searchTerm", searchTerm)
+  // console.log("searchTerm", searchTerm)
 
   function getErrorMessage(error: unknown): string {
     if (axios.isAxiosError(error)) {
@@ -92,29 +94,43 @@ const AllProducts = () => {
 
 
   const maxPrice = useMemo(() => {
+  //   console.log(products)
+  //   if(products){
+  //     let maikjsa = products.length>0 && products?.map((p:ProductType)=>{
+  //        console.log(p)
+  //        return p.price
+  //      })
+  //  console.log(maikjsa && maikjsa)
+  //      console.log(Math.max(...maikjsa, 100000))
+  //   }
     return products?.length > 0
-      ? Math.max(...products.map((p: ProductType) => p.price))
+      ? Math.max(...products?.map((p: ProductType) => p.price))
       : 10000;  // Default max if no products are there
   }, [products]);
 
   const minPrice = useMemo(() => 0, [])
 
 
-  console.log("searchData", searchData)
+  // console.log("searchData", searchData)
 
   useEffect(() => {
-    if (searchData?.products?.length > 0) {
-      const prices = searchData.products.map((p: any) => p.price);
+    console.log("getting isnsee of it")
+    console.log(searchData)
+    let dataToUse = searchData || products
+    if (dataToUse?.length > 0) {
+      const prices = dataToUse?.map((p: any) => p.price);
       const minPrice = Math.min(...prices);
       const maxPrice = Math.max(...prices);
+
+      // console.log(maxPrice)
 
       setFilterOptions(prev => ({
         ...prev,
         Min: prev.Min === 0 ? minPrice : prev.Min, // Update only if default
-        Max: prev.Max === 10000 ? maxPrice : prev.Max, // Update only if default
+        Max: prev.Max === Infinity ? maxPrice : prev.Max, // Update only if default
       }));
     }
-  }, [products, searchMutate]);
+  }, [products, searchMutate, searchData]);
 
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -203,8 +219,8 @@ const AllProducts = () => {
 
 
               {categories && categories.map(item =>
-                <section>
-                  <Checkbox id={item} color='primary' onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                <section key={item}>
+                  <Checkbox id={item} color='primary' checked={filterOptions.category.includes(item)} onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     setFilterOptions((prev) => ({
                       ...prev,
                       category: e.target.checked
@@ -213,7 +229,7 @@ const AllProducts = () => {
                     }))
                   } />
                   <div>
-                    <label htmlFor={item}>{item}</label>
+                    <label htmlFor={item}  className='cursor-pointer'>{item}</label>
                   </div>
 
                 </section>
@@ -225,8 +241,8 @@ const AllProducts = () => {
               <p>Product Avaibality</p>
 
               {availabilities && availabilities.map(item =>
-                <section>
-                  <Checkbox id={item} color='primary' onChange={(e) => setFilterOptions(p => {
+                <section key={item}>
+                  <Checkbox id={item} color='primary' checked={filterOptions.availability.includes(item)} onChange={(e) => setFilterOptions(p => {
                     return {
                       ...p,
                       availability: e.target.checked ?
@@ -236,7 +252,7 @@ const AllProducts = () => {
                     }
                   })} />
                   <div>
-                    <label htmlFor={item}>{item}</label>
+                    <label htmlFor={item}  className='cursor-pointer'>{item}</label>
                   </div>
 
                 </section>
@@ -248,22 +264,25 @@ const AllProducts = () => {
             <div className={` ${style.filterscategory} ${style.productcategory}`}>
               <p>Product Size</p>
 
-              {sizes && sizes.map(item =>
-                <section>
-                  <Checkbox id={item} color='primary' onChange={(e) => setFilterOptions(p => {
-                    return {
-                      ...p,
-                      sizes: e.target.checked ?
-                        ([...p.sizes, item])
-                        : p.sizes.filter(size => size !== item)
-                    }
+              {sizes && sizes.map(item =>{
+  // console.log("size item", item)
+  return <section key={item}>
+    <Checkbox itemID={item} color='primary' checked={filterOptions.sizes.includes(item)} onChange={(e) => setFilterOptions(p => {
+      return {
+        ...p,
+        sizes: e.target.checked ?
+          ([...p.sizes, item])
+          : p.sizes.filter(size => size !== item)
+      }
 
-                  }
-                  )} />
-                  <div>
-                    <label htmlFor={item}>{item}</label>
-                  </div>
-                </section>
+    }
+    )} />
+    <div>
+      <label htmlFor={item} className='cursor-pointer'>{item}</label>
+    </div>
+  </section>
+              }
+             
               )}
             </div>
 
@@ -284,7 +303,7 @@ const AllProducts = () => {
                       }
                     })} />
                   <div>
-                    <label htmlFor={item}>{item}</label>
+                    <label htmlFor={item}  className='cursor-pointer'>{item}</label>
                   </div>
                 </section>
               )}
@@ -300,7 +319,7 @@ const AllProducts = () => {
                     range
                     min={minPrice}
                     max={maxPrice}
-                    step={100}
+                    step={500}
                     value={[filterOptions.Min, filterOptions.Max]}
                     onChange={handleRangeChange}
                     trackStyle={[{ backgroundColor: "teal", height: 5 }]}
@@ -346,7 +365,7 @@ const AllProducts = () => {
                   <TextField
                     placeholder="Max"
                     className="custom-input"
-                    value={filterOptions.Max}
+                    value={ filterOptions.Max === Infinity ? "10000+" : filterOptions.Max}
                     onChange={(e) => setFilterOptions(p => {
                       return {
                         ...p,

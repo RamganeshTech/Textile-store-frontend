@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import styles from "./AddToCart.module.css"; // Import CSS module
-import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
-import { Button, IconButton } from "@mui/material";
+// import { Add as AddIcon, Remove as RemoveIcon } from "@mui/icons-material";
+import { Button } from "@mui/material";
 
 import { CartItem } from "../../Types/types";
 import AddToCartSingle from "../../subcomponents/AddtoCartSingle/AddToCartSingle";
@@ -9,14 +9,14 @@ import { AppDispatch, RootState } from "../../store/store";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useFetchCart } from "../../apiList/cartApi";
-import { setCarts } from "../../slices/cart";
 import Loading from "../../components/LoadingState/Loading";
 import { setItems } from "../../slices/buyItems";
+import { Link } from "react-router-dom";
 
 const AddToCart: React.FC = () => {
   // const [cart, setCart] = useState<CartItem[]>(initialCart);
 
-  let reduxCart = useSelector((state: RootState) => state.cart.carts)
+  // let reduxCart = useSelector((state: RootState) => state.cart.carts)
   let { data: cart, isLoading, isError, error } = useFetchCart()
 
   let dispatch = useDispatch<AppDispatch>()
@@ -64,7 +64,9 @@ const AddToCart: React.FC = () => {
         {!isLoading ? (
           cart && cart.length > 0 ? (
             cart.map((item: CartItem) => (
-              <AddToCartSingle key={item._id} item={item} />
+          <Link to={`/product/${item.productId._id}`}>
+            <AddToCartSingle key={item._id} item={item} />
+</Link>
             ))
           ) : (
             <section className="h-[50vh] w-[100vw] flex items-center justify-center">

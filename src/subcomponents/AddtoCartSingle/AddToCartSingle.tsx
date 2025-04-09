@@ -7,12 +7,7 @@ import { CartItem } from '../../Types/types';
 import AddIcon from '@mui/icons-material/Add';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
-import { setCarts, updateQuantity } from '../../slices/cart';
-import { addToCart, removeCartItems, useAddToCart, useRemoveFromCart, useRemoveQuantityFromCart } from '../../apiList/cartApi';
-import { useMutation } from '@tanstack/react-query';
-import { isPending } from '@reduxjs/toolkit';
-
-
+import { useAddToCart, useRemoveFromCart, useRemoveQuantityFromCart } from '../../apiList/cartApi';
 
 
 type AddToCartSingleProps = {

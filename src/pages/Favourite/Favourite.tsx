@@ -6,6 +6,8 @@ import FavouriteSingle from "../../subcomponents/FavouriteSingle/FavouriteSingle
 
 import { useFetchFavourite } from "../../apiList/favouriteApi";
 import Loading from "../../components/LoadingState/Loading";
+import { Link } from "react-router-dom";
+import { useFetchProducts } from "../../apiList/productApi";
 
 
 const FavouriteItems: React.FC = () => {
@@ -15,7 +17,8 @@ const FavouriteItems: React.FC = () => {
   // let favouritesStore = useSelector((state:RootState)=> state.favourite.favourites)
 
   let {data:favourites, isLoading, isError, error} = useFetchFavourite()
-
+      const { data: products, isLoading:productLoading, isError:isProductError, error:productError } = useFetchProducts();
+  
   // console.log(favourites)
 
 
@@ -30,7 +33,8 @@ const FavouriteItems: React.FC = () => {
       <h1 className={styles.heading}>Favourite Items</h1>
 
       {!isLoading && isError &&  <div className="h-[45vh] sm:h-[80vh] xs:w-[100vw] flex justify-center items-center">
-          <p className="text-xl sm:text-2xl lg:text-4xl">{error ? (error as unknown as Error).message : "Something went wrong"}</p>
+          {/* <p className="text-xl sm:text-2xl lg:text-4xl">{error ? (error as unknown as Error).message : "Something went wrong"}</p> */}
+          <p className="text-xl sm:text-2xl lg:text-4xl">{error ? ((error as any)?.response?.data?.message || (error as any)?.message || "something went wrong") : "Something went wrong"}</p>
           </div>}
 
 
@@ -49,11 +53,14 @@ const FavouriteItems: React.FC = () => {
 
       ) : (
         favourites?.items && favourites?.items?.length > 0 && favourites?.items?.map((item:FavouriteItem) => (
-          <FavouriteSingle 
-          key={item._id}
-          item={item} 
-          // setFavourites={setFavourites}
-          />
+          // <Link to={`/product/${item.productId._id}`}>
+            <FavouriteSingle 
+            key={item._id}
+            item={item} 
+            products={products}
+            // setFavourites={setFavourites}
+            />
+          // </Link>
         ))
       )}
     </main>

@@ -2,6 +2,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import Api from "../apiClient/apiClient"; // Axios instance
 import { queryClient } from './../QueryClient/queryClient';
 import { FilterOptionsType } from "../pages/AllProducts/AllProducts";
+import { ProductType } from "../Types/types";
 
 // Fetch function
 const fetchProducts = async () => {
@@ -10,6 +11,17 @@ const fetchProducts = async () => {
     return data.data;
 };
 
+const createProduct = async (productData:ProductType) => {
+  try{
+    const { data } = await Api.post("/products/createproduct");
+    // console.log(data)
+    return data.data;
+  }
+  catch(error){
+    console.log(error);
+    throw error;
+  }
+};
 
 const searchProducts = async ({search, filter}:{search:string, filter:any}) => {
     // try {
@@ -43,6 +55,15 @@ export const useFetchProducts = () => {
         // refetchOnReconnect: false, // Prevent refetch on internet reconnect
     });
 };
+
+export const useCreateProduct = ()=>{
+    return useMutation({
+        mutationFn:createProduct,
+        onSuccess:()=>{
+            queryClient.invalidateQueries({queryKey:["products"]})
+        }
+    })
+}
 
 export const useSearchProducts = () => {
     return useMutation({

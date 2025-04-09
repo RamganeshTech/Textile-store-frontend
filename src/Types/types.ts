@@ -43,7 +43,7 @@ export type ReviewType = {
   export interface FavouriteItem {
     _id: string;
     productId:ProductType,
-    size:string,
-    color:string,
+    // size:string,
+    // color:string,
     image:string
   }

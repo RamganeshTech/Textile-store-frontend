@@ -141,6 +141,14 @@ const Payment = () => {
 
     return (
         <main className={`${style.maincontainer}`}>
+
+{/* {isRemoveQuanError && [401, 403].includes((removeQuantityError as any)?.response?.status) &&
+                    <ErrorComponent message={(removeQuantityError as any)?.response?.data?.message || removeQuantityError?.message as string}
+                        showLoginButton={true} onClose={() => {
+                            removeFavQuanReset()
+                        }
+                        } />} */}
+
             <div className={`${style.innerDiv}`}>
                 <section className={`${style.inputfields}`}>
                     <form action="" onSubmit={handleSubmit} className={`${style.inputform}`}>

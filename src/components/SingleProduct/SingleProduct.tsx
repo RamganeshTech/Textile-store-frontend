@@ -26,6 +26,7 @@ import { useFetchReview } from '../../apiList/reviewApi';
 import { setItems } from '../../slices/buyItems';
 import { useDispatch } from 'react-redux';
 import Loading from '../LoadingState/Loading';
+import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
 
 type reviewprouducts = {
     reviewername: (string | null),
@@ -55,8 +56,8 @@ const SingleProduct = () => {
 
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-   
-      
+
+
 
     const [selectedColor, setSelectedColor] = useState<string>("");
     const [selectedSize, setSelectedSize] = useState<string>("");
@@ -69,13 +70,13 @@ const SingleProduct = () => {
     const [activeReview, setactiveReview] = useState<boolean>(true);
 
 
-    let { mutate: addCartmutate, isPending: addCartPending } = useAddToCart()
+    let { mutate: addCartmutate, isPending: addCartPending, isError: addCartIsError, error: addCartError, reset: addcartResetError } = useAddToCart()
     const { mutate: removeFromCartMutation, isPending: removeCartPending } = useRemoveFromCart();
-    const { mutate: removeSingleQuantity, isPending: removeQuantiytyPending } = useRemoveQuantityFromCart()
+    const { mutate: removeSingleQuantity, isPending: removeQuantiytyPending, error: removeQuantityError, isError: isRemoveQuanError, reset: removeFavQuanReset } = useRemoveQuantityFromCart()
 
     const { data: favourites, isLoading: favLoading, isError: favIsError } = useFetchFavourite();
-    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, } = useAddToFavourite()
-    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, } = useRemoveFavourite()
+    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, reset: addFavResetError } = useAddToFavourite()
+    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, reset: removeFavResetError } = useRemoveFavourite()
 
     useEffect(() => {
         setCustomLoading(true)
@@ -93,7 +94,7 @@ const SingleProduct = () => {
             } else {
                 setProduct(null);
             }
-        setCustomLoading(false)
+            setCustomLoading(false)
 
             console.log("singleProduct", product)
         }
@@ -122,22 +123,20 @@ const SingleProduct = () => {
         }
     }, [cartItems, product, selectedSize, selectedColor]);
 
-  
+
 
     const availableStock = useMemo(() => product?.sizeVariants.find(sv => sv.size === selectedSize)
         ?.colors.find(c => c.color === selectedColor)?.availableStock || 0, [product, selectedSize, selectedColor])
 
-    const selectedColorImages = useMemo(() => product?.colorVariants.find(cv => cv.color === selectedColor)?.images || [], [product,selectedSize,selectedColor])
+    const selectedColorImages = useMemo(() => product?.colorVariants.find(cv => cv.color === selectedColor)?.images || [], [product, selectedSize, selectedColor])
 
     let isFavourite = useMemo(() => {
-        if(favourites && favourites.items && product){
+        if (favourites && favourites.items && product) {
             return favourites?.items.some(
-              (fav:any) =>{
-                // console.log("favourites", fav.productId)
-                return fav?.productId?._id === product._id &&
-                fav?.size === selectedSize &&
-                fav?.color === selectedColor
-              }
+                (fav: any) => {
+                    // console.log("favourites", fav.productId)
+                    return fav?.productId?._id === product._id
+                }
 
             );
         }
@@ -157,10 +156,10 @@ const SingleProduct = () => {
         if (isFavourite) {
 
             if (product)
-                removeFavourite({ productId: product._id, size: selectedSize, color: selectedColor });
+                removeFavourite({ productId: product._id });
         } else {
             if (product)
-                addFavourite({ productId: product._id, size: selectedSize, color: selectedColor });
+                addFavourite({ productId: product._id });
             // setIsFavourite(!isFavourite);
         }
     };
@@ -188,17 +187,17 @@ const SingleProduct = () => {
         navigate('/payment')
     }
 
-      // selected image
-      useEffect(() => {
+    // selected image
+    useEffect(() => {
         if (selectedColorImages.length > 0) {
-          setSelectedImage(selectedColorImages[0]);
+            setSelectedImage(selectedColorImages[0]);
         }
-      }, [selectedColorImages]);
+    }, [selectedColorImages]);
 
     // console.log(reviewError)
     // console.log(reviewIsLoading)
 
-     if (singleProductLoading || customLoading) {
+    if (singleProductLoading || customLoading) {
         return <div className='mt-[70px] w-[100vw] h-[100vh]  flex items-center justify-center'>
             <Loading />
         </div>
@@ -209,6 +208,41 @@ const SingleProduct = () => {
     return (
         <>
             <main className={`${style.maincontainer}`}>
+
+                {addCartIsError && [401, 403].includes((addCartError as any)?.response?.status) &&
+                    <ErrorComponent message={(addCartError as any)?.response?.data?.message || addCartError?.message as string}
+                        showLoginButton={true} onClose={() => {
+                            addcartResetError()
+                        }
+                        } />}
+
+                {isRemoveQuanError && [401, 403].includes((removeQuantityError as any)?.response?.status) &&
+                    <ErrorComponent message={(removeQuantityError as any)?.response?.data?.message || removeQuantityError?.message as string}
+                        showLoginButton={true} onClose={() => {
+                            removeFavQuanReset()
+                        }
+                        } />}
+
+                {addFavIsError && [401, 403].includes((addFavError as any)?.response?.status) &&
+                    <ErrorComponent
+                        message={(addFavError as any)?.response?.data?.message || addFavError?.message as string}
+                        showLoginButton={true}
+                        onClose={() => {
+                            addFavResetError()
+                        }
+                        } />}
+
+
+                {removeFavIsError && [401, 403].includes((removeFavError as any)?.response?.status) &&
+                    <ErrorComponent
+                        message={(removeFavError as any)?.response?.data?.message || removeFavError?.message as string}
+                        showLoginButton={true}
+                        onClose={() => {
+                            removeFavResetError()
+                        }
+                        }
+                    />}
+
                 <div className={`${style.navigationcontiner}`}>
                     <Link to={'/'}>
                         Home
@@ -228,10 +262,10 @@ const SingleProduct = () => {
                             )} */}
 
                             {selectedColorImages.map((image: string, i: number) => (
-                                <div key={i} className={`${style.singleSideImg}`} 
-                                onClick={() => setSelectedImage(image)}
-                                style={{ border: selectedImage === image ? '2px solid black' : 'none' }}
-                                tabIndex={0}>
+                                <div key={i} className={`${style.singleSideImg}`}
+                                    onClick={() => setSelectedImage(image)}
+                                    style={{ border: selectedImage === image ? '2px solid black' : 'none' }}
+                                    tabIndex={0}>
                                     <img src={image} alt={`Side image ${i}`} />
                                 </div>
                             ))}
@@ -239,7 +273,7 @@ const SingleProduct = () => {
 
                         <div className={`${style.mainImgContainer}`}>
                             {/* <img src={product.images[0]} alt="Selected Image" /> */}
-                            { selectedImage ? <img src={selectedImage} alt="Selected" /> : selectedColorImages.length > 0 ? (
+                            {selectedImage ? <img src={selectedImage} alt="Selected" /> : selectedColorImages.length > 0 ? (
                                 <img src={selectedColorImages[0]} alt="Selected" />
                             ) : (
                                 <div>No image available</div>
@@ -316,8 +350,9 @@ const SingleProduct = () => {
                                             style={{
                                                 backgroundColor: colorObj.color,
                                                 border: "1px solid #0a0a0a",
-                                                outline: selectedColor === colorObj.color ? "3px solid white" : "none",
+                                                // outline: selectedColor === colorObj.color ? "3px solid #fafafa18" : "none",
                                                 boxShadow: selectedColor === colorObj.color ? "0 0 5px rgba(0, 0, 0, 1)" : "none",
+                                                padding: selectedColor === colorObj.color ? "5px !important" : "0",
                                             }}
                                             onClick={() => handleColorSelect(colorObj.color)}
                                         ></button>

@@ -63,7 +63,7 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
       <div className={style.sidebarinnerDiv}>
         <FilterCategory title="Product Category">
           {categories && categories.map(item =>
-            <section>
+            <section key={item}>
               <Checkbox id={item} color='primary' onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setFilterOptions((prev) => ({
                   ...prev,
@@ -82,7 +82,7 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
 
         <FilterCategory title="Product Availability">
           {availabilities && availabilities.map(item =>
-            <section>
+            <section key={item}>
               <Checkbox id={item} color='primary' onChange={(e) => setFilterOptions(p => {
                 return {
                   ...p,
@@ -102,7 +102,7 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
 
         <FilterCategory title="Product Size">
           {sizes && sizes.map(item =>
-            <section>
+            <section key={item}>
               <Checkbox id={item} color='primary' onChange={(e) => setFilterOptions(p => {
                 return {
                   ...p,

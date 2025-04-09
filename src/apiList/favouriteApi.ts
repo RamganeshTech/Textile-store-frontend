@@ -5,8 +5,9 @@ import { queryClient } from "../QueryClient/queryClient";
 
 type FavouriteParamType = {
     productId:string,
-    size:string,
-    color:string
+    // image:string,
+    // size:string,
+    // color:string
 }
 
 const fetchFavourites = async ()=>{
@@ -26,7 +27,7 @@ const addToFavourite = async (favouriteItem:FavouriteParamType)=>{
 }
 
 
-const removeFromFavourite = async (favouritedata:FavouriteParamType)=>{
+const removeFromFavourite = async (favouritedata:{productId:String})=>{
     let {data} = await Api.delete('/favourite/deletefavouriteitem', {data: favouritedata})
    console.log(data)
 

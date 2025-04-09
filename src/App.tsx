@@ -20,6 +20,7 @@ import UpdateUserPhoneNo from './components/UserDataEditComponents/UpdateUserPho
 import Payment from './pages/Payment/Payment'
 import useIsAuthenticated from './hooks/useIsAuthenticated'
 import EditAddress from './components/EditAddress/EditAddress'
+import AddProduct from './pages/AddProduct/AddProduct'
 
 function App() {
   useIsAuthenticated()
@@ -39,6 +40,7 @@ function App() {
           <Route path='/favourite' element={<Favourite />} />
           <Route path='/allproducts' element={<AllProducts />} />
           <Route path='/payment' element={<Payment />} />
+          <Route path='/addproduct' element={<AddProduct />} />
 
           <Route path='/userprofile' element={<UserProfile />}>
 
