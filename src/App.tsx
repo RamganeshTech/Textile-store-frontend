@@ -21,29 +21,33 @@ import Payment from './pages/Payment/Payment'
 import useIsAuthenticated from './hooks/useIsAuthenticated'
 import EditAddress from './components/EditAddress/EditAddress'
 import AddProduct from './pages/AddProduct/AddProduct'
+import ProtectedRoutes from './components/ProtectedRoutes/ProtectedRoutes'
 
 function App() {
   useIsAuthenticated()
   return (
     <>
       <Navbar />
-     
 
 
-        <Routes>
-          <Route index element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/forgotpassword' element={<ForgotPassword />} />
-          <Route path='/reset-password' element={<ForgotPassword />} />
-          <Route path='/product/:id' element={<SingleProduct />} />
-          <Route path='/cart' element={<AddToCart />} />
-          <Route path='/favourite' element={<Favourite />} />
-          <Route path='/allproducts' element={<AllProducts />} />
-          <Route path='/payment' element={<Payment />} />
-          <Route path='/addproduct' element={<AddProduct />} />
 
-          <Route path='/userprofile' element={<UserProfile />}>
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/forgotpassword' element={<ForgotPassword />} />
+        <Route path='/reset-password' element={<ForgotPassword />} />
+        <Route path='/product/:id' element={<SingleProduct />} />
+        <Route path='/cart' element={<AddToCart />} />
+        <Route path='/favourite' element={<Favourite />} />
+        <Route path='/allproducts' element={<AllProducts />} />
+        <Route path='/payment' element={<Payment />} />
+        <Route path='/addproduct' element={<AddProduct />} />
 
+        <Route path='/userprofile' element={
+          <ProtectedRoutes>
+            <UserProfile />
+          </ProtectedRoutes>
+        }>
           <Route path='verifypassword' element={<VerifyPassword />} />
           <Route path='editaddress' element={<EditAddress />} />
           <Route path='changepassword' element={<ChangePassword />} />
@@ -52,12 +56,12 @@ function App() {
           <Route path='editemail' element={<UpdateUserEmail />} />
           <Route path='editphonenumber' element={<UpdateUserPhoneNo />} />
           <Route path='editusername' element={<UpdateUserName />} />
-         
-          </Route>
-          
 
-        </Routes>
-        <Footer />
+        </Route>
+
+
+      </Routes>
+      <Footer />
     </>
   )
 }

@@ -8,7 +8,7 @@ export const loginUser = async (email: string, password: string, ) => {
       const response = await Api.post(`auth/userlogin`, { email, password });
       return response.data;
     } catch (error: any) {
-      throw error.response?.data || "Something went wrong";
+      throw error;
     }
   };
 
@@ -19,7 +19,7 @@ export const loginUser = async (email: string, password: string, ) => {
       const response = await Api.post(`auth/registeruser`, userData);
       return response.data;
     } catch (error: any) {
-      throw error.response?.data || "Something went wrong";
+      throw error;
     }
   };
 

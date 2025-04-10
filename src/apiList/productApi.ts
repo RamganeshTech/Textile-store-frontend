@@ -13,7 +13,7 @@ const fetchProducts = async () => {
 
 const createProduct = async (productData:ProductType) => {
   try{
-    const { data } = await Api.post("/products/createproduct");
+    const { data } = await Api.post("/products/createproduct", productData);
     // console.log(data)
     return data.data;
   }
@@ -34,6 +34,21 @@ const searchProducts = async ({search, filter}:{search:string, filter:any}) => {
     //     console.log(error)
     // }
 }
+
+export const uploadImagesToCloudinary = async (files: File[]): Promise<{ url: string; public_id: string }[]> => {
+    const formData = new FormData();
+    files.forEach(file => formData.append("file", file));  // append multiple files
+  
+    console.log("formData in the upload images cloudinary", formData)
+    const response = await Api.post("/products/uploadimage", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  
+    return response.data.images; // Assuming backend sends { images: [...] }
+  };
+  
 
 const applyFilters = async (filterData: FilterOptionsType) => {
     try {
@@ -68,11 +83,6 @@ export const useCreateProduct = ()=>{
 export const useSearchProducts = () => {
     return useMutation({
         mutationFn: searchProducts,
-        // onSuccess: () => {
-        //     queryClient.invalidateQueries({
-        //         queryKey: ['products']
-        //     }); // ✅ Ensure UI refresh
-        // },
     })
 }
 
@@ -81,3 +91,9 @@ export const useFilterProuducts = ()=>{
         mutationFn: applyFilters
     })
 }
+
+export const useUploadImage = () => {
+    return useMutation({
+      mutationFn: uploadImagesToCloudinary,
+    });
+  };

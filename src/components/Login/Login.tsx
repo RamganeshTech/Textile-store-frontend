@@ -59,8 +59,7 @@ const Login: React.FC = () => {
       setError("")
 
     } catch (err: any) {
-      const msg =
-        err?.message || "An unexpected error occurred during login.";
+      const msg = err?.response?.data?.message || err?.message || "Something went wrong please try again";
       console.error("Login error:", err);
       // dispatch(setUser({ userId: null, userName:null, email: null, isAuthenticated:false }));
       setError(msg);
@@ -189,9 +188,11 @@ const Login: React.FC = () => {
       setError(null);
       navigate('/')
     } catch (err: any) {
-      const msg =
-        err?.message ||
-        "An unexpected error occurred during registration.";
+      // const msg =
+      //   err?.message ||
+      //   "An unexpected error occurred during registration.";
+      const msg = err?.response?.data?.message || err?.message || "Something went wrong please try again";
+
       console.error("Registration error:", msg);
       dispatch(setUser({ userId: null, userName: null, email: null, isAuthenticated: false, address: null, phoneNumber: null }));
       setError(msg);

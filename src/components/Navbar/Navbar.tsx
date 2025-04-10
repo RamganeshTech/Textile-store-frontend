@@ -105,6 +105,9 @@ const Navbar: React.FC = () => {
           </div>
           <div className="flex gap-4">
             {/* <SearchIcon /> */}
+            <Link to={'/addproduct'}>
+              <ShoppingCartOutlinedIcon className={`${style.hideMobile}`} />
+            </Link>
             <Link to={'/cart'}>
               <ShoppingCartOutlinedIcon className={`${style.hideMobile}`} />
             </Link>
