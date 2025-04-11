@@ -6,6 +6,7 @@ import productReducer from '../slices/products'
 import cartReducer from '../slices/cart'
 import favouriteReducer from '../slices/favourite'
 import userReducer from '../slices/user'
+import adminReducer from '../slices/admin'
 
 const store = configureStore({
     reducer:{
@@ -14,6 +15,7 @@ const store = configureStore({
         cart: cartReducer,
         favourite:favouriteReducer,
         user:userReducer,
+        admin: adminReducer,
     }
 })
 

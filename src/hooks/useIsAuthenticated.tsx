@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 import { isAuthenticatedUser } from '../apiList/userauthApi'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../slices/user'

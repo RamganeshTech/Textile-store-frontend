@@ -131,7 +131,7 @@ const AddProduct: React.FC = () => {
       description: "",
       category: "",
       sizeVariants: [
-        { size: "S", colors: [{ color: "", availableStock: 0, images: [] }] },
+        { size: "S", colors: [{ color: "blue", availableStock: 1, images: [] }] },
       ],
     },
   });
@@ -188,7 +188,7 @@ const AddProduct: React.FC = () => {
   return (
     <div className="w-[100vw] !p-[20px] !mt-[70px] bg-[#fafafa]">
 
-    {!isSuccess && <CreateProductSuccess message={"product Created Successfully"} />}
+    {isSuccess && <CreateProductSuccess message={"product Created Successfully"} />}
 
 {(createProdloading || imageUploadLoading) && <section className="fixed bg-[#0a0a0a18] z-[99] inset-0 flex items-center justify-center">
   <CircularProgress size={50} thickness={5} color="success"  />
@@ -260,7 +260,7 @@ const AddProduct: React.FC = () => {
               type="button"
               variant="contained"
               onClick={() =>
-                appendSize({ size: "s", colors: [{ color: "", availableStock: 0, images: [] }] })
+                appendSize({ size: "S", colors: [{ color: "blue", availableStock: 1, images: [] }] })
               }
               className={styles.addButton}
             >

@@ -22,9 +22,13 @@ import useIsAuthenticated from './hooks/useIsAuthenticated'
 import EditAddress from './components/EditAddress/EditAddress'
 import AddProduct from './pages/AddProduct/AddProduct'
 import ProtectedRoutes from './components/ProtectedRoutes/ProtectedRoutes'
+import AdminLogin from './pages/AdminLogin/AdminLogin'
+import useAdminAuthenticated from './hooks/useAdminAuthenticated'
+import ProtectedAdminRoutes from './components/ProtectedRoutes/ProtectedAdminRoutes'
 
 function App() {
   useIsAuthenticated()
+  useAdminAuthenticated()
   return (
     <>
       <Navbar />
@@ -41,8 +45,14 @@ function App() {
         <Route path='/favourite' element={<Favourite />} />
         <Route path='/allproducts' element={<AllProducts />} />
         <Route path='/payment' element={<Payment />} />
-        <Route path='/addproduct' element={<AddProduct />} />
 
+        <Route path='/adminlogin' element={<AdminLogin />} />
+        <Route path='/admin/addproduct' element={
+          <ProtectedAdminRoutes>
+              <AddProduct />
+          </ProtectedAdminRoutes>
+        } />
+       
         <Route path='/userprofile' element={
           <ProtectedRoutes>
             <UserProfile />
