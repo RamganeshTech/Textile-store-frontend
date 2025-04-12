@@ -2,15 +2,6 @@ import Api from "../apiClient/apiClient";
 import { useMutation } from "@tanstack/react-query";
 import { userAddress } from "../slices/user";
 
-
-`/profile/updateemail',
-/profile/updatephoneno', 
-/profile/updateusername',
-/profile/verifypassword',
-/profile/changepassword',
-`
-
-
 export const verifyPassword = async(password:string)=>{
     try {
         console.log("verifypassword api password",password)
@@ -107,8 +98,6 @@ export const useVerifyPassword = ()=>{
        
      })
  }
-
-
 
  export const useChangeAddress = ()=>{
   return useMutation({

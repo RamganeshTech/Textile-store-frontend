@@ -312,6 +312,11 @@
     width: 70%;
 }
 
+.reiviewDescription p{
+    font-size: clamp(12px, 1vw, 20px);
+    color: #313132c9;
+}
+
 .reiviewDescription textarea {
     width: 100%;
     height: 170px;

@@ -28,10 +28,15 @@ const fetchReview = async (productId:string)=>{
 }
 
 const createReview = async (reviewData:ReviewType)=>{
-    // console.log(reviewData, "reveiwData form create review")
-    let {data} = await Api.post('/review/addreview', reviewData)
-    console.log(data)
-    return data.data;
+   try{
+     // console.log(reviewData, "reveiwData form create review")
+     let {data} = await Api.post('/review/addreview', reviewData)
+     console.log(data)
+     return data.data;
+   }
+   catch(error){
+    throw error;
+   }
 }
 
 const editReview = async ({productId, id:reviewId, description, stars}:UpdateOrDeleteReviewType)=>{
@@ -53,6 +58,7 @@ const useFetchReview = (productId:string)=>{
     return useQuery({
         queryKey:['review'],
         queryFn:()=> fetchReview(productId),
+        staleTime: 1000 * 60 * 10,
     })
 }
 

@@ -6,6 +6,7 @@ import { useCreateReview, useDeleteReview, useEditReview } from '../../apiList/r
 import { ReviewType } from '../../Types/types';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
 
 type reviewprouducts = {
     reviewername: (string | null),
@@ -35,6 +36,8 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         // stars: null
     })
 
+    const [reviewCustomError, setReviewCustomError] = useState<string | null>(null);
+    const [reviewLimit, setReviewLimit] = useState<number>(500);
     const [selectedStars, setSelectedStars] = useState(0);
     const [hoveredStars, setHoveredStars] = useState(0);
     const [currentReview, setCurrentReview] = useState<ReviewType>({
@@ -55,12 +58,20 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
 
     const handleReviewChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
-        setReview(prev => {
-            return { ...prev, [name]: value }
-        })
+
+        if (name === 'review') {
+            // Only restrict review (description) input to 500 chars
+            if (value.length <= 500) {
+                setReview(prev => ({ ...prev, [name]: value }));
+                setReviewLimit(500 - value.length);
+            }
+        } else {
+            // For other fields like reviewername, allow full input
+            setReview(prev => ({ ...prev, [name]: value }));
+        }
     }
 
-    let { mutate: createReviewMutate, isSuccess, isPending: createReviewPending, isError: createReviewIsError, error: createReviewError } = useCreateReview()
+    let { mutate: createReviewMutate, isSuccess, isPending: createReviewPending, isError: createReviewIsError, error: createReviewError , reset:createResetError} = useCreateReview()
     let { mutate: editReviewMutate, isPending: editReviewPending, isError: editReviewIsError, error: editReviewError } = useEditReview()
     let { mutate: deleteReviewMutate, isPending: deleteReviewPending, isError: deleteReviewIsError, error: deleteReviewError } = useDeleteReview()
 
@@ -103,15 +114,29 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
 
 
     const handleSubmit = () => {
-        console.log("selectedStars", selectedStars)
-        createReviewMutate({ productId: (currentProductId as string), description: review.review, star: selectedStars })
-        if (isSuccess) {
-            setReviewCreated(true)
+        try{
+
+            if(!selectedStars && !review.review){
+                throw new Error("please select the stars or write any review in description")
+            }
+
+            if(!createReviewPending && (selectedStars || review.review)){
+                createReviewMutate({ productId: (currentProductId as string), description: review.review, star: selectedStars })
+            }
+            if (isSuccess) {
+                setReviewCreated(true)
+            }
+        }
+        catch(error){
+            if(error instanceof Error)
+            setReviewCustomError(error.message)
         }
     }
 
     const handleDeleteReview = () => {
-        deleteReviewMutate({ productId: (currentProductId as string), id: currentReview._id as string })
+        if(!deleteReviewPending){
+            deleteReviewMutate({ productId: (currentProductId as string), id: currentReview._id as string })
+        }
         setReviewCreated(false);
         setCurrentReview({
             userName: "",
@@ -129,12 +154,14 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         // console.log(currentReview)
         if (currentReview) {
             console.log("selectedStars in edit review update", selectedStars)
+           if(!editReviewPending){
             editReviewMutate({
                 productId: currentProductId as string,
                 id: currentReview._id as string,
                 description: review.review || currentReview.description,
                 stars: selectedStars || currentReview.stars
             });
+           }
 
             setIsEditing(false);
             setReviewCreated(true);  // Ensure form appears
@@ -197,6 +224,16 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
      {review.stars}
 </span> */}
 
+    {(createReviewIsError || reviewCustomError) &&  <ErrorComponent onClose={()=> {
+        createResetError()
+        setReviewCustomError(null)
+    }} message={reviewCustomError || (createReviewError as any).response.data.message || createReviewError?.message as string} 
+    showLoginButton={
+        (createReviewError as any)?.status === 401 ||
+        (createReviewError as any)?.status === 403
+      }
+   /> }
+
             {reviewCreated ?
                 <div className={`${style.reviewDisplay}  w-full sm:w-[90%] flex flex-col justify-center items-center gap-5`}>
                     <p className={`${style.reviewheading}`}>Your Review</p>
@@ -252,6 +289,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                     </div>
 
                     <div className={`${style.reiviewDescription}`}>
+                        <p>Characters remaining {reviewLimit}/500</p>
                         <textarea name="review" id="" placeholder='Write a Review' rows={1}
                             value={review.review as string}
                             onChange={handleReviewChange}
@@ -261,13 +299,13 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
 
                     <div className={`${style.reviewerAccountInfo}`}>
 
-                        <TextField type="text" name="reviewername"
+                        {/* <TextField type="text" name="reviewername"
                             label="Name"
                             placeholder='Enter Name'
                             value={review.reviewername}
                             onChange={handleReviewChange}
                             className={`${style.reviewtextField}`}
-                        />
+                        /> */}
 
                         {/* <TextField type="email" name="email"
                             label="Email"

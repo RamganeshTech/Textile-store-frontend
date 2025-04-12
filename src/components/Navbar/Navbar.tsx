@@ -56,7 +56,7 @@ const Navbar: React.FC = () => {
     mutationFn: logoutUser,
     onSuccess: data => {
       if (data.ok) {
-        console.log("getting called")
+        // console.log("getting called")
         dispatch(setUser({ isAuthenticated: false, userId: null, email: null, userName: null, address: null, phoneNumber: null }))
         setIsmainMenuVisble(false)
         navigate('/')
@@ -72,20 +72,20 @@ const Navbar: React.FC = () => {
   const handleLogoutPrevAdmin= ()=>{
     handleAdminLogout(undefined,{
       onSuccess:(data)=>{
-        console.log(data)
+        // console.log(data)
         dispatch(setAdminLogin({email:null, isAuthenticated: data.isAuthenticated}))
       }
     })
   }
 
   useEffect(() => {
-    console.log("location from nav", window.location.pathname)
+    // console.log("location from nav", window.location.pathname)
     let pathName = window.location.pathname
     setIsAdminPage(pathName.includes("admin") ? true : false)
 
     setIsAdminLoggedIn(() => {
       let pathArray = pathName.split('/')
-      console.log(pathArray)
+      // console.log(pathArray)
       if (pathArray[1] === "admin") {
         return true;
       }
@@ -145,7 +145,7 @@ const Navbar: React.FC = () => {
 
           {!isAdminPage && <div className="flex gap-4">
             {/* <SearchIcon /> */}
-            <Link to={'/addproduct'}>
+            <Link to={'/admin/addproduct'}>
               <AddIcon className={`${style.hideMobile}`} />
             </Link>
             <Link to={'/cart'}>

@@ -5,13 +5,14 @@ import { AppDispatch } from '../store/store'
 import { setAdminLogin } from '../slices/admin'
 
 const useAdminAuthenticated = () => {
-    let {mutate: isAdminAuthenticated, isPending, isError} = useIsAdminAuthenticated()
+    let {mutate: isAdminAuthenticated, isPending:adminauthloading, isError, data} = useIsAdminAuthenticated()
 
     let dispatch = useDispatch<AppDispatch>()
 
     useEffect(()=>{
         isAdminAuthenticated(undefined,{
             onSuccess:(data)=>{
+                console.log("from useadminauthenticated custom hook",data)
                 dispatch(setAdminLogin({email:data.email, isAuthenticated: data.isAuthenticated}))
             },
             onError:()=>{
@@ -19,6 +20,8 @@ const useAdminAuthenticated = () => {
             }
         })
     }, [dispatch])
+
+    return {adminauthloading, data}
 }
 
 export default useAdminAuthenticated

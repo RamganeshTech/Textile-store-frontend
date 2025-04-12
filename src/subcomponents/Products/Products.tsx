@@ -98,7 +98,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
     };
 
     // console.log(addCartError && (AxiosError(addCartError))?.status)
-    console.log(addCartError)
+    // console.log(addCartError)
     return (
         <div className={`${style.mainProduct}`}>
 

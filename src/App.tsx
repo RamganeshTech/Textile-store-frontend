@@ -28,7 +28,6 @@ import ProtectedAdminRoutes from './components/ProtectedRoutes/ProtectedAdminRou
 
 function App() {
   useIsAuthenticated()
-  useAdminAuthenticated()
   return (
     <>
       <Navbar />
@@ -48,7 +47,7 @@ function App() {
 
         <Route path='/adminlogin' element={<AdminLogin />} />
         <Route path='/admin/addproduct' element={
-          <ProtectedAdminRoutes>
+          <ProtectedAdminRoutes >
               <AddProduct />
           </ProtectedAdminRoutes>
         } />

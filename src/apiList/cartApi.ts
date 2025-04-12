@@ -57,7 +57,8 @@ export const removeCartQuantity = async ({id, quantity, size, color}:{id:string,
 export const useFetchCart = ()=>{
     return useQuery({
         queryKey:['cart'],
-        queryFn:  getCart
+        queryFn:  getCart,
+        staleTime: 1000 * 60 * 10
     })
 }
 
