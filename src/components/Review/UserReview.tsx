@@ -36,6 +36,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         // stars: null
     })
 
+    const [showFullDescription, setShowFullDescription] = useState<boolean>(false);
     const [reviewCustomError, setReviewCustomError] = useState<string | null>(null);
     const [reviewLimit, setReviewLimit] = useState<number>(500);
     const [selectedStars, setSelectedStars] = useState(0);
@@ -248,7 +249,11 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                         ))}
                     </div>
 
-                    <p className={` ${style.reviewText} text-lg  `}>{currentReview?.description}</p>
+                    <p className={` ${style.reviewText} text-lg !text-wrap  `}>
+                        { showFullDescription ? currentReview?.description : currentReview?.description.slice(0, 200) } 
+                        <span className='cursor-pointer' onClick={()=> setShowFullDescription(!showFullDescription)}>
+                        {showFullDescription ? "see less" : "see more..."}</span> 
+                        </p>
                     {/* <p className={`${style.reviewerName}`}><span className={`text-lg font-semibold`}>By:</span> {currentReview?.userName}</p> */}
 
                     <div className={`${style.buttonContainer} w-[40%] flex justify-center items-center gap-4`}>
