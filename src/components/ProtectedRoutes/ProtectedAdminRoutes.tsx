@@ -13,9 +13,9 @@ type ProtectedAdminRoutesProp = {
 const ProtectedAdminRoutes:React.FC<ProtectedAdminRoutesProp> = ({children}) => {
  const {adminauthloading, data} =  useAdminAuthenticated()
  let admin = useSelector((state:RootState)=> state.admin)
- console.log("from PR of adsmin",admin)
+//  console.log("from PR of adsmin",admin)
 
- console.log("adminauthloading", adminauthloading)
+//  console.log("adminauthloading", adminauthloading)
  if(adminauthloading || !data?.isAuthenticated) return <Loading />
 return admin.isAuthenticated ? children : <Navigate to={'/adminlogin'} />
 }

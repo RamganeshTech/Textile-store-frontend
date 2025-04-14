@@ -27,7 +27,7 @@ export const adminLogout = async ()=>{
 export const isAdminAuthenticated = async ()=>{
     try{
         const {data}= await Api.get('/admin/isauthenticated')
-        console.log(data)
+        // console.log(data)
         return data
       }
       catch(error){

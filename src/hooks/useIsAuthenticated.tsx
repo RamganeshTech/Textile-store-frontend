@@ -13,7 +13,7 @@ const useIsAuthenticated = async () => {
       try {
         const { ok, data }: { ok: boolean; data: any } = await isAuthenticatedUser();
 
-        console.log("data from isUSer authenticated hook", data)
+        // console.log("data from isUSer authenticated hook", data)
         if (ok) {
           dispatch(setUser({
             isAuthenticated: true,
@@ -34,7 +34,7 @@ const useIsAuthenticated = async () => {
           }));
         }
       } catch (error) {
-        console.log("errror from useIsAuthenticated", error)
+        // console.log("errror from useIsAuthenticated", error)
         dispatch(setUser({
           userId: null,
           isAuthenticated: false,

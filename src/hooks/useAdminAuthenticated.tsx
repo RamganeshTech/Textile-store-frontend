@@ -12,7 +12,6 @@ const useAdminAuthenticated = () => {
     useEffect(()=>{
         isAdminAuthenticated(undefined,{
             onSuccess:(data)=>{
-                console.log("from useadminauthenticated custom hook",data)
                 dispatch(setAdminLogin({email:data.email, isAuthenticated: data.isAuthenticated}))
             },
             onError:()=>{

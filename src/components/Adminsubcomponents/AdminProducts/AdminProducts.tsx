@@ -1,12 +1,19 @@
-import React, { useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { ProductType } from '../../../Types/types'
 import style from './AdminProducts.module.css'
+import { Button } from '@mui/material'
+import { useDeleteProduct, useEditProduct } from '../../../apiList/productApi'
+import { useParams } from 'react-router-dom'
+import { useSelector } from 'react-redux'
 
 type AdminProductsProp = {
     product:ProductType
+    setFormData:React.Dispatch<React.SetStateAction<any>>,
+    setEditProductId: React.Dispatch<React.SetStateAction<string | null>>
 }
+const notAvailableImage = "https://th.bing.com/th/id/OIP.Skr-oJ6BWg_K65k5uDiMdgHaHa?w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
 
-const AdminProducts:React.FC<AdminProductsProp> = ({product}) => {
+const AdminProducts:React.FC<AdminProductsProp> = ({product, setFormData, setEditProductId}) => {
 
   let colorsAvailable = useMemo(()=>{
     return product.sizeVariants.flatMap(size=>{
@@ -33,19 +40,43 @@ const AdminProducts:React.FC<AdminProductsProp> = ({product}) => {
 
   }, [product])
 
-  const notAvailableImage = "https://th.bing.com/th/id/OIP.Skr-oJ6BWg_K65k5uDiMdgHaHa?w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
+
+  let {mutate:deleteProduct , isPending:deleteProdPending, error:deleteProdError, isError:deleteProdIsError} = useDeleteProduct()
+  
+  const handleDeleteProduct = ()=>{
+    if(deleteProdPending){
+      deleteProduct({productId:product._id})
+    }
+  }
+
+  const handleEditEnable = ()=>{
+    setFormData((prev:any)=>{
+      return {...prev, 
+        productName:product.productName,
+    price:      product.price,
+    category: product.category,
+    description: product.description,
+    sizeVariants: product.sizeVariants.map((variant: any) => ({
+      ...variant,
+      colors: variant.colors.map((color: any) => ({
+        ...color,
+        images: color.images ? color.images : []  // Ensure images exists
+      }))
+    }))
+      }
+    })
+    setEditProductId(product._id)
+  }
+  
+  // const [formData, setFormData] = useState<Partial<ProductType>>({
+  //   productName:product.productName,
+  //   price:      product.price,
+  //   sizeVariants:  product.sizeVariants,
+  //   category: product.category,
+  //   description: product.description
+  // });
 
   return (
-//     <div className={style.singlecontainer}> 
-//     <img src={firstImageAvaiable || notAvailableimage} alt="" className={style.productImage} />
-
-//     <div className={style.description}>
-//         <p className={style.descriptiondetail}>Title : <span className={style.descriptionanswer}>{product.productName}</span></p>
-//         <p className={style.descriptiondetail}>Price : <span className={style.descriptionanswer}>₹{product.price}</span></p>
-//         <p className={style.descriptiondetail}>Available Sizes <span className={style.descriptionanswer}>{product.sizeVariants.map((size)=> <span>{size.size},&nbsp;</span> )}</span></p>
-//         <p className={style.descriptiondetail}>Available colors <span className={style.descriptionanswer}>{colorsAvailable.map(colors=> <span>{colors},&nbsp;</span> )}</span></p>
-//     </div>
-// </div>
 <div className={style.cardContainer}>
 <div className={style.imageWrapper}>
   <img
@@ -70,7 +101,17 @@ const AdminProducts:React.FC<AdminProductsProp> = ({product}) => {
       <span key={idx}>{color}, </span>
     ))}
   </p>
+
+  <Button variant="contained" onClick={handleEditEnable} sx={{width:"10%", marginBottom:"10px"}} >
+    Edit
+  </Button>
+
+  <Button variant="contained" onClick={handleDeleteProduct} sx={{width:"10%"}} color='error'>
+    Delete
+  </Button>
 </div>
+
+
 </div>
   )
 }

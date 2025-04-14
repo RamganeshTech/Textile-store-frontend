@@ -48,6 +48,28 @@ export const uploadImagesToCloudinary = async (files: File[]): Promise<{ url: st
   
     return response.data.images; // Assuming backend sends { images: [...] }
   };
+
+  export const editProduct = async ({productData, productId}:{productData:any, productId:string})=>{
+   try{
+    let {data} = await Api.put(`/products/editproducts/${productId}`, productData)
+    console.log(data)
+    return data.data
+   }
+   catch(error){
+    throw error;
+   }
+  } 
+
+  export const deleteProduct = async ({productId}:{productId:string})=>{
+  try{
+    let {data} = await Api.delete(`/products/deleteproduct/${productId}`)
+    console.log(data)
+    return data.data
+  }
+  catch(error){
+    throw error
+  }
+  } 
   
 
 const applyFilters = async (filterData: FilterOptionsType) => {
@@ -97,3 +119,21 @@ export const useUploadImage = () => {
       mutationFn: uploadImagesToCloudinary,
     });
   };
+
+  export const useEditProduct = ()=>{
+    return useMutation({
+        mutationFn: editProduct,
+        onSuccess:()=>{
+            queryClient.invalidateQueries({queryKey:["products"]})
+        }
+    })
+  }
+
+  export const useDeleteProduct = ()=>{
+    return useMutation({
+        mutationFn: deleteProduct,
+        onSuccess:()=>{
+            queryClient.invalidateQueries({queryKey:["products"]})
+        }
+    })
+  }

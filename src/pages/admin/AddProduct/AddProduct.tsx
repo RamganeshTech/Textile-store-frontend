@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
-import { useCreateProduct, useUploadImage } from "../../../apiList/productApi";
+import { useCreateProduct, useEditProduct, useUploadImage } from "../../../apiList/productApi";
 import styles from "./AddProduct.module.css";
 import { CircularProgress, TextField } from "@mui/material";
 import { Button } from "@mui/material";
@@ -123,7 +123,13 @@ const SizeVariantInput: React.FC<{
   );
 };
 
-const AddProduct: React.FC = () => {
+type AddProductProp = {
+  editProductId?:string,
+  editFormData?:any
+}
+
+const AddProduct: React.FC<AddProductProp> = ({editProductId, editFormData}) => {
+
   const { register, control, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
       productName: "",
@@ -139,6 +145,25 @@ const AddProduct: React.FC = () => {
   // const { mutateAsync: createProductMutation } = useCreateProduct();
   const { mutate: createProduct, isPending:createProdloading, data:createddata, isSuccess } = useCreateProduct()
   const { mutateAsync: uploadImage, isPending: imageUploadLoading } = useUploadImage();
+  let { mutate: editProduct, isPending: editProdPending, error: editProdError, isError: editProdIsError } = useEditProduct()
+
+
+  useEffect(() => {
+    if (editFormData && editProductId) {
+      const transformedData = {
+        ...editFormData,
+        sizeVariants: editFormData.sizeVariants?.map((variant: any) => ({
+          ...variant,
+          colors: variant.colors?.map((color: any) => ({
+            ...color,
+            images: color.images ? color.images : [] // If images doesn't exist, set it to an empty array
+          }))
+        }))
+      };
+      reset(transformedData);
+    }
+  }, [editProductId, reset]);
+
 
   const {
     fields: sizeFields,
@@ -177,8 +202,16 @@ const AddProduct: React.FC = () => {
         sizeVariants,
       };
   
-      createProduct(finalData); // No await needed if mutate handles it
-      alert("Product Created!");
+      if (editProductId) {
+        // In edit mode, call the editProduct mutation
+        editProduct({ productData: finalData, productId: editProductId });
+      } else {
+        // Otherwise, create a new product
+        createProduct(finalData);
+      }
+      alert(editProductId ? "Product updated successfully" : "Product created successfully!");
+
+      // alert("Product Created!");
     } catch (err) {
       console.error("Error uploading images or creating product:", err);
     }
@@ -190,12 +223,14 @@ const AddProduct: React.FC = () => {
 
     {isSuccess && <CreateProductSuccess message={"product Created Successfully"} />}
 
-{(createProdloading || imageUploadLoading) && <section className="fixed bg-[#0a0a0a18] z-[99] inset-0 flex items-center justify-center">
+{(createProdloading || imageUploadLoading || editProdPending) && <section className="fixed bg-[#0a0a0a18] z-[99] inset-0 flex items-center justify-center">
   <CircularProgress size={50} thickness={5} color="success"  />
   </section>}
 
       <div className={styles.container}>
-        <h2 className={styles.heading}>Create New Product</h2>
+        <h2 className={styles.heading}>
+        {editProductId ? "Edit Product" : "Create New Product"}
+                  </h2>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <div className={styles.row}>
             <TextField
@@ -269,7 +304,7 @@ const AddProduct: React.FC = () => {
           </div>
 
           <Button variant="contained" type="submit" className={styles.submitButton}>
-            Create Product
+          {editProductId ? "Save Changes" : "Create Product"}
           </Button>
         </form>
       </div>
