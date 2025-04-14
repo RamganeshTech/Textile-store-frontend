@@ -20,11 +20,12 @@ import UpdateUserPhoneNo from './components/UserDataEditComponents/UpdateUserPho
 import Payment from './pages/Payment/Payment'
 import useIsAuthenticated from './hooks/useIsAuthenticated'
 import EditAddress from './components/EditAddress/EditAddress'
-import AddProduct from './pages/AddProduct/AddProduct'
+import AddProduct from './pages/admin/AddProduct/AddProduct'
 import ProtectedRoutes from './components/ProtectedRoutes/ProtectedRoutes'
-import AdminLogin from './pages/AdminLogin/AdminLogin'
+import AdminLogin from './pages/admin/AdminLogin/AdminLogin'
 import useAdminAuthenticated from './hooks/useAdminAuthenticated'
 import ProtectedAdminRoutes from './components/ProtectedRoutes/ProtectedAdminRoutes'
+import ListProducts from './pages/admin/ListProducts/ListProducts'
 
 function App() {
   useIsAuthenticated()
@@ -49,6 +50,12 @@ function App() {
         <Route path='/admin/addproduct' element={
           <ProtectedAdminRoutes >
               <AddProduct />
+          </ProtectedAdminRoutes>
+        } />
+
+<Route path='/admin/listproducts' element={
+          <ProtectedAdminRoutes >
+              <ListProducts />
           </ProtectedAdminRoutes>
         } />
        

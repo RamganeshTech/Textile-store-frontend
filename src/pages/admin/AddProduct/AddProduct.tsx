@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
-import { useCreateProduct, useUploadImage } from "../../apiList/productApi";
+import { useCreateProduct, useUploadImage } from "../../../apiList/productApi";
 import styles from "./AddProduct.module.css";
 import { CircularProgress, TextField } from "@mui/material";
 import { Button } from "@mui/material";
-import Loading from "../../components/LoadingState/Loading";
-import CreateProductSuccess from "../../Shared/CreateProductSuccess/CreateProductSuccess";
+import Loading from "../../../components/LoadingState/Loading";
+import CreateProductSuccess from "../../../Shared/CreateProductSuccess/CreateProductSuccess";
 // import { AddOutlined } from "@mui/icons-material";
 
 

@@ -17,7 +17,7 @@ import { useDispatch } from 'react-redux';
 import { logoutUser } from '../../apiList/userauthApi';
 import { CgPlayButtonO } from 'react-icons/cg';
 import { adminLogout, useAdminLogout } from '../../apiList/adminApi';
-import { Logout } from '@mui/icons-material';
+import { ListAltOutlined, Logout } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { setAdminLogin } from '../../slices/admin';
 
@@ -116,7 +116,7 @@ const Navbar: React.FC = () => {
   return (
     <>
       <nav className="w-full  flex flex-col items-center justify-center fixed top-0 left-0 z-[999] bg-white shadow-lg">
-        <div className={`w-[95%] h-[70px] flex items-center justify-between ${isAdminPage ? "justify-center" : ""}`}>
+        <div className={`w-[95%] h-[70px] flex items-center justify-between ${isAdminPage ? "!!justify-center" : ""}`}>
           <div className={`flex items-center gap-2 cursor-pointer ${isAdminPage ? "!w-[70px]" : ""} `}>
             {/* <span onClick={()=> setIsmainMenuVisble(!ismainMenuVisble)}>
              <MenuIcon />
@@ -158,14 +158,25 @@ const Navbar: React.FC = () => {
           </div>}
 
           {
-            isAdminPage && isAdminLoggedIn && <IconButton onClick={() => handleLogoutPrevAdmin()}
-              sx={{ background: "red", borderRadius: "5px", color: "white", width: "8%", height: "60%", ":hover": { background: "red !important" } }} >
-              {adminLogoutPending ? <CircularProgress size={25} thickness={5} sx={{ color: "#fafafa" }} /> : (
-                <>
-                  Logout&nbsp;<Logout />
-                </>
-              )}
-            </IconButton>
+            isAdminPage && isAdminLoggedIn && <div className='flex justify-between items-center w-[180px]'>
+
+              <IconButton onClick={() => navigate('/admin/listproducts')}
+                sx={{ width: "2 0%", height: "100%",}} 
+                >
+               <ListAltOutlined />
+              </IconButton>
+
+              &nbsp;
+
+              <IconButton onClick={() => handleLogoutPrevAdmin()}
+                sx={{ background: "red", borderRadius: "5px", color: "white", height: "60%", ":hover": { background: "red !important" } }} >
+                {adminLogoutPending ? <CircularProgress size={25} thickness={5} sx={{ color: "#fafafa" }} /> : (
+                  <>
+                    Logout&nbsp;<Logout />
+                  </>
+                )}
+              </IconButton>
+            </div>
           }
         </div>
       </nav>

@@ -1,0 +1,12 @@
+.maincontainer{
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 70px !important;
+}
+
+.listproducts{
+    width: 90%;
+    min-height: 90vh;
+}

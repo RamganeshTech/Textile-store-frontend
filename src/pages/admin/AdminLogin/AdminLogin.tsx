@@ -2,16 +2,16 @@ import { Button, CircularProgress, IconButton, TextField } from '@mui/material'
 import React, { ChangeEvent, FormEvent, useState } from 'react'
 import style from './AdminLogin.module.css'
 import { useForm } from 'react-hook-form'
-import { validateLogin } from '../../Utils/validation'
-import SuccessAlert from '../../Shared/SuccessAlert/SuccessAlert'
+import { validateLogin } from '../../../Utils/validation'
+import SuccessAlert from '../../../Shared/SuccessAlert/SuccessAlert'
 import { useNavigate } from 'react-router-dom'
-import { useAdminLogin } from '../../apiList/adminApi'
+import { useAdminLogin } from '../../../apiList/adminApi'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { Box } from '@mui/material';
 import { useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '../../store/store'
+import { AppDispatch, RootState } from '../../../store/store'
 import { useDispatch } from 'react-redux'
-import { setAdminLogin } from '../../slices/admin'
+import { setAdminLogin } from '../../../slices/admin'
 
 
 
@@ -51,13 +51,13 @@ const AdminLogin = () => {
                 console.log(data)
 
                     dispatch(setAdminLogin({email:data.email, isAuthenticated:data.isAuthenticated}))
-
+                    navigate('../admin/addproduct')
+                    
                 }
             })
-
             
             
-                // navigate('/addproduct')
+            
 
 
         }
