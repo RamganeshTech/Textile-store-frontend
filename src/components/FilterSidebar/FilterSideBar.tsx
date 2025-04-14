@@ -234,4 +234,4 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
 }
 );
 
-export default FilterSideBar
+export default React.memo(FilterSideBar)

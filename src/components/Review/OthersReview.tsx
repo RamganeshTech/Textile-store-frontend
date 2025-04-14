@@ -26,6 +26,7 @@ const OthersReview = ({ product, reviewItems, reviewError, reviewIsError, review
 
 console.log(reviewItems)
 console.log(reviewError)
+console.log(reviewIsError)
     return (
         <section className={`${style.othersMainReview}`}>
             {/* <p> See Others Review</p> */}
@@ -37,7 +38,7 @@ console.log(reviewError)
                     <CircularProgress sx={{ color: "#000000" }} size={25} thickness={5} /></div>)}
 
                 {!reviewIsLoading && reviewIsError && (<div className='h-[30vh] text-[20px] sm:text-[26px] flex justify-center items-center'>
-                    <p>{reviewError?.response?.data?.message}</p>
+                    <p>{reviewError?.response?.data?.message || reviewError.message || "something went wrong"}</p>
                 </div>)}
 
                 {!reviewIsLoading && !reviewIsError && reviewItems && reviewItems?.length > 0 && reviewItems?.map((singleReview: SingleReviewType) =>

@@ -178,7 +178,7 @@ const AllProducts = () => {
                     borderColor: "transparent", // Remove focus border
                   },
                 },
-                width: "90%"
+                width: "90% !important"
               }}
 
               onChange={(e) => {

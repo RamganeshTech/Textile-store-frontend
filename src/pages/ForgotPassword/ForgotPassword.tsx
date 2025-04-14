@@ -83,8 +83,6 @@ const ForgotPassword = () => {
 
         const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-
-
         try {
 
             if (!strongPasswordRegex.test(password)) {

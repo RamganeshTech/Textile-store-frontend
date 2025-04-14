@@ -8,6 +8,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../../store/store';
 import { useAddToCart, useRemoveFromCart, useRemoveQuantityFromCart } from '../../apiList/cartApi';
+import { Link, useNavigate } from 'react-router-dom';
 
 
 type AddToCartSingleProps = {
@@ -18,11 +19,12 @@ type AddToCartSingleProps = {
 const AddToCartSingle = ({ item } : AddToCartSingleProps) => {
   
   let dispatch = useDispatch<AppDispatch>()
+  let navigate = useNavigate()
 
   const [tempQuantity, setTempQuantity] = useState<number>(item.quantity)
 
 
-  const { mutate: handleDelete, isPending:deleteCartPending } = useRemoveFromCart(); 
+  const { mutate: removeFromCart, isPending:deleteCartPending } = useRemoveFromCart(); 
 
   let {mutate:addCartmutate ,isPending:addcartPending} = useAddToCart()
   let {mutate:removeQuantitymutate, isPending:removecartPending} = useRemoveQuantityFromCart()
@@ -32,30 +34,36 @@ const AddToCartSingle = ({ item } : AddToCartSingleProps) => {
   
 
   // Function to handle quantity changes
-  const handleQuantity = (id: string, action: "increment" | "decrement") => {
+  const handleQuantity = (e:React.MouseEvent<HTMLButtonElement>, id: string, action: "increment" | "decrement") => {
+    e.preventDefault();     // Prevent <Link> navigation
+    e.stopPropagation();
     const currentQuantity = item.quantity;
     // const maxStock = item.productId.availableStocks;
   
     // console.log(maxStock)
-    if (action === "increment" && tempQuantity < availableStock) {
+    if (action === "increment" && tempQuantity < availableStock && !addcartPending) {
       setTempQuantity(p=> Math.min((p as number)+1, availableStock))
-      // addCartmutate({ productId: id, quantity: 1, price: item.price }); // Send only the increment change
       addCartmutate({ productId: id, quantity: 1, price: item?.price , color:item.color, size:item.size }); // Send only the increment change
-
     } 
-    else if (action === "decrement" && currentQuantity > 1 && tempQuantity > 1) {
+    else if (action === "decrement" && currentQuantity > 1 && tempQuantity > 1 && !removecartPending) {
       setTempQuantity(p=> Math.max((p as number)-1, 1))
-      // removeQuantitymutate({ id, quantity: 1 }); // Send only the decrement change
       removeQuantitymutate({ id, quantity: 1, color:item.color, size:item.size  }); // Send only the decrement change
-
     }  
   }
 
+  const handleDeleteCart = (e:React.MouseEvent<HTMLButtonElement>)=>{
+    e.preventDefault(); 
+    e.stopPropagation();
+    removeFromCart({productId:item.productId._id, size:item.size, color:item.color})
+
+  }
     return (
       <div key={item._id} className={styles.cartItem}>
-        <img src={item.image} alt={item.productId.productName} />
+        <img src={item.image} alt={item.productId.productName}  />
 
         <div className={styles.itemDetails}>
+        {/* <Link to={`/product/${item.productId._id}`}> */}
+          
           <h2>{item.productId.productName}</h2>
           <p>Price: <span>${item.price.toFixed(2)}</span></p>
         <div className='flex gap-[5px] items-center'>
@@ -64,12 +72,13 @@ const AddToCartSingle = ({ item } : AddToCartSingleProps) => {
         <p>color: <span className=' !font-semibold  !text-[16px] sm:!text-[18px] md:!text-[20px]'>{item.color}</span></p>
         </div>
 
+        {/* </Link>  */}
 
-          <div className={styles.quantityContainer}>
+          <div className={`${styles.quantityContainer}`}>
             <IconButton className={styles.iconBtn} 
             // disabled={item.quantity === 1} 
             disabled={tempQuantity <= 1}
-            onClick={() => handleQuantity(item.productId._id, "decrement")}>
+            onClick={(e) => handleQuantity(e,item.productId._id, "decrement")}>
               <RemoveIcon />
             </IconButton>
             {/* {item.quantity} */}
@@ -82,13 +91,13 @@ const AddToCartSingle = ({ item } : AddToCartSingleProps) => {
             <IconButton className={styles.iconBtn} 
               // disabled={item.quantity >= item.productId.availableStocks} // Disable if stock limit is reached
               disabled={tempQuantity >= availableStock}  // Prevents exceeding stock
-            onClick={() => handleQuantity(item.productId._id, "increment")}>
+            onClick={(e) => handleQuantity(e,item.productId._id, "increment")}>
               <AddIcon />
             </IconButton>
           </div>
 
           {/* Delete Button */}
-          <Button variant="contained" disabled={deleteCartPending} className={styles.deleteBtn} onClick={() => handleDelete({productId:item.productId._id, size:item.size, color:item.color})}
+          <Button variant="contained" disabled={deleteCartPending} className={styles.deleteBtn} onClick={handleDeleteCart}
                sx={{
                 backgroundColor: "#ff4d4d !important", // Ensures same background even when disabled
                 color: "white",

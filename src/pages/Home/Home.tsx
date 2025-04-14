@@ -39,11 +39,6 @@ const Home = () => {
         }
     }, [products, dispatch]);
 
-console.log(products)
-
-
-console.log(error)
-  
   return (
     <div className={`mt-[70px] ${style.maincontainer}`}>
         <Carousel />

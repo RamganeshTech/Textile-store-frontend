@@ -56,9 +56,11 @@ const deleteReview = async ({productId, id:reviewId}:UpdateOrDeleteReviewType)=>
 
 const useFetchReview = (productId:string)=>{
     return useQuery({
-        queryKey:['review'],
+        queryKey:['review', productId],
         queryFn:()=> fetchReview(productId),
         staleTime: 1000 * 60 * 10,
+        retry: false, 
+        refetchOnWindowFocus: false,
     })
 }
 

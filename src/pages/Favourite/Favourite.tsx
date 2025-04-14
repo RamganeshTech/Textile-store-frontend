@@ -28,6 +28,7 @@ const FavouriteItems: React.FC = () => {
   //   </div>)
   // }
 
+
   return (
     <main className={styles.container}>
       <h1 className={styles.heading}>Favourite Items</h1>
@@ -53,14 +54,14 @@ const FavouriteItems: React.FC = () => {
 
       ) : (
         favourites?.items && favourites?.items?.length > 0 && favourites?.items?.map((item:FavouriteItem) => (
-          // <Link to={`/product/${item.productId._id}`}>
+          <Link to={`/product/${item.productId._id}`} key={item._id}>
             <FavouriteSingle 
-            key={item._id}
+            // key={item._id}
             item={item} 
             products={products}
             // setFavourites={setFavourites}
             />
-          // </Link>
+          </Link>
         ))
       )}
     </main>
