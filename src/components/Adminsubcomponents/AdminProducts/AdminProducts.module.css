@@ -91,7 +91,15 @@
     font-weight: 600;
     color: #333;
     margin-bottom: 0.5rem;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    white-space: wrap;
+    line-clamp: 2;
+    overflow: hidden;
   }
+
+
   
   /* Product price */
   .price {
@@ -99,13 +107,14 @@
     font-size: 1.125rem; /* ~18px */
     color: #e63946; /* a reddish color */
     margin-bottom: 0.75rem;
+    font-weight: 500;
   }
   
   /* Sizes & Colors text */
   .sizes,
   .colors {
     margin: 0.25rem 0;
-    font-size: 0.95rem;
+    font-size: 1.15rem;
     color: #555;
     line-height: 1.4;
   }

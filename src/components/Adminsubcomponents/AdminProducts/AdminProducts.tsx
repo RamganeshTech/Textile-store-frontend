@@ -55,7 +55,8 @@ const AdminProducts:React.FC<AdminProductsProp> = ({product}) => {
   />
 </div>
 <div className={style.details}>
-  <h2 className={style.title}>{product.productName}</h2>
+  <h2 className={style.title}>{product.productName}   
+  </h2>
   <p className={style.price}>₹{product.price}</p>
   <p className={style.sizes}>
     <strong>Sizes:</strong>{" "}
