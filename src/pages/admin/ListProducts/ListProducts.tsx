@@ -23,22 +23,23 @@ const ListProducts = () => {
     }, [products, dispatch]);
    
   return (
-   <main className={`${style.maincontainer}`}>
-    {!fetchProdError && fetchprodpending &&  <div className="h-[80vh] sm:h-[80vh] w-[100vw] flex justify-center items-center">
+   <main className={`${style.maincontainer} !mt-[70px]`}>
+    {!fetchProdIsError && fetchprodpending &&  <div className="h-[80vh] sm:h-[90vh] w-[100vw] flex justify-center items-center">
          <Loading />
        </div>}
 
-   {!fetchprodpending && fetchProdError &&  <div className="h-[80vh] sm:h-[80vh] w-[100vw] flex justify-center items-center">
+   {!fetchprodpending && fetchProdIsError &&  <div className="h-[80vh] sm:h-[80vh] w-[100vw] flex justify-center items-center">
           <p className="text-lg sm:text-2xl lg:text-4xl">{fetchProdError ? (fetchProdError as unknown as Error).message : "Something went wrong"}</p>
           </div>}
 
-   <section className={`${style.listproducts}`}>
+   {!fetchProdIsError && !fetchprodpending && <section className={`${style.listproducts}`}>
+    <h1 className={style.heading}>Products Available</h1>
    {reduxProducts && reduxProducts.map(product=>{
     return (
       <AdminProducts key={product._id} product={product} />
     )
    })}
-   </section>
+   </section>}
    </main>
   )
 }
