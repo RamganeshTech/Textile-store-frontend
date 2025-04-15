@@ -82,12 +82,13 @@
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
+    /* gap: 5px; */
   }
   
   /* Product title */
   .title {
     margin: 0;
-    font-size: 1.25rem; /* ~20px */
+    font-size: clamp(1rem, 1.5vw, 1.25rem); /* ~20px */
     font-weight: 600;
     color: #333;
     margin-bottom: 0.5rem;
@@ -101,20 +102,16 @@
 
 
   
-  /* Product price */
   .price {
-    margin: 0;
-    font-size: 1.125rem; /* ~18px */
-    color: #e63946; /* a reddish color */
-    margin-bottom: 0.75rem;
+    font-size: clamp(1rem, 1.5vw, 1.5rem); /* ~20px */
+    color: #e63946; 
     font-weight: 500;
   }
   
-  /* Sizes & Colors text */
   .sizes,
   .colors {
     margin: 0.25rem 0;
-    font-size: 1.15rem;
+    font-size: 0.95rem;
     color: #555;
     line-height: 1.4;
   }
@@ -123,11 +120,23 @@
   .colors strong {
     color: #222;
     margin-right: 0.25rem;
+    font-size: clamp(1rem, 1.2vw, 2rem);
   }
   
   .sizes span,
   .colors span {
     color: #333;
     margin-right: 0.15rem;
+    font-size: clamp(.85rem, .9vw, 1.5rem);
   }
   
+  @media (max-width:426px){
+    .details{
+      gap: 0px;
+    }
+
+    .sizes,
+    .colors {
+      line-height: 1.1;
+    }
+  }

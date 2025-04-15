@@ -28,6 +28,10 @@ const ListProducts = () => {
     const [editProductId, setEditProductId] = useState<string | null>(null)
 
 
+    useEffect(()=>{
+        console.log("formData",formData)
+       }, [formData])
+
     // Sync React Query data to Redux
     useEffect(() => {
         if (products) {
@@ -38,7 +42,7 @@ const ListProducts = () => {
     return (
         <main className={`${style.maincontainer} !mt-[70px]`}>
 
-            {editProductId ? <AddProduct editProductId={editProductId} editFormData={formData} /> : (
+            {editProductId ? <AddProduct editProductId={editProductId} editFormData={formData} setEditProductId={setEditProductId} /> : (
                 <>
                     {!fetchProdIsError && fetchprodpending && <div className="h-[80vh] sm:h-[90vh] w-[100vw] flex justify-center items-center">
                         <Loading />

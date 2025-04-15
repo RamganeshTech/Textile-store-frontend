@@ -124,13 +124,14 @@ const SizeVariantInput: React.FC<{
 };
 
 type AddProductProp = {
-  editProductId?:string,
-  editFormData?:any
+  editProductId?: string,
+  editFormData?: any,
+  setEditProductId:React.Dispatch<React.SetStateAction<string | null>>,
 }
 
-const AddProduct: React.FC<AddProductProp> = ({editProductId, editFormData}) => {
+const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, setEditProductId }) => {
 
-  const { register, control, handleSubmit, reset, setValue } = useForm({
+  const { register, control, handleSubmit, reset, setValue, watch } = useForm({
     defaultValues: {
       productName: "",
       price: 0,
@@ -143,36 +144,33 @@ const AddProduct: React.FC<AddProductProp> = ({editProductId, editFormData}) => 
   });
 
   // const { mutateAsync: createProductMutation } = useCreateProduct();
-  const { mutate: createProduct, isPending:createProdloading, data:createddata, isSuccess } = useCreateProduct()
+  const { mutate: createProduct, isPending: createProdloading, data: createddata, isSuccess } = useCreateProduct()
   const { mutateAsync: uploadImage, isPending: imageUploadLoading } = useUploadImage();
   let { mutate: editProduct, isPending: editProdPending, error: editProdError, isError: editProdIsError } = useEditProduct()
-
-
-  useEffect(() => {
-    if (editFormData && editProductId) {
-      const transformedData = {
-        ...editFormData,
-        sizeVariants: editFormData.sizeVariants?.map((variant: any) => ({
-          ...variant,
-          colors: variant.colors?.map((color: any) => ({
-            ...color,
-            images: color.images ? color.images : [] // If images doesn't exist, set it to an empty array
-          }))
-        }))
-      };
-      reset(transformedData);
-    }
-  }, [editProductId, reset]);
 
 
   const {
     fields: sizeFields,
     append: appendSize,
     remove: removeSize,
+    replace: replaceSize,
   } = useFieldArray({
     control,
     name: "sizeVariants",
   });
+
+  useEffect(() => {
+    if (editFormData && editProductId) {
+      const transformedData = {
+        ...editFormData,
+        sizeVariants: editFormData.sizeVariants
+      };
+  
+      reset(transformedData); // this updates the full form
+      replaceSize(transformedData.sizeVariants || []); // this updates the sizeVariants field array
+    }
+  }, [editFormData, editProductId, reset, replaceSize]);
+  
 
   const onSubmit = async (data: any) => {
     try {
@@ -182,34 +180,36 @@ const AddProduct: React.FC<AddProductProp> = ({editProductId, editFormData}) => 
             variant.colors.map(async (colorObj: any) => {
               const imageFiles: File[] = colorObj.images || [];
               // Upload all images one by one (in parallel)
-              const uploadedImages = await uploadImage(imageFiles);  
+              const uploadedImages = await uploadImage(imageFiles);
               return {
                 ...colorObj,
                 images: uploadedImages, // this will now have [{ url, public_id }, ...]
               };
             })
           );
-  
+
           return {
             size: variant.size,
             colors,
           };
         })
       );
-  
+
       const finalData = {
         ...data,
         sizeVariants,
       };
-  
-      if (editProductId) {
+
+      if (editProductId && !editProdPending) {
         // In edit mode, call the editProduct mutation
         editProduct({ productData: finalData, productId: editProductId });
       } else {
         // Otherwise, create a new product
+       if(!createProdloading){
         createProduct(finalData);
+       }
       }
-      alert(editProductId ? "Product updated successfully" : "Product created successfully!");
+      // alert(editProductId ? "Product updated successfully" : "Product created successfully!");
 
       // alert("Product Created!");
     } catch (err) {
@@ -221,16 +221,16 @@ const AddProduct: React.FC<AddProductProp> = ({editProductId, editFormData}) => 
   return (
     <div className="w-[100vw] !p-[20px] !mt-[70px] bg-[#fafafa]">
 
-    {isSuccess && <CreateProductSuccess message={"product Created Successfully"} />}
+      {isSuccess && <CreateProductSuccess message={"product Created Successfully"} />}
 
-{(createProdloading || imageUploadLoading || editProdPending) && <section className="fixed bg-[#0a0a0a18] z-[99] inset-0 flex items-center justify-center">
-  <CircularProgress size={50} thickness={5} color="success"  />
-  </section>}
+      {(createProdloading || imageUploadLoading || editProdPending) && <section className="fixed bg-[#0a0a0a18] z-[99] inset-0 flex items-center justify-center">
+        <CircularProgress size={50} thickness={5} color="success" />
+      </section>}
 
       <div className={styles.container}>
         <h2 className={styles.heading}>
-        {editProductId ? "Edit Product" : "Create New Product"}
-                  </h2>
+          {editProductId ? "Edit Product" : "Create New Product"}
+        </h2>
         <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
           <div className={styles.row}>
             <TextField
@@ -304,8 +304,12 @@ const AddProduct: React.FC<AddProductProp> = ({editProductId, editFormData}) => 
           </div>
 
           <Button variant="contained" type="submit" className={styles.submitButton}>
-          {editProductId ? "Save Changes" : "Create Product"}
+            {editProductId ? "Save Changes" : "Create Product"}
           </Button>
+
+          {editProductId && <Button variant="contained" type="button" onClick={()=> setEditProductId(null)} className={styles.submitButton}>
+           cancel
+          </Button>}
         </form>
       </div>
     </div>

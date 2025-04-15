@@ -5,6 +5,7 @@ import { Button } from '@mui/material'
 import { useDeleteProduct, useEditProduct } from '../../../apiList/productApi'
 import { useParams } from 'react-router-dom'
 import { useSelector } from 'react-redux'
+import ErrorComponent from '../../../Shared/ErrorComponent/ErrorComponent'
 
 type AdminProductsProp = {
     product:ProductType
@@ -41,10 +42,10 @@ const AdminProducts:React.FC<AdminProductsProp> = ({product, setFormData, setEdi
   }, [product])
 
 
-  let {mutate:deleteProduct , isPending:deleteProdPending, error:deleteProdError, isError:deleteProdIsError} = useDeleteProduct()
+  let {mutate:deleteProduct , isPending:deleteProdPending, error:deleteProdError, isError:deleteProdIsError, reset:resetDeleteError} = useDeleteProduct()
   
   const handleDeleteProduct = ()=>{
-    if(deleteProdPending){
+    if(!deleteProdPending){
       deleteProduct({productId:product._id})
     }
   }
@@ -67,17 +68,14 @@ const AdminProducts:React.FC<AdminProductsProp> = ({product, setFormData, setEdi
     })
     setEditProductId(product._id)
   }
-  
-  // const [formData, setFormData] = useState<Partial<ProductType>>({
-  //   productName:product.productName,
-  //   price:      product.price,
-  //   sizeVariants:  product.sizeVariants,
-  //   category: product.category,
-  //   description: product.description
-  // });
 
   return (
 <div className={style.cardContainer}>
+
+{!deleteProdPending && deleteProdIsError && <ErrorComponent 
+message={(deleteProdError as any).response.data.message || (deleteProdError as any).message || "Something went wrong" } 
+onClose={()=> resetDeleteError()}  />}
+
 <div className={style.imageWrapper}>
   <img
     src={firstImageAvailable || notAvailableImage}
@@ -102,13 +100,41 @@ const AdminProducts:React.FC<AdminProductsProp> = ({product, setFormData, setEdi
     ))}
   </p>
 
-  <Button variant="contained" onClick={handleEditEnable} sx={{width:"10%", marginBottom:"10px"}} >
+ <div className='flex items-center gap-[10px]'>
+ <Button variant="contained" onClick={handleEditEnable} sx={{
+  width:{
+    xs:"5%",
+  lg:"10%"
+ },
+ fontSize:{
+  xs:"12px",
+  sm:"14px",
+  md:"16px",
+ },
+ padding:{
+  xs:"3px"
+ }
+}} >
     Edit
   </Button>
 
-  <Button variant="contained" onClick={handleDeleteProduct} sx={{width:"10%"}} color='error'>
+  <Button variant="contained" onClick={handleDeleteProduct} sx={{
+  width:{
+    xs:"5%",
+  lg:"10%"
+ },
+ fontSize:{
+  xs:"12px",
+  sm:"14px",
+  md:"16px",
+ },
+ padding:{
+  xs:"3px"
+ }
+}} color='error'>
     Delete
   </Button>
+ </div>
 </div>
 
 
