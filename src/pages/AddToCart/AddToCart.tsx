@@ -10,14 +10,15 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { useFetchCart } from "../../apiList/cartApi";
 import Loading from "../../components/LoadingState/Loading";
-import { setItems } from "../../slices/buyItems";
-import { Link } from "react-router-dom";
+import { clearItems, setItems } from "../../slices/buyItems";
+import { Link, useNavigate } from "react-router-dom";
 
 const AddToCart: React.FC = () => {
   // const [cart, setCart] = useState<CartItem[]>(initialCart);
 
   // let reduxCart = useSelector((state: RootState) => state.cart.carts)
   let { data: cart, isLoading, isError, error } = useFetchCart()
+  let navigate = useNavigate()
 
   let dispatch = useDispatch<AppDispatch>()
 
@@ -48,6 +49,34 @@ const AddToCart: React.FC = () => {
       });
     }
   }, [cart, dispatch]);
+
+   const handleBuyItem = () => {
+          if (cart.length) {
+              dispatch(clearItems())
+
+              // let carts = {
+              //   itemId:null,
+              //   singleQuantityPrice:null,
+              //   quantity:null,
+              //   size:null,
+              //   color:null,
+              // }
+
+
+              let cartsArray = cart.map((item:any)=>({
+                itemId : item.productId._id,
+                productName: item.productId.productName,
+                singleQuantityPrice : item.price,
+                quantity : item.quantity,
+                color : item.color,
+                size : item.size,
+              }))
+
+              // dispatch(setItems({ itemId: product._id, singleQuantityPrice: product.price, quantity: currentQuantity, size: selectedSize, color: selectedColor }));
+              dispatch(setItems(cartsArray));
+          }
+          navigate('/payment')
+      }
 
 
   return (
@@ -93,6 +122,7 @@ const AddToCart: React.FC = () => {
               xl: "143px !important"
             }
           }}
+          onClick={handleBuyItem}
         >
           Add to checkout
         </Button>

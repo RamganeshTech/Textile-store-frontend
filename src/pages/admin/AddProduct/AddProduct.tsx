@@ -117,7 +117,6 @@ const SizeVariantInput: React.FC<{
             + Add Color
           </Button>
         </section>
-
       </div>
     </div>
   );
@@ -303,13 +302,16 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
             </Button>
           </div>
 
-          <Button variant="contained" type="submit" className={styles.submitButton}>
+<div className="flex justify-center gap-[10px]">
+<Button variant="contained" type="submit" className={styles.submitButton}>
             {editProductId ? "Save Changes" : "Create Product"}
           </Button>
 
-          {editProductId && <Button variant="contained" type="button" onClick={()=> setEditProductId(null)} className={styles.submitButton}>
+          {editProductId && <Button variant="contained" color="error" type="button" onClick={()=> setEditProductId(null)} className={styles.submitButton}>
            cancel
           </Button>}
+</div>
+         
         </form>
       </div>
     </div>

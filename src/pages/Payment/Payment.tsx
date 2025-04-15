@@ -50,30 +50,76 @@ const Payment = () => {
     const [errors, setErrors] = useState<Partial<Record<keyof BookinginfoType, string>>>({});
 
     let user = useSelector((state: RootState) => state.user)
+    let buyItems = useSelector((state: RootState) => state.buyItems.items)
 
-      let { data: cart , isLoading, isError, error } = useFetchCart()
-    
+    // let { data: cart, isLoading, isError, error } = useFetchCart()
+
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         let { name, value } = e.target
         setBookingInfo((p) => ({ ...p, [name]: value }))
     }
 
-   const totalAmount = useMemo(() => {
-     if (!cart) return 0;
-   
-     return cart.reduce((sum: number, item: any) => {
-       return sum + (item.productId.price * item.quantity);
-     }, 0);
-   }, [cart]);
-   
-   const totalQuantity = useMemo(() => {
-     if (!cart) return 0;
-   
-     return cart.reduce((sum: number, item: any) => {
-       return sum + item.quantity;
-     }, 0);
-   }, [cart]);
+    // const totalAmount = useMemo(() => {
+    //     if (!cart) return 0;
+
+    //     return cart.reduce((sum: number, item: any) => {
+    //         return sum + (item.productId.price * item.quantity);
+    //     }, 0);
+    // }, [cart]);
+
+    // const totalQuantity = useMemo(() => {
+    //     if (!cart) return 0;
+
+    //     return cart.reduce((sum: number, item: any) => {
+    //         return sum + item.quantity;
+    //     }, 0);
+    // }, [cart]);
+
+
+    // combining redux for single 
+    // let { singleProductAmount, singleProductQuantity }: { singleProductAmount: number, singleProductQuantity: number } = useMemo(() => {
+
+    //     let singleProductQuantity = 0;
+    //     let singleProductAmount = 0;
+
+    //     if (buyItems.length === 1) {
+    //         singleProductQuantity = buyItems.reduce((acc, curr) => {
+    //             return acc + curr.quantity
+    //         }, 0)
+
+    //         singleProductAmount = buyItems.reduce((acc, curr) => {
+    //             return acc + curr.singleQuantityPrice
+    //         }, 0)
+    //     }
+
+    //     return { singleProductAmount, singleProductQuantity }
+    // }, [])
+
+
+    // using api if the length is multiple
+    // let { multipleProductAmount, multipleProductQuantity }: { multipleProductAmount: number, multipleProductQuantity: number } = useMemo(() => {
+
+    //     let multipleProductQuantity = 0;
+    //     let multipleProductAmount = 0;
+
+    //     if (cart.length > 1) {
+    //         multipleProductQuantity = cart.reduce((sum: number, item: any) => {
+    //                     return sum + item.quantity;
+    //                 }, 0);
+
+    //         multipleProductAmount = cart.reduce((sum: number, item: any) => {
+    //                     return sum + (item.productId.price * item.quantity);
+    //                 }, 0);
+    //     }
+
+    //     return { multipleProductAmount, multipleProductQuantity }
+    // }, [cart])
+
+
+    const totalQuantity = useMemo(() => buyItems.reduce((acc, item) => acc + item.quantity, 0), []);
+    const totalAmount = useMemo(() => buyItems.reduce((acc, item) => acc + (item.quantity * item.singleQuantityPrice), 0), []);
+
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -142,7 +188,7 @@ const Payment = () => {
     return (
         <main className={`${style.maincontainer}`}>
 
-{/* {isRemoveQuanError && [401, 403].includes((removeQuantityError as any)?.response?.status) &&
+            {/* {isRemoveQuanError && [401, 403].includes((removeQuantityError as any)?.response?.status) &&
                     <ErrorComponent message={(removeQuantityError as any)?.response?.data?.message || removeQuantityError?.message as string}
                         showLoginButton={true} onClose={() => {
                             removeFavQuanReset()
@@ -168,13 +214,13 @@ const Payment = () => {
                                         width: "100%",
                                         "& .MuiInputBase-input": {
                                             height: {
-                                              xs: "10px",
-                                              sm: "10px",
-                                              md: "10px",
-                                              lg: "15px",
-                                              xl: "15px",
+                                                xs: "10px",
+                                                sm: "10px",
+                                                md: "10px",
+                                                lg: "15px",
+                                                xl: "15px",
                                             },
-                                          }
+                                        }
                                     }}
                                 />
                                 {/* {errors[name as keyof BookinginfoType] && (
@@ -187,6 +233,24 @@ const Payment = () => {
                 </section>
 
                 <section className={`${style.cartDiv}`}>
+
+                <div className={`${style.productListPayment}`}>
+                            <p className='text-2xl font-normal text-[#2473ea]'>Products</p>
+                            <div className={style.innerdiv}>
+                            {buyItems.map((item) => (
+                                <div key={item.itemId} className={`${style.cartItem}`}>
+                                    {/* <img src={item.} alt={item.itemId} className={style.productImage} /> */}
+                                    <div className={style.productInfo}>
+                                        <p><strong>{item.productName}</strong></p>
+                                        <p>Price: <span>₹{item.singleQuantityPrice}</span></p>
+                                        <p>Quantity: <span>{item.quantity}</span></p>
+                                        <p>Color: <span>{item.color}</span> </p>
+                                        <p>Size: <span>{item.size}</span> </p>
+                                    </div>
+                                </div>
+                            ))}
+                            </div>
+                        </div>
                     <div className={`${style.cartinnerDiv}`}>
                         <div>
                             <p>Cart Details</p>

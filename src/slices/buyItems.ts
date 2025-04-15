@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 export interface Item {
     itemId: string;
+    productName:string,
     quantity: number,
     size:string;
     color: string;
@@ -13,15 +14,7 @@ export interface Item {
   }
   
   const initialState: BuyItems = {
-    items: [
-      {
-        itemId: "", 
-        quantity:0,
-        size:"",
-        color:"",
-        singleQuantityPrice:0,
-      },
-    ],
+    items: [],
   };
 
 const buyItems = createSlice({
@@ -29,10 +22,18 @@ const buyItems = createSlice({
     initialState,
     reducers:{
         setItems:(state, action)=>{
-            state.items.push(action.payload)
-        }   
+          if(Array.isArray(action.payload)){
+            state.items = action.payload
+          }
+          else{
+            state.items = [action.payload]
+          }
+        },
+        clearItems:(state)=>{
+            state.items= []
+        }
     }
 })
 
-export const {setItems} = buyItems.actions;
+export const {setItems, clearItems} = buyItems.actions;
 export default buyItems.reducer;

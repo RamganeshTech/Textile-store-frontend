@@ -23,7 +23,7 @@ import { useFetchProducts } from '../../apiList/productApi';
 import UserReview from '../Review/UserReview';
 import OthersReview from '../Review/OthersReview';
 import { useFetchReview } from '../../apiList/reviewApi';
-import { setItems } from '../../slices/buyItems';
+import { clearItems, setItems } from '../../slices/buyItems';
 import { useDispatch } from 'react-redux';
 import Loading from '../LoadingState/Loading';
 import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
@@ -182,7 +182,8 @@ const SingleProduct = () => {
 
     const handleBuyItem = () => {
         if (product) {
-            dispatch(setItems({ itemId: product._id, singleQuantityPrice: product.price, quantity: currentQuantity, size: selectedSize, color: selectedColor }));
+            dispatch(clearItems())
+            dispatch(setItems({ itemId: product._id, productName: product.productName, singleQuantityPrice: product.price, quantity: currentQuantity, size: selectedSize, color: selectedColor }));
         }
         navigate('/payment')
     }
