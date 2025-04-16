@@ -3,6 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface Item {
     itemId: string;
     productName:string,
+    productImg:string,
     quantity: number,
     size:string;
     color: string;

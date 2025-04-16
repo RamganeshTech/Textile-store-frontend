@@ -66,6 +66,7 @@ const AddToCart: React.FC = () => {
               let cartsArray = cart.map((item:any)=>({
                 itemId : item.productId._id,
                 productName: item.productId.productName,
+                productImg: item.image,
                 singleQuantityPrice : item.price,
                 quantity : item.quantity,
                 color : item.color,

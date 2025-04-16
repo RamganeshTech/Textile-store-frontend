@@ -26,6 +26,8 @@ import AdminLogin from './pages/admin/AdminLogin/AdminLogin'
 import useAdminAuthenticated from './hooks/useAdminAuthenticated'
 import ProtectedAdminRoutes from './components/ProtectedRoutes/ProtectedAdminRoutes'
 import ListProducts from './pages/admin/ListProducts/ListProducts'
+import PaymentSuccessfull from './components/PaymentStatus/PaymentSuccessfull'
+import PaymentFailure from './components/PaymentStatus/PaymentFailure'
 
 function App() {
   useIsAuthenticated()
@@ -45,20 +47,22 @@ function App() {
         <Route path='/favourite' element={<Favourite />} />
         <Route path='/allproducts' element={<AllProducts />} />
         <Route path='/payment' element={<Payment />} />
+        <Route path='/redirect-url/paymentsuccess/:merchantTransactionId' element={<PaymentSuccessfull />} />
+        <Route path='/redirect-url/paymentfailure/:merchantTransactionId' element={<PaymentFailure />} />
 
         <Route path='/adminlogin' element={<AdminLogin />} />
         <Route path='/admin/addproduct' element={
           <ProtectedAdminRoutes >
-              <AddProduct />
+            <AddProduct />
           </ProtectedAdminRoutes>
         } />
 
-<Route path='/admin/listproducts' element={
+        <Route path='/admin/listproducts' element={
           <ProtectedAdminRoutes >
-              <ListProducts />
+            <ListProducts />
           </ProtectedAdminRoutes>
         } />
-       
+
         <Route path='/userprofile' element={
           <ProtectedRoutes>
             <UserProfile />

@@ -239,7 +239,10 @@ const Payment = () => {
                             <div className={style.innerdiv}>
                             {buyItems.map((item) => (
                                 <div key={item.itemId} className={`${style.cartItem}`}>
-                                    {/* <img src={item.} alt={item.itemId} className={style.productImage} /> */}
+                                    <div className={style.imgwrapper}>
+                                    <img src={item.productImg} alt={item.itemId} className={style.productImage} />
+
+                                    </div>
                                     <div className={style.productInfo}>
                                         <p><strong>{item.productName}</strong></p>
                                         <p>Price: <span>₹{item.singleQuantityPrice}</span></p>

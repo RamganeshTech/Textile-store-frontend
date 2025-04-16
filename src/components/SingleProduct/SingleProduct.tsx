@@ -183,7 +183,7 @@ const SingleProduct = () => {
     const handleBuyItem = () => {
         if (product) {
             dispatch(clearItems())
-            dispatch(setItems({ itemId: product._id, productName: product.productName, singleQuantityPrice: product.price, quantity: currentQuantity, size: selectedSize, color: selectedColor }));
+            dispatch(setItems({ itemId: product._id, productImg: selectedImage , productName: product.productName, singleQuantityPrice: product.price, quantity: currentQuantity, size: selectedSize, color: selectedColor }));
         }
         navigate('/payment')
     }

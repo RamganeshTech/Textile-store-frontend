@@ -125,7 +125,7 @@ const SizeVariantInput: React.FC<{
 type AddProductProp = {
   editProductId?: string,
   editFormData?: any,
-  setEditProductId:React.Dispatch<React.SetStateAction<string | null>>,
+  setEditProductId?: React.Dispatch<React.SetStateAction<string | null>>,
 }
 
 const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, setEditProductId }) => {
@@ -307,7 +307,11 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
             {editProductId ? "Save Changes" : "Create Product"}
           </Button>
 
-          {editProductId && <Button variant="contained" color="error" type="button" onClick={()=> setEditProductId(null)} className={styles.submitButton}>
+          {editProductId && <Button variant="contained" color="error" type="button" onClick={()=> {
+            if(setEditProductId){
+              setEditProductId(null)
+            }
+            }} className={styles.submitButton}>
            cancel
           </Button>}
 </div>
