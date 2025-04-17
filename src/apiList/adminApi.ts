@@ -1,4 +1,4 @@
-import { useIsMutating, useMutation } from "@tanstack/react-query"
+import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query"
 import Api from "../apiClient/apiClient"
 import { TrySharp } from "@mui/icons-material"
 
@@ -27,7 +27,7 @@ export const adminLogout = async ()=>{
 export const isAdminAuthenticated = async ()=>{
     try{
         const {data}= await Api.get('/admin/isauthenticated')
-        // console.log(data)
+        console.log(data)
         return data
       }
       catch(error){
@@ -49,7 +49,9 @@ export const useAdminLogout = ()=> {
 }
 
 export const useIsAdminAuthenticated = ()=>{
-    return useMutation({
-        mutationFn: isAdminAuthenticated
+    return useQuery({
+        queryKey: ['admin'],
+        queryFn: isAdminAuthenticated,
+        retry: false,
     })
 }   

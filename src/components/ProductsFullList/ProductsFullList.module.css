@@ -8,17 +8,14 @@
     width: 100%;
     height: 100%;
     padding: 20px 0;
+    animation: fadeinout .3s ease-in;
   }
   
 
-  /* .productCard {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    text-align: center;
-    width: 100%;
-  } */
+  @keyframes fadeinout {
+    from {opacity: 0;}
+    to{opacity: 1; }
+  }
   
 
 

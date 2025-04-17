@@ -195,7 +195,7 @@ const SingleProduct = () => {
         }
     }, [selectedColorImages]);
 
-    // console.log(reviewError)
+    console.log("reviewError", reviewError)
     // console.log(reviewIsLoading)
 
     if (singleProductLoading || customLoading) {
@@ -468,7 +468,7 @@ const SingleProduct = () => {
                     </nav>
 
                     {!showUsersReview ?
-                        <UserReview currentProductId={paramsid} reviewItems={reviewItems} />
+                        <UserReview currentProductId={paramsid} reviewItems={reviewIsError ? (reviewError as any).response.data.data : reviewItems} />
                         :
                         <OthersReview reviewItems={reviewItems} reviewIsError={reviewIsError} reviewIsLoading={reviewIsLoading} reviewError={reviewError} product={product} />
                     }

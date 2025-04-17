@@ -50,6 +50,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         _id: ""
     });
 
+    console.log("reviewItems", reviewItems)
     const [reviewCreated, setReviewCreated] = useState<boolean>(false);
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -61,6 +62,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         const { name, value } = event.target;
 
         if (name === 'review') {
+            // console.log("description value", value)
             // Only restrict review (description) input to 500 chars
             if (value.length <= 500) {
                 setReview(prev => ({ ...prev, [name]: value }));
@@ -72,7 +74,11 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         }
     }
 
-    let { mutate: createReviewMutate, isSuccess, isPending: createReviewPending, isError: createReviewIsError, error: createReviewError , reset:createResetError} = useCreateReview()
+    useEffect(()=>{
+        console.log(review)
+    }, [review])
+
+    let { mutate: createReviewMutate, isSuccess, isPending: createReviewPending, isError: createReviewIsError, error: createReviewError, reset: createResetError } = useCreateReview()
     let { mutate: editReviewMutate, isPending: editReviewPending, isError: editReviewIsError, error: editReviewError } = useEditReview()
     let { mutate: deleteReviewMutate, isPending: deleteReviewPending, isError: deleteReviewIsError, error: deleteReviewError } = useDeleteReview()
 
@@ -94,7 +100,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         //     // console.log(user.userId,"user.userId" )
         //     return review.userId === user.userId
         // })
-        console.log("is review avaible", review)
+        // console.log("is review avaible", review)
         if (yourReview) {
             setCurrentReview({
                 description: yourReview?.description as string,
@@ -115,27 +121,27 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
 
 
     const handleSubmit = () => {
-        try{
+        try {
 
-            if(!selectedStars && !review.review){
+            if (!selectedStars && !review.review) {
                 throw new Error("please select the stars or write any review in description")
             }
 
-            if(!createReviewPending && (selectedStars || review.review)){
+            if (!createReviewPending && (selectedStars || review.review)) {
                 createReviewMutate({ productId: (currentProductId as string), description: review.review, star: selectedStars })
             }
             if (isSuccess) {
                 setReviewCreated(true)
             }
         }
-        catch(error){
-            if(error instanceof Error)
-            setReviewCustomError(error.message)
+        catch (error) {
+            if (error instanceof Error)
+                setReviewCustomError(error.message)
         }
     }
 
     const handleDeleteReview = () => {
-        if(!deleteReviewPending){
+        if (!deleteReviewPending) {
             deleteReviewMutate({ productId: (currentProductId as string), id: currentReview._id as string })
         }
         setReviewCreated(false);
@@ -147,22 +153,23 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
             userId: "",
             _id: ""
         });
-        setReview({ reviewername: null, review: null,});
+        setReview({ reviewername: null, review: null, });
         // setIsEditing(false)
     }
 
     const handleEditReview = () => {
-        // console.log(currentReview)
+        console.log("currentReview", currentReview)
+        console.log("review", review)
         if (currentReview) {
             console.log("selectedStars in edit review update", selectedStars)
-           if(!editReviewPending){
-            editReviewMutate({
-                productId: currentProductId as string,
-                id: currentReview._id as string,
-                description: review.review || currentReview.description,
-                stars: selectedStars || currentReview.stars
-            });
-           }
+            if (!editReviewPending) {
+                editReviewMutate({
+                    productId: currentProductId as string,
+                    id: currentReview._id as string,
+                    description: review.review || null ,
+                    stars: selectedStars || currentReview.stars
+                });
+            }
 
             setIsEditing(false);
             setReviewCreated(true);  // Ensure form appears
@@ -194,6 +201,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         })
         setSelectedStars(yourReview?.stars || 0)
         // Ensure form appears
+        console.log(yourReview)
     }
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -215,7 +223,6 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
 
     useEffect(() => {
         getCurrentReview()
-        // console.log(currentReview)
     }, [reviewItems, user.userId])
     return (
         <section ref={containerRef} className={`${style.reviewContainer}   !flex !justify-center !items-center`}>
@@ -225,15 +232,15 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
      {review.stars}
 </span> */}
 
-    {(createReviewIsError || reviewCustomError) &&  <ErrorComponent onClose={()=> {
-        createResetError()
-        setReviewCustomError(null)
-    }} message={reviewCustomError || (createReviewError as any).response.data.message || createReviewError?.message as string} 
-    showLoginButton={
-        (createReviewError as any)?.status === 401 ||
-        (createReviewError as any)?.status === 403
-      }
-   /> }
+            {(createReviewIsError || reviewCustomError) && <ErrorComponent onClose={() => {
+                createResetError()
+                setReviewCustomError(null)
+            }} message={reviewCustomError || (createReviewError as any).response.data.message || createReviewError?.message as string}
+                showLoginButton={
+                    (createReviewError as any)?.status === 401 ||
+                    (createReviewError as any)?.status === 403
+                }
+            />}
 
             {reviewCreated ?
                 <div className={`${style.reviewDisplay}  w-full sm:w-[90%] flex flex-col justify-center items-center gap-5`}>
@@ -249,11 +256,17 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                         ))}
                     </div>
 
+
+
                     <p className={` ${style.reviewText} text-lg !text-wrap  `}>
-                        { showFullDescription ? currentReview?.description : currentReview?.description.slice(0, 200) } 
-                        <span className='cursor-pointer' onClick={()=> setShowFullDescription(!showFullDescription)}>
-                        {showFullDescription ? "see less" : "see more..."}</span> 
-                        </p>
+                        {
+                            currentReview?.description ? <>
+                                {showFullDescription ? currentReview?.description : currentReview?.description.slice(0, 200)}
+                                <span className='cursor-pointer' onClick={() => setShowFullDescription(!showFullDescription)}>
+                                    {currentReview?.description.length > 150 ? showFullDescription ? "see less" : "see more..." : null}</span>
+                            </> : ""
+                        }
+                    </p>
                     {/* <p className={`${style.reviewerName}`}><span className={`text-lg font-semibold`}>By:</span> {currentReview?.userName}</p> */}
 
                     <div className={`${style.buttonContainer} w-[40%] flex justify-center items-center gap-4`}>
@@ -262,7 +275,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                         <Button variant='contained' onClick={handleDeleteReview} color='error' sx={{
                             width: {
                                 xs: "83px",
-                                lg:"83px",
+                                lg: "83px",
                             }
 
                         }}>

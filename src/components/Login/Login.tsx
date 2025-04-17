@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styles from './Login.module.css';
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { auth } from '../../Utils/firebase';
+// import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+// import { auth } from '../../Utils/firebase';
+// import GoogleLogo from '../../assets/Google Logo.png'
 
 
-import GoogleLogo from '../../assets/Google Logo.png'
 import { Box, Button, CircularProgress, IconButton } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import Api from '../../apiClient/apiClient';
-import { validateLogin, validateRegister } from '../../Utils/validation';
+import { validateRegister } from '../../Utils/validation';
 import { loginUser, registerUser } from '../../apiList/userauthApi';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../slices/user';
@@ -26,7 +25,7 @@ const Login: React.FC = () => {
   const [indianState, setIndianState] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
 
-  const [rememberMe, setRememberMe] = useState(false);
+  // const [rememberMe, setRememberMe] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null);
@@ -334,8 +333,8 @@ const Login: React.FC = () => {
             </div>
           </div>
           {isLogin && (
-            <div className="flex items-center justify-between">
-              <div className={`${styles.checkboxContainer}`}>
+            <div className="flex items-center justify-end">
+              {/* <div className={`${styles.checkboxContainer}`}>
                 <input
                   id="remember_me"
                   name="remember_me"
@@ -345,7 +344,7 @@ const Login: React.FC = () => {
                   onChange={(e) => setRememberMe(e.target.checked)}
                 />
                 <label htmlFor="remember_me" className={`${styles.checkboxLabel}`}>Remember me</label>
-              </div>
+              </div> */}
               <div className="text-sm">
                 <Link to="/forgotpassword" className={`${styles.forgotPassword}`}>Forgot Password?</Link>
               </div>

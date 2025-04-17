@@ -69,11 +69,12 @@ const Navbar: React.FC = () => {
 
   let { mutate: handleAdminLogout, isPending: adminLogoutPending } = useAdminLogout()
 
-  const handleLogoutPrevAdmin= ()=>{
-    handleAdminLogout(undefined,{
-      onSuccess:(data)=>{
+  const handleLogoutPrevAdmin = () => {
+    handleAdminLogout(undefined, {
+      onSuccess: (data) => {
         // console.log(data)
-        dispatch(setAdminLogin({email:null, isAuthenticated: data.isAuthenticated}))
+        dispatch(setAdminLogin({ email: null, isAuthenticated: data.isAuthenticated }))
+        navigate('/')
       }
     })
   }
@@ -121,8 +122,6 @@ const Navbar: React.FC = () => {
             {/* <span onClick={()=> setIsmainMenuVisble(!ismainMenuVisble)}>
              <MenuIcon />
             </span> */}
-            {!isAdminPage &&
-              <>
                 <div className={`${style.menuicon} `}>
                   <button className={`${style.navbar_toggle}`} onClick={() => setIsmainMenuVisble(!ismainMenuVisble)}>
                     <span className={`${style.icon_bar} ${style.one}`}></span>
@@ -130,10 +129,12 @@ const Navbar: React.FC = () => {
                     <span className={`${style.icon_bar}  ${ismainMenuVisble ? style.active : ""} ${style.three}`}></span>
                   </button>
                 </div>
+            {!isAdminPage &&
+              <>
                 <img src={userlogo} alt="User" className={`${style.hideMobile} w-5 h-5 max-w-none`} onClick={handleNavbarNavigate} />
                 <p className={`${style.hideMobile} text-nowrap `} onClick={handleNavbarNavigate}>{isAuthenticated ? 'My Profile' : "Login"}</p>
               </>
-            }
+             } 
           </div>
 
           <div className="flex gap-2 items-center justify-center">
@@ -158,12 +159,12 @@ const Navbar: React.FC = () => {
           </div>}
 
           {
-            isAdminPage && isAdminLoggedIn && <div className='flex justify-between items-center w-[180px]'>
+            isAdminPage && isAdminLoggedIn && <div className={`${style.hideMobile} flex justify-between items-center w-[180px]`}>
 
               <IconButton onClick={() => navigate('/admin/listproducts')}
-                sx={{ width: "2 0%", height: "100%",}} 
-                >
-               <ListAltOutlined />
+                sx={{ width: "2 0%", height: "100%", }}
+              >
+                <ListAltOutlined />
               </IconButton>
 
               &nbsp;
@@ -189,11 +190,17 @@ const Navbar: React.FC = () => {
           </IconButton>
         </div>
         <ul>
-          <li onClick={handleCloseSideBar}><Link to="/cart">My Cart</Link></li>
-          {isAuthenticated ? <li onClick={handleCloseSideBar}><Link to="/userprofile">My Profile</Link></li> : <li onClick={handleCloseSideBar}><Link to="/login">Login</Link></li>}
-          <li onClick={handleCloseSideBar}><Link to="/favourite">My Favourites</Link></li>
-          <li onClick={() => handleLogout()}>
-            {logoutpending ? <CircularProgress size={25} thickness={5} sx={{ color: "#222220", margin: "0px auto", width: "100%", display: "block" }} /> : "Logout"}
+          {!isAdminPage && <>
+            <li onClick={handleCloseSideBar}><Link to="/cart">My Cart</Link></li>
+            {isAuthenticated ? <li onClick={handleCloseSideBar}><Link to="/userprofile">My Profile</Link></li> : <li onClick={handleCloseSideBar}><Link to="/login">Login</Link></li>}
+            <li onClick={handleCloseSideBar}><Link to="/favourite">My Favourites</Link></li>
+          </>}
+
+          {isAdminPage && isAdminLoggedIn && <li onClick={() => navigate('/admin/listproducts')}>List Products</li>}
+          {isAdminPage && isAdminLoggedIn && <li onClick={() => navigate('/admin/addproduct')}>Add Products</li>}
+
+          <li onClick={() => { isAdminPage ? handleLogoutPrevAdmin() : handleLogout() }}>
+            {logoutpending || adminLogoutPending ? <CircularProgress size={25} thickness={5} sx={{ color: "#222220", margin: "0px auto", width: "100%", display: "block" }} /> : "Logout"}
           </li>
         </ul>
       </div>

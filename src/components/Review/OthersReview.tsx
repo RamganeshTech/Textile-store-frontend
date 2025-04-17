@@ -25,8 +25,8 @@ interface SingleReviewType {
 const OthersReview = ({ product, reviewItems, reviewError, reviewIsError, reviewIsLoading }: OthersReviewProps) => {
 
 console.log(reviewItems)
-console.log(reviewError)
-console.log(reviewIsError)
+// console.log("reviewError", reviewError)
+// console.log("reviewIsError", reviewIsError)
     return (
         <section className={`${style.othersMainReview}`}>
             {/* <p> See Others Review</p> */}

@@ -43,11 +43,11 @@ const Home = () => {
     <div className={`mt-[70px] ${style.maincontainer}`}>
         <Carousel />
         <SubCarousel />
-        {!isLoading && isError &&  <div className="h-[80vh] sm:h-[80vh] w-[100vw] flex justify-center items-center">
-          <p className="text-lg sm:text-2xl lg:text-4xl">{error ? (error as unknown as Error).message : "Something went wrong"}</p>
+        {!isLoading && isError &&  <div className="h-[80vh] sm:h-[90vh] w-[100vw] flex justify-center items-center">
+          <p className="text-lg sm:text-2xl lg:text-4xl">{(error as any)?.response?.data?.message || (error as any)?.message || "Something went wrong"}</p>
           </div>}
 
-       {!isError && isLoading &&  <div className="h-[80vh] sm:h-[80vh] w-[100vw] flex justify-center items-center">
+       {!isError && isLoading &&  <div className="h-[80vh] sm:h-[90vh] w-[100vw] flex justify-center items-center">
          <Loading />
        </div>}
 

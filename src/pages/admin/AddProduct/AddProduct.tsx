@@ -204,6 +204,7 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
         editProduct({ productData: finalData, productId: editProductId });
       } else {
         // Otherwise, create a new product
+        console.log("createProdloading", createProdloading)
        if(!createProdloading){
         createProduct(finalData);
        }
@@ -215,6 +216,8 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
       console.error("Error uploading images or creating product:", err);
     }
   };
+
+  // console.log("imageUploadLoading", imageUploadLoading)
 
 
   return (
