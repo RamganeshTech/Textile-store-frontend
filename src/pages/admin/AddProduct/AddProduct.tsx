@@ -5,6 +5,7 @@ import styles from "./AddProduct.module.css";
 import { CircularProgress, TextField } from "@mui/material";
 import { Button } from "@mui/material";
 import CreateProductSuccess from "../../../Shared/CreateProductSuccess/CreateProductSuccess";
+import ErrorComponent from "../../../Shared/ErrorComponent/ErrorComponent";
 // import { AddOutlined } from "@mui/icons-material";
 
 
@@ -142,9 +143,9 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
   });
 
   // const { mutateAsync: createProductMutation } = useCreateProduct();
-  const { mutate: createProduct, isPending: createProdloading, data: createddata, isSuccess } = useCreateProduct()
+  const { mutate: createProduct, isPending: createProdloading, isSuccess, error: createProdError, isError: createProdIsError, reset: resetCreateError } = useCreateProduct()
   const { mutateAsync: uploadImage, isPending: imageUploadLoading } = useUploadImage();
-  let { mutate: editProduct, isPending: editProdPending, error: editProdError, isError: editProdIsError } = useEditProduct()
+  let { mutate: editProduct, isPending: editProdPending, error: editProdError, isError: editProdIsError, reset: resetEditError } = useEditProduct()
 
 
   const {
@@ -163,12 +164,12 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
         ...editFormData,
         sizeVariants: editFormData.sizeVariants
       };
-  
+
       reset(transformedData); // this updates the full form
       replaceSize(transformedData.sizeVariants || []); // this updates the sizeVariants field array
     }
   }, [editFormData, editProductId, reset, replaceSize]);
-  
+
 
   const onSubmit = async (data: any) => {
     try {
@@ -204,9 +205,9 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
       } else {
         // Otherwise, create a new product
         console.log("createProdloading", createProdloading)
-       if(!createProdloading){
-        createProduct(finalData);
-       }
+        // if (!createProdloading) {
+          createProduct(finalData);
+        // }
       }
       // alert(editProductId ? "Product updated successfully" : "Product created successfully!");
 
@@ -217,6 +218,15 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
 
   return (
     <div className="w-[100vw] !p-[20px] !mt-[70px] bg-[#fafafa]">
+
+      {editProdIsError && <ErrorComponent
+        onClose={() => resetEditError()}
+        message={(editProdError as any)?.response?.data?.message || (editProdError as any)?.message} />}
+
+
+      {createProdIsError && <ErrorComponent
+        onClose={() => resetCreateError()}
+        message={(createProdError as any)?.response?.data?.message || (createProdError as any)?.message} />}
 
       {isSuccess && <CreateProductSuccess message={"product Created Successfully"} />}
 
@@ -300,20 +310,20 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
             </Button>
           </div>
 
-<div className="flex justify-center gap-[10px]">
-<Button variant="contained" type="submit" className={styles.submitButton}>
-            {editProductId ? "Save Changes" : "Create Product"}
-          </Button>
+          <div className="flex justify-center gap-[10px]">
+            <Button variant="contained" type="submit" className={styles.submitButton}>
+              {editProductId ? "Save Changes" : "Create Product"}
+            </Button>
 
-          {editProductId && <Button variant="contained" color="error" type="button" onClick={()=> {
-            if(setEditProductId){
-              setEditProductId(null)
-            }
+            {editProductId && <Button variant="contained" color="error" type="button" onClick={() => {
+              if (setEditProductId) {
+                setEditProductId(null)
+              }
             }} className={styles.submitButton}>
-           cancel
-          </Button>}
-</div>
-         
+              cancel
+            </Button>}
+          </div>
+
         </form>
       </div>
     </div>

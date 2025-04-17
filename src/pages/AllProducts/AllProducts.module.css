@@ -114,7 +114,7 @@
 .displayProducts{
     width: 100%;
     overflow: scroll;
-    max-height: 145vh;
+    max-height: 157vh;
     /* border: 2px solid red; */
 }
 

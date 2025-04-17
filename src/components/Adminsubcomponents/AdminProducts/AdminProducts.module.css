@@ -1,49 +1,3 @@
-/* .singlecontainer{
-    height: 20rem;
-    width: 100%;
-    display: flex;
-    align-items: start;
-    justify-content: space-between;
-    box-shadow: rgba(35, 34, 34, 0.1);
-    margin: 10px 0;
-    gap: 10px;
-}
-
-.singlecontainer .img{
-    width: 30%;
-    background-position: center;
-    height: 100%;
-}
-
-.description{
-    display: flex;
-    flex: 1;
-    align-items: start;
-    justify-content: start;
-    flex-direction: column;
-    gap: 15px;
-    border:2px solid  #0a0a0a;
-
-}
-
-
-
-.description .descriptiondetail{
-    font-size: clamp(12px, 5vw, 20px);
-}
-
-.description .descriptiondetail:nth-child(1){
-    font-size: clamp(14px, 5vw, 24px);
-}
-
-.desctiption .descriptiondetail .descriptionanswer{
-    color: #0a0a0a18;
-    font-size: clamp(14px, 5vw, 20px) !important;
-}
-
- */
-
-/* Container that wraps the entire card */
 .cardContainer {
     display: flex;
     flex-direction: row;
@@ -56,7 +10,8 @@
     width: 100%;
     gap: 1.5rem;
     /* border: 2px solid red; */
-    height: 250px;
+    height: 350px;
+    animation: fadein .3s ease-in;
   }
   
   /* Wraps the image so you can control sizing/aspect ratio */
@@ -88,8 +43,8 @@
   /* Product title */
   .title {
     margin: 0;
-    font-size: clamp(1rem, 1.5vw, 1.25rem); /* ~20px */
-    font-weight: 600;
+    font-size: clamp(1rem, 1.8vw, 2rem); /* ~20px */
+    font-weight: 500;
     color: #333;
     margin-bottom: 0.5rem;
     -webkit-line-clamp: 2;
@@ -109,7 +64,7 @@
   .sizes,
   .colors {
     margin: 0.25rem 0;
-    font-size: 0.95rem;
+    font-size: .95rem;
     color: #555;
     line-height: 1.4;
   }
@@ -118,14 +73,14 @@
   .colors strong {
     color: #222;
     margin-right: 0.25rem;
-    font-size: clamp(1rem, 1.2vw, 2rem);
+    font-size: clamp(1rem, 1.3vw, 2rem);
   }
   
   .sizes span,
   .colors span {
     color: #333;
     margin-right: 0.15rem;
-    font-size: clamp(.85rem, .9vw, 1.5rem);
+    font-size: clamp(.85rem, 1.5vw, 2rem);
   }
   
   @media (max-width:426px){
@@ -137,4 +92,9 @@
     .colors {
       line-height: 1.1;
     }
+  }
+
+  @keyframes fadein {
+    from{opacity: 0;}
+    to{opacity: 1;}    
   }

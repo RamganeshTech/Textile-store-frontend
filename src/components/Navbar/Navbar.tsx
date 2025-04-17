@@ -71,6 +71,7 @@ const Navbar: React.FC = () => {
       onSuccess: (data) => {
         // console.log(data)
         dispatch(setAdminLogin({ email: null, isAuthenticated: data.isAuthenticated }))
+        setIsmainMenuVisble(false)
         navigate('/')
       }
     })
@@ -134,7 +135,7 @@ const Navbar: React.FC = () => {
              } 
           </div>
 
-          <div className="flex gap-2 items-center justify-center">
+          <div className={`flex gap-2 items-center justify-center ${isAdminPage ? "!mr-[31%] sm:!mr-[0%]" : ""} `}>
             <img src="./src/assets/logo/build my business.png" alt="" className='w-[20%] h-[10%] md:w-[10%] md:h-[5%]' />
             <Link to={'/'} className='outline-none'>
               <h4 className={`${style.companyheading} text-nowrap text-[#3182ce] font-semibold`}>BMB Fashion</h4>
@@ -191,10 +192,11 @@ const Navbar: React.FC = () => {
             <li onClick={handleCloseSideBar}><Link to="/cart">My Cart</Link></li>
             {isAuthenticated ? <li onClick={handleCloseSideBar}><Link to="/userprofile">My Profile</Link></li> : <li onClick={handleCloseSideBar}><Link to="/login">Login</Link></li>}
             <li onClick={handleCloseSideBar}><Link to="/favourite">My Favourites</Link></li>
+            <li onClick={handleCloseSideBar}><Link to="/admin/addproduct">Admin</Link></li>
           </>}
 
-          {isAdminPage && isAdminLoggedIn && <li onClick={() => navigate('/admin/listproducts')}>List Products</li>}
-          {isAdminPage && isAdminLoggedIn && <li onClick={() => navigate('/admin/addproduct')}>Add Products</li>}
+          {isAdminPage && isAdminLoggedIn && <li onClick={handleCloseSideBar}> <Link to={'/admin/listproducts'}> List Products</Link></li>}
+          {isAdminPage && isAdminLoggedIn && <li onClick={handleCloseSideBar}> <Link to={'/admin/addproduct'}> Add Products</Link></li>}
 
           <li onClick={() => { isAdminPage ? handleLogoutPrevAdmin() : handleLogout() }}>
             {logoutpending || adminLogoutPending ? <CircularProgress size={25} thickness={5} sx={{ color: "#222220", margin: "0px auto", width: "100%", display: "block" }} /> : "Logout"}

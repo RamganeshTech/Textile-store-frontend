@@ -25,6 +25,7 @@ import { clearItems, setItems } from '../../slices/buyItems';
 import { useDispatch } from 'react-redux';
 import Loading from '../LoadingState/Loading';
 import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
+import RelatedItem from '../RelatedItem/RelatedItem';
 
 
 const SingleProduct = () => {
@@ -61,12 +62,15 @@ const SingleProduct = () => {
     const [showUsersReview, setshowUserReview] = useState<boolean>(true);
     const [activeReview, setactiveReview] = useState<boolean>(true);
 
+    const [relatedItems, setRelatedItems] = useState<[]>([]);
+
+
 
     let { mutate: addCartmutate, isPending: addCartPending, isError: addCartIsError, error: addCartError, reset: addcartResetError } = useAddToCart()
     const { mutate: removeFromCartMutation, isPending: removeCartPending } = useRemoveFromCart();
     const { mutate: removeSingleQuantity, isPending: removeQuantiytyPending, error: removeQuantityError, isError: isRemoveQuanError, reset: removeFavQuanReset } = useRemoveQuantityFromCart()
 
-    const { data: favourites,  } = useFetchFavourite();
+    const { data: favourites, } = useFetchFavourite();
     let { mutate: addFavourite, isError: addFavIsError, error: addFavError, reset: addFavResetError } = useAddToFavourite()
     let { mutate: removeFavourite, isError: removeFavIsError, error: removeFavError, reset: removeFavResetError } = useRemoveFavourite()
 
@@ -169,7 +173,7 @@ const SingleProduct = () => {
     const handleBuyItem = () => {
         if (product) {
             dispatch(clearItems())
-            dispatch(setItems({ itemId: product._id, productImg: selectedImage , productName: product.productName, singleQuantityPrice: product.price, quantity: currentQuantity, size: selectedSize, color: selectedColor }));
+            dispatch(setItems({ itemId: product._id, productImg: selectedImage, productName: product.productName, singleQuantityPrice: product.price, quantity: currentQuantity, size: selectedSize, color: selectedColor }));
         }
         navigate('/payment')
     }
@@ -180,6 +184,17 @@ const SingleProduct = () => {
             setSelectedImage(selectedColorImages[0]);
         }
     }, [selectedColorImages]);
+
+    useEffect(() => {
+        if (product)
+            setRelatedItems(() => {
+                let filteredItems = products.filter((prod: ProductType) => {
+                    return product.category === prod.category
+                })
+
+                return filteredItems || []
+            })
+    }, [product])
 
     if (singleProductLoading || customLoading) {
         return <div className='mt-[70px] w-[100vw] h-[100vh]  flex items-center justify-center'>
@@ -256,7 +271,6 @@ const SingleProduct = () => {
                         </aside>
 
                         <div className={`${style.mainImgContainer}`}>
-                            {/* <img src={product.images[0]} alt="Selected Image" /> */}
                             {selectedImage ? <img src={selectedImage} alt="Selected" /> : selectedColorImages.length > 0 ? (
                                 <img src={selectedColorImages[0]} alt="Selected" />
                             ) : (
@@ -453,8 +467,68 @@ const SingleProduct = () => {
                     {!showUsersReview ?
                         <UserReview currentProductId={paramsid} reviewItems={reviewIsError ? (reviewError as any).response.data.data : reviewItems} />
                         :
-                        <OthersReview reviewItems={reviewItems} reviewIsError={reviewIsError} reviewIsLoading={reviewIsLoading} reviewError={reviewError}  />
+                        <OthersReview reviewItems={reviewItems} reviewIsError={reviewIsError} reviewIsLoading={reviewIsLoading} reviewError={reviewError} />
                     }
+                </div>
+
+
+                <div className={style.relatedcontainer}>
+                    <div className={style.relatedinnerdiv}>
+                        <h1 className={style.relatedHeading}>People also searched for</h1>
+                        <div className={style.relatedlist}>
+                            {relatedItems.map((item: ProductType) => {
+
+                                return (
+                                <>
+                                <Link className='w-[15%] h-[100%]' to={`/product/${item._id}`} key={item._id}>
+                                <RelatedItem item={item} product={product} />
+                                </Link>
+                                {/* <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                <RelatedItem item={item} product={product} />
+                                 */}
+                                </>
+                            )
+                            }
+                            )}
+                        </div>
+                    </div>
                 </div>
             </main>
         </>

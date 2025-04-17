@@ -86,8 +86,8 @@ export const useFetchProducts = () => {
         queryFn: fetchProducts,
         staleTime: 1000 * 60 * 10,
         refetchOnWindowFocus: false, // Prevent refetch on tab switch
-        // refetchOnReconnect: false, // Prevent refetch on internet reconnect
-    });
+        retry:false
+      });
 };
 
 export const useCreateProduct = ()=>{
