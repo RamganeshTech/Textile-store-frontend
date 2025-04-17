@@ -18,16 +18,14 @@ const createProduct = async (productData:ProductType) => {
     return data.data;
   }
   catch(error){
-    console.log(error);
     throw error;
   }
 };
 
 const searchProducts = async ({search, filter}:{search:string, filter:any}) => {
     // try {
-    console.log("calling hte search prodcs")
         const { data } = await Api.get(`/searchproducts?search=${search}&filter=${encodeURIComponent(JSON.stringify(filter))}`);
-        console.log(data)
+        // console.log(data)
         return data.data;
     // }
     // catch (error) {
@@ -39,7 +37,6 @@ export const uploadImagesToCloudinary = async (files: File[]): Promise<{ url: st
     const formData = new FormData();
     files.forEach(file => formData.append("file", file));  // append multiple files
   
-    console.log("formData in the upload images cloudinary", formData)
     const response = await Api.post("/products/uploadimage", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
@@ -52,7 +49,7 @@ export const uploadImagesToCloudinary = async (files: File[]): Promise<{ url: st
   export const editProduct = async ({productData, productId}:{productData:any, productId:string})=>{
    try{
     let {data} = await Api.put(`/products/editproducts/${productId}`, productData)
-    console.log(data)
+    // console.log(data)
     return data.data
    }
    catch(error){
@@ -63,7 +60,7 @@ export const uploadImagesToCloudinary = async (files: File[]): Promise<{ url: st
   export const deleteProduct = async ({productId}:{productId:string})=>{
   try{
     let {data} = await Api.delete(`/products/deleteproduct/${productId}`)
-    console.log(data)
+    // console.log(data)
     return data.data
   }
   catch(error){
@@ -79,7 +76,7 @@ const applyFilters = async (filterData: FilterOptionsType) => {
         return data.data;
     }
     catch (error) {
-        console.log(error)
+        // console.log(error)
     }
 }
 

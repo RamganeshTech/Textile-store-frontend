@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { TextField, Button, CircularProgress } from "@mui/material";
 import styles from "./UpdateUserPhoneNo.module.css";
 import { useChangePhoneNo } from "../../../apiList/userprofileApi";
@@ -10,7 +10,7 @@ const UpdateUserPhoneNo: React.FC = () => {
   const [localError, setLocalError] = useState<string>("")
 
 
-  let { mutate, isPending, isError, data, error, isSuccess } = useChangePhoneNo();
+  let { mutate, isPending, isError} = useChangePhoneNo();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
 
@@ -33,9 +33,7 @@ const UpdateUserPhoneNo: React.FC = () => {
 
       mutate(PhoneNo.trim(), {
         onSuccess: (data) => {
-          console.log(data)
           if (data.ok) {
-            console.log(data.message)
             setLocalError("")
 
             setSuccessMessage(data.message);
@@ -48,11 +46,8 @@ const UpdateUserPhoneNo: React.FC = () => {
           }
         },
         onError(error:any) {
-          console.log("ERROR JSON >>>", JSON.stringify(error, null, 2))
 
-          console.log("error from onError of updatephonenumber", error)
           let message = error?.response?.data.message || error?.message || "something went wrong"
-          console.log("message", message)
           setLocalError(message)
         },
       })
@@ -61,14 +56,12 @@ const UpdateUserPhoneNo: React.FC = () => {
     }
     catch (error) {
       if (error instanceof Error) {
-        console.log(error.message)
         setLocalError(error.message)
       }
     };
   }
 
 
-  // console.log(error?.message)
   return (
     <div className={styles[`container`]}>
       <h2 className={styles[`title`]}>Change PhoneNo</h2>

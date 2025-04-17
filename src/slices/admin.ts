@@ -11,7 +11,6 @@ const adminSlice = createSlice({
     initialState,
     reducers:{
         setAdminLogin:(state, action)=>{
-            // console.log(action)
             // state.email = action.payload.email
             // state.isAuthenticated = action.payload.isAuthenticated
             return {...state, ...action.payload}

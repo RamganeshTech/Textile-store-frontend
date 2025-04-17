@@ -6,7 +6,6 @@ import StarRating from '../../components/StarRating/StarRating'
 import { DeleteOutline } from '@mui/icons-material'
 import { useRemoveFavourite } from '../../apiList/favouriteApi'
 import { useAddToCart, useFetchCart, useRemoveFromCart } from '../../apiList/cartApi'
-import { Link, useNavigate } from 'react-router-dom'
 
 type FavouriteSingleProps = {
     item: FavouriteItem,
@@ -23,9 +22,7 @@ type FavouriteSingleProps = {
 const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
 
     // const [isInCart, setIsInCart] = useState(false);
-    // console.log("favourite current item", item, )
 
-    let navigate = useNavigate()
 
     const product = useMemo(() => {
         return products.find((product: ProductType) => product._id === item.productId._id)
@@ -33,11 +30,10 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
 
     
     const { data: cartItems } = useFetchCart();
-    let { mutate: removeFavourite, isPending: removefavpending, isError, error, } = useRemoveFavourite()
+    let { mutate: removeFavourite, isPending: removefavpending } = useRemoveFavourite()
     let { mutate: addCartmutate, isPending: addcartPending } = useAddToCart()
     const { mutate: removeCartmutate, isPending: removeCartPending } = useRemoveFromCart();
 
-    console.log("cartItems",cartItems) 
 
     const [firstAvailable, setFirstAvailable] = useState<{ size: (string | null), color: (string | null) }>({
         size: null,
@@ -52,9 +48,6 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
 
 //         product?.sizeVariants?.some(size => {
 //             return size?.colors?.some(color => {
-//                 console.log("size in firstavailable", size)
-//                 console.log("color in firstavailable", color)
-//                 // console.log("availability in firstavailable", color?.availableStock)
 //                 if (color.availableStock > 0) {
 //                     setFirstAvailable((prev)=> ({...prev, size: size.size, color: color.color}))
 //                     // firstAvailable.size = size.size;
@@ -88,7 +81,6 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
     const handleCart = (e:React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation()
-        console.log("isInCart", isInCart)
         // let firstAvailable: { size: (string | null), color: (string | null) } = {
         //     size: null,
         //     color: null
@@ -136,7 +128,6 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
         return cartItems?.some((cartitem: any) => cartitem.productId._id === item.productId._id && firstAvailable.size === cartitem.size && firstAvailable.color === cartitem.color) || false;
     }, [firstAvailable, cartItems])
 
-    console.log(isInCart)
 
 
     return (

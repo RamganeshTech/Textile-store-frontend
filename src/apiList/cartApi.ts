@@ -1,33 +1,28 @@
-import axios from "axios";
 import Api from "../apiClient/apiClient";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { CartItem } from "../Types/types";
 
 
 export const addToCart = async (cartData:any)=>{
-    console.log(cartData)
    let {data} = await Api.post('/cart/addtocart', {cartItems:cartData})
-   console.log(data)
+  //  console.log(data)
    return data.data
 }
 
 export const getCart = async ()=>{
     let {data} = await Api.get('/cart/getcartitems')
-   console.log(data)
+  //  console.log(data)
 
     return data.data
 }
 
 export const removeCartItems = async (cartdata:any)=>{
 try{
-  console.log(cartdata)
     let {data} = await Api.delete(`/cart/deletecartitem/${cartdata.productId}`,{
       data: {
         size: cartdata.size,
         color: cartdata.color
       }
     })
-  //  console.log(data)
 
     return data.data
 }
@@ -42,12 +37,12 @@ catch(err){
 export const removeCartQuantity = async ({id, quantity, size, color}:{id:string, quantity:number, size:string, color:string})=>{
   try{
       let {data} = await Api.patch(`/cart/removequantity/${id}`, {quantity, size, color})
-     console.log(data)
+    //  console.log(data)
       return data.data
   }
   catch(err){
     if(err instanceof Error){
-      console.log(err)
+      // console.log(err)
       throw new Error(err.message)
     }
   }

@@ -1,6 +1,6 @@
-import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import style from '../SingleProduct/SingleProduct.module.css'
-import { Button, CircularProgress, TextField } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import { FaStar } from 'react-icons/fa';
 import { useCreateReview, useDeleteReview, useEditReview } from '../../apiList/reviewApi';
 import { ReviewType } from '../../Types/types';
@@ -27,7 +27,6 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
     let user = useSelector((state: RootState) => state.user)
     // let user = { userId: "67e50bcd420994f6168c1020" }
 
-    // console.log("redux user", user)
 
     const [review, setReview] = useState<reviewprouducts>({
         reviewername: null,
@@ -50,7 +49,6 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         _id: ""
     });
 
-    console.log("reviewItems", reviewItems)
     const [reviewCreated, setReviewCreated] = useState<boolean>(false);
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
@@ -62,7 +60,6 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         const { name, value } = event.target;
 
         if (name === 'review') {
-            // console.log("description value", value)
             // Only restrict review (description) input to 500 chars
             if (value.length <= 500) {
                 setReview(prev => ({ ...prev, [name]: value }));
@@ -74,20 +71,14 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         }
     }
 
-    useEffect(()=>{
-        console.log(review)
-    }, [review])
-
     let { mutate: createReviewMutate, isSuccess, isPending: createReviewPending, isError: createReviewIsError, error: createReviewError, reset: createResetError } = useCreateReview()
-    let { mutate: editReviewMutate, isPending: editReviewPending, isError: editReviewIsError, error: editReviewError } = useEditReview()
-    let { mutate: deleteReviewMutate, isPending: deleteReviewPending, isError: deleteReviewIsError, error: deleteReviewError } = useDeleteReview()
+    let { mutate: editReviewMutate, isPending: editReviewPending, } = useEditReview()
+    let { mutate: deleteReviewMutate, isPending: deleteReviewPending } = useDeleteReview()
 
     // NEWLY ADDED
     let yourReview = useMemo(() => {
         if (!reviewItems) return null;
         return reviewItems.find(review => {
-            // console.log(review.userId, "review.userId")
-            // console.log(user.userId,"user.userId" )
             return review.userId === user.userId
         }
         )
@@ -96,11 +87,8 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
 
     const getCurrentReview = () => {
         // let review = reviewItems.find(review => {
-        //     // console.log(review.userId, "review.userId")
-        //     // console.log(user.userId,"user.userId" )
         //     return review.userId === user.userId
         // })
-        // console.log("is review avaible", review)
         if (yourReview) {
             setCurrentReview({
                 description: yourReview?.description as string,
@@ -158,10 +146,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
     }
 
     const handleEditReview = () => {
-        console.log("currentReview", currentReview)
-        console.log("review", review)
         if (currentReview) {
-            console.log("selectedStars in edit review update", selectedStars)
             if (!editReviewPending) {
                 editReviewMutate({
                     productId: currentProductId as string,
@@ -178,7 +163,6 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
     }
 
     const handleCancelUpdateReview = () => {
-        console.log("getting called")
         setIsEditing(false)
         // setReviewCreated(true)
         // setCurrentReview({
@@ -201,7 +185,6 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         })
         setSelectedStars(yourReview?.stars || 0)
         // Ensure form appears
-        console.log(yourReview)
     }
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -299,7 +282,6 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                                 onMouseEnter={() => setHoveredStars(star)} // Hover effect
                                 onMouseLeave={() => setHoveredStars(0)} // Reset hover
                                 onClick={() => {
-                                    console.log("Star clicked:", star);
                                     handleStarClick(star);
                                 }}
                             />

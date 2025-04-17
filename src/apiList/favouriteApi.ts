@@ -12,16 +12,15 @@ type FavouriteParamType = {
 
 const fetchFavourites = async ()=>{
     let {data} = await Api.get('/favourite/getfavouriteitems')
-   console.log(data)
+//    console.log(data)
 
     return data.data
 }
 
 
 const addToFavourite = async (favouriteItem:FavouriteParamType)=>{
-    console.log(favouriteItem)
     let {data} = await Api.post('/favourite/addtofavourite', favouriteItem)
-   console.log(data)
+//    console.log(data)
 
     return data.data
 }
@@ -29,7 +28,7 @@ const addToFavourite = async (favouriteItem:FavouriteParamType)=>{
 
 const removeFromFavourite = async (favouritedata:{productId:String})=>{
     let {data} = await Api.delete('/favourite/deletefavouriteitem', {data: favouritedata})
-   console.log(data)
+//    console.log(data)
 
     return data.data
 }

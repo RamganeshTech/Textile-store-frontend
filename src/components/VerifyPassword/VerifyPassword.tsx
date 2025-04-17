@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { TextField, Button, CircularProgress, Box, IconButton } from "@mui/material";
 import styles from "./VerifyPassword.module.css";
-import { data, Navigate, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import { useVerifyPassword } from "../../apiList/userprofileApi";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
@@ -17,7 +17,7 @@ const VerifyPassword = () => {
   const [showPassword, setShowPassword] = useState(false)
 
 
-  let { mutate, isPending, isError, error, reset, data } = useVerifyPassword()
+  let { mutate, isPending, data } = useVerifyPassword()
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,23 +48,14 @@ const VerifyPassword = () => {
           setErrorMessage(message)
         }
       })
-      console.log("Password Changed:", form);
     }
     catch (error) {
       if (error instanceof Error) {
-        console.log(error.message)
         setErrorMessage(error.message)
       }
 
     }
   };
-
-
-  // console.log(error, isError)
-  console.log(data)
-  if (isError) {
-    console.log(error, isError)
-  }
 
   return (
     <div className={styles.container}>

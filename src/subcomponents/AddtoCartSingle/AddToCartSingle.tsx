@@ -1,14 +1,11 @@
-import React, { ReactNode, useMemo, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 // import styles from '../../components/AddToCart/AddToCart.module.css'
 import styles from '../../pages/AddToCart/AddToCart.module.css'
 import RemoveIcon from '@mui/icons-material/Remove';
 import { Button, CircularProgress, IconButton } from '@mui/material';
 import { CartItem } from '../../Types/types';
 import AddIcon from '@mui/icons-material/Add';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../../store/store';
 import { useAddToCart, useRemoveFromCart, useRemoveQuantityFromCart } from '../../apiList/cartApi';
-import { Link, useNavigate } from 'react-router-dom';
 
 
 type AddToCartSingleProps = {
@@ -17,9 +14,6 @@ type AddToCartSingleProps = {
 }
 
 const AddToCartSingle = ({ item } : AddToCartSingleProps) => {
-  
-  let dispatch = useDispatch<AppDispatch>()
-  let navigate = useNavigate()
 
   const [tempQuantity, setTempQuantity] = useState<number>(item.quantity)
 
@@ -40,7 +34,6 @@ const AddToCartSingle = ({ item } : AddToCartSingleProps) => {
     const currentQuantity = item.quantity;
     // const maxStock = item.productId.availableStocks;
   
-    // console.log(maxStock)
     if (action === "increment" && tempQuantity < availableStock && !addcartPending) {
       setTempQuantity(p=> Math.min((p as number)+1, availableStock))
       addCartmutate({ productId: id, quantity: 1, price: item?.price , color:item.color, size:item.size }); // Send only the increment change

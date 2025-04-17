@@ -1,22 +1,20 @@
 import React, { useEffect, useRef, useState } from 'react'
 import style from './Navbar.module.css'
 // import MenuIcon from '@mui/icons-material/Menu';
-import SearchIcon from '@mui/icons-material/Search';
 import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined';
 import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
 import userlogo from '../../assets/userlogo.webp'
-import { data, Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
-import { Button, CircularProgress, IconButton } from '@mui/material';
+import { CircularProgress, IconButton } from '@mui/material';
 import { AppDispatch, RootState } from '../../store/store';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
 import { setUser } from '../../slices/user';
 import { useDispatch } from 'react-redux';
 import { logoutUser } from '../../apiList/userauthApi';
-import { CgPlayButtonO } from 'react-icons/cg';
-import { adminLogout, useAdminLogout } from '../../apiList/adminApi';
+import { useAdminLogout } from '../../apiList/adminApi';
 import { ListAltOutlined, Logout } from '@mui/icons-material';
 import AddIcon from '@mui/icons-material/Add';
 import { setAdminLogin } from '../../slices/admin';
@@ -25,7 +23,6 @@ const Navbar: React.FC = () => {
 
   const isAuthenticated = useSelector((state: RootState) => state.user.isAuthenticated)
 
-  const [isDropdownVisible, setDropdownVisible] = useState<Boolean>(false);
   const [ismainMenuVisble, setIsmainMenuVisble] = useState<Boolean>(false);
   const [isAdminPage, setIsAdminPage] = useState<Boolean>(false);
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState<Boolean>(false);

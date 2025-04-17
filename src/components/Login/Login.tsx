@@ -20,10 +20,10 @@ const Login: React.FC = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
 
-  const [address, setAddress] = useState('');
-  const [pincode, setPincode] = useState('');
-  const [indianState, setIndianState] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
+  const [address,] = useState('');
+  const [pincode] = useState('');
+  const [indianState] = useState('');
+  const [phoneNumber] = useState('');
 
   // const [rememberMe, setRememberMe] = useState(false);
 
@@ -45,7 +45,6 @@ const Login: React.FC = () => {
     setLoading(true)
     try {
       const data = await loginUser(email, password);
-      console.log("User logged in:", data);
 
       if (!data.user || !data.user.userId) {
         throw new Error("Invalid response: Missing userId");
@@ -59,7 +58,6 @@ const Login: React.FC = () => {
 
     } catch (err: any) {
       const msg = err?.response?.data?.message || err?.message || "Something went wrong please try again";
-      console.error("Login error:", err);
       // dispatch(setUser({ userId: null, userName:null, email: null, isAuthenticated:false }));
       setError(msg);
     } finally {
@@ -182,7 +180,6 @@ const Login: React.FC = () => {
       setName("")
       dispatch(setUser({ userId: data.user.userId, userName: data.user.userName, email: data.user.email, isAuthenticated: true, address: data.user.address, phoneNumber: data.user.phoneNumber }));
 
-      console.log("User registered:", data);
       // alert("Registration successful");
       setError(null);
       navigate('/')
@@ -192,7 +189,6 @@ const Login: React.FC = () => {
       //   "An unexpected error occurred during registration.";
       const msg = err?.response?.data?.message || err?.message || "Something went wrong please try again";
 
-      console.error("Registration error:", msg);
       dispatch(setUser({ userId: null, userName: null, email: null, isAuthenticated: false, address: null, phoneNumber: null }));
       setError(msg);
     }

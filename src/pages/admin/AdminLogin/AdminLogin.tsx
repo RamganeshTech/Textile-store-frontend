@@ -1,15 +1,12 @@
 import { Button, CircularProgress, IconButton, TextField } from '@mui/material'
-import React, { ChangeEvent, FormEvent, useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import style from './AdminLogin.module.css'
-import { useForm } from 'react-hook-form'
 import { validateLogin } from '../../../Utils/validation'
-import SuccessAlert from '../../../Shared/SuccessAlert/SuccessAlert'
 import { useNavigate } from 'react-router-dom'
 import { useAdminLogin } from '../../../apiList/adminApi'
 import { Visibility, VisibilityOff } from '@mui/icons-material'
 import { Box } from '@mui/material';
-import { useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '../../../store/store'
+import { AppDispatch } from '../../../store/store'
 import { useDispatch } from 'react-redux'
 import { setAdminLogin } from '../../../slices/admin'
 
@@ -20,9 +17,8 @@ import { setAdminLogin } from '../../../slices/admin'
 
 const AdminLogin = () => {
 
-    let admin = useSelector((state:RootState)=> state.admin)
     let dispatch = useDispatch<AppDispatch>()
-    let { mutate: adminLogin, isPending, error, isError, isSuccess , data:adminLoginData} = useAdminLogin()
+    let { mutate: adminLogin, isPending, error, isError, isSuccess } = useAdminLogin()
 
     const [showPassword, setShowPassword] = useState<boolean>(false)
 
@@ -48,7 +44,6 @@ const AdminLogin = () => {
 
             adminLogin(adminlogin, {
                 onSuccess:(data)=>{
-                console.log(data)
 
                     dispatch(setAdminLogin({email:data.email, isAuthenticated:data.isAuthenticated}))
                     navigate('../admin/addproduct')
@@ -70,7 +65,6 @@ const AdminLogin = () => {
             //     msg = (error as any)?.response?.data?.message || (error as any)?.message
             // }
             dispatch(setAdminLogin({email:null, isAuthenticated:(error as any)?.response?.data?.isAuthenticated}))
-            console.log("error from adminlogin", error)
         }
     }
 

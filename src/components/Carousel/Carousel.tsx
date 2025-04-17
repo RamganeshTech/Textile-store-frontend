@@ -58,7 +58,6 @@ const Carousel = () => {
 
       // const calculatedHeight = `calc(100vh - ${navbarHeight}px)`;
       // carouselRef.current.style.height = calculatedHeight;
-      // console.log("Calculated Height: ", calculatedHeight);
 
       if (window.innerWidth <= 426) {
         // For mobile: Set fixed height

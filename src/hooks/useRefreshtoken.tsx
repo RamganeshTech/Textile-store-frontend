@@ -5,7 +5,7 @@ const useRefreshtoken =  () => {
     useEffect(()=>{
         const getRefreshtoken = async ()=>{
            try{
-            let data:any = await getRefreshtoken()
+            await getRefreshtoken()
            }
            catch(error){
             if(error instanceof Error){

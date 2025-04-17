@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import style from './PaymentFailure.module.css'
 import { useParams, useSearchParams } from 'react-router-dom';
 const PaymentFailure = () => {
@@ -23,7 +23,7 @@ const PaymentFailure = () => {
           </div>
           <h2 className={style.heading}>Payment Failed</h2>
           <p>Transaction ID: {merchantTransactionId}</p>
-          <p className={style.message}>Something went wrong. Please try again.</p>
+          <p className={style.message}>{paymentStatus || "Something went wrong. Please try again."}</p>
         </div>
       );
 }

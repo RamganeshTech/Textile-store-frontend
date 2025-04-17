@@ -1,12 +1,9 @@
-import React from 'react'
 import style from '../SingleProduct/SingleProduct.module.css'
-import { ProductType, ReviewType } from '../../Types/types'
+import {  ReviewType } from '../../Types/types'
 import StarRating from '../StarRating/StarRating'
-import { useFetchReview } from '../../apiList/reviewApi'
 import { CircularProgress } from '@mui/material'
 
 type OthersReviewProps = {
-    product: ProductType,
     reviewItems: ReviewType[],
     reviewIsError: boolean,
     reviewIsLoading: boolean,
@@ -22,11 +19,7 @@ interface SingleReviewType {
     profileImg: string,
 }
 
-const OthersReview = ({ product, reviewItems, reviewError, reviewIsError, reviewIsLoading }: OthersReviewProps) => {
-
-console.log(reviewItems)
-// console.log("reviewError", reviewError)
-// console.log("reviewIsError", reviewIsError)
+const OthersReview = ({ reviewItems, reviewError, reviewIsError, reviewIsLoading }: OthersReviewProps) => {
     return (
         <section className={`${style.othersMainReview}`}>
             {/* <p> See Others Review</p> */}

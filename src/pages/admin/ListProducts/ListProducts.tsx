@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { useEditProduct, useFetchProducts } from '../../../apiList/productApi'
+import { useEffect, useState } from 'react'
+import { useFetchProducts } from '../../../apiList/productApi'
 import { useSelector } from 'react-redux'
 import { AppDispatch, RootState } from '../../../store/store'
 import { useDispatch } from 'react-redux'
@@ -26,11 +26,6 @@ const ListProducts = () => {
     });
 
     const [editProductId, setEditProductId] = useState<string | null>(null)
-
-
-    useEffect(()=>{
-        console.log("formData",formData)
-       }, [formData])
 
     // Sync React Query data to Redux
     useEffect(() => {

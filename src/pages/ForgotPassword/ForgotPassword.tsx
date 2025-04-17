@@ -9,7 +9,6 @@ const ForgotPassword = () => {
 
     let navigate = useNavigate()
 
-    const [isResetPassword, setIsResetPassword] = useState(false);
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const [showAlert, setShowAlert] = useState<boolean>(false);
@@ -38,7 +37,6 @@ const ForgotPassword = () => {
                 body: JSON.stringify({ email: emailInput }),
             });
 
-            console.log(response)
 
             const data = await response.json();
             if (response.ok) {
@@ -46,7 +44,6 @@ const ForgotPassword = () => {
                 setAlertMessage("✅ Password reset link sent to your email.")
                 setShowAlert(true)
                 setAlertContext('email')
-                setIsResetPassword(true); // Show reset password form
             } else {
                 setAlertContext('email')
                 setAlertMessage(`❌ ${data.message}`)
@@ -54,11 +51,10 @@ const ForgotPassword = () => {
                 // alert(`❌ ${data.message}`);
             }
         } catch (error) {
-            console.error("Forgot Password Error:", error);
             if (error instanceof Error) {
                 setAlertContext('email')
                 setShowAlert(true)
-                let message =  (error as any)?.response?.data?.message ||  error?.message || "Something went wrong. Please try again."
+                let message = (error as any)?.response?.data?.message || error?.message || "Something went wrong. Please try again."
                 setAlertMessage(`❌ ${message}`)
             }
             // alert("❌ Something went wrong. Please try again.");
@@ -102,7 +98,6 @@ const ForgotPassword = () => {
             });
 
             const data = await response.json();
-            console.log("data", data)
             if (response?.ok) {
                 // setIsPasswordError(false)
                 // alert("✅ Password reset successful! Redirecting Please click ok to redirect to login page");
@@ -110,8 +105,7 @@ const ForgotPassword = () => {
                 setAlertMessage(`✅ Password reset successful! 
                     Redirecting Please click ok to redirect to login page`)
                 setShowAlert(true)
-                setIsResetPassword(true);
-                window.location.href = "/login"; // Redirect to login page
+                navigate("/login"); // Redirect to login page
             } else {
                 // setIsPasswordError(true)
                 setAlertContext('reset')
@@ -120,15 +114,13 @@ const ForgotPassword = () => {
                 // alert(`❌ ${data.message}`);
             }
         } catch (error) {
-            console.error("Reset Password Error:", error);
             // setIsPasswordError(true)
             if (error instanceof Error) {
-                console.log("custome error", error.message)
                 setAlertContext('reset')
                 // setAlertMessage(`❌ ${error.message}` || "❌ Something went wrong. Please try again.")
                 setShowAlert(true)
 
-                let message =  (error as any)?.response?.data?.message ||  error?.message || "Something went wrong. Please try again."
+                let message = (error as any)?.response?.data?.message || error?.message || "Something went wrong. Please try again."
 
                 setAlertMessage(`❌ ${message}`)
             }
@@ -151,7 +143,7 @@ const ForgotPassword = () => {
                     onConfirm={() => {
                         setShowAlert(false);
                         setAlertContext(null);
-                        if(!alertMessage.includes("❌")){
+                        if (!alertMessage.includes("❌")) {
                             navigate("/login");
                         }
                     }}

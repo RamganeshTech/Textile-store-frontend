@@ -1,4 +1,3 @@
-import React from 'react'
 import style from './EditAccountinfo.module.css'
 import { List, ListItem, ListItemText, Divider } from "@mui/material";
 import { useNavigate } from 'react-router-dom';

@@ -1,7 +1,6 @@
-import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
+import  { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import style from './AllProducts.module.css'
-import { CheckBox, Close, SearchOffOutlined, SearchOutlined } from '@mui/icons-material'
-import ProductsList from '../../components/ProductsList/ProductsList'
+import { SearchOutlined } from '@mui/icons-material'
 import { IconButton, Radio, TextField } from '@mui/material'
 // import products from '../../Utils/product'
 import ProductsFullList from '../../components/ProductsFullList/ProductsFullList'
@@ -9,12 +8,9 @@ import Checkbox from '@mui/material/Checkbox';
 import TuneIcon from '@mui/icons-material/Tune';
 import { Button } from '@mui/material';
 import FilterSideBar from '../../components/FilterSidebar/FilterSideBar'
-import { useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '../../store/store'
-import { useDispatch } from 'react-redux'
-import { useFetchProducts, useFilterProuducts, useSearchProducts } from '../../apiList/productApi'
+import { useFetchProducts, useSearchProducts } from '../../apiList/productApi'
 import { ProductType } from '../../Types/types'
-import axios, { AxiosError } from 'axios'
+import axios from 'axios'
 import Loading from '../../components/LoadingState/Loading'
 import { arrival, availabilities, categories, sizes } from '../../constants/filterConstants'
 
@@ -41,7 +37,7 @@ const AllProducts = () => {
 
   const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('');
+  // const [selectedCategory, setSelectedCategory] = useState<string>('');
 
 
   const [filterOptions, setFilterOptions] = useState<FilterOptionsType>({
@@ -54,26 +50,22 @@ const AllProducts = () => {
     arrival: null
   })
 
-  let dispatch = useDispatch<AppDispatch>()
 
   // const products = useSelector((state:RootState)=> state.products.products)
-  let { data: products, isLoading, isError, error } = useFetchProducts()
+  let { data: products, isLoading, } = useFetchProducts()
 
-  let { mutate: searchMutate, data: searchData, isError: searchIsError, error: searchError, isPending: searchPending } = useSearchProducts()
+  let { mutate: searchMutate, data: searchData, error: searchError } = useSearchProducts()
   // searchData = []
   // products = []
   // let { mutate: applyFiltersMutate, data: filterData, isError: filterIsError, error: filterError, isPending: filterPending } = useFilterProuducts()
 
 
-  // console.log(products)
 
-  // console.log("searcherror", searchError)
   const handleSearch = () => {
     searchMutate({ search: searchTerm, filter: filterOptions })
   }
 
 
-  // console.log("searchTerm", searchTerm)
 
   function getErrorMessage(error: unknown): string {
     if (axios.isAxiosError(error)) {
@@ -94,15 +86,6 @@ const AllProducts = () => {
 
 
   const maxPrice = useMemo(() => {
-  //   console.log(products)
-  //   if(products){
-  //     let maikjsa = products.length>0 && products?.map((p:ProductType)=>{
-  //        console.log(p)
-  //        return p.price
-  //      })
-  //  console.log(maikjsa && maikjsa)
-  //      console.log(Math.max(...maikjsa, 100000))
-  //   }
     return products?.length > 0
       ? Math.max(...products?.map((p: ProductType) => p.price))
       : 10000;  // Default max if no products are there
@@ -111,18 +94,15 @@ const AllProducts = () => {
   const minPrice = useMemo(() => 0, [])
 
 
-  // console.log("searchData", searchData)
 
   useEffect(() => {
-    console.log("getting isnsee of it")
-    console.log(searchData)
+   
     let dataToUse = searchData || products
     if (dataToUse?.length > 0) {
       const prices = dataToUse?.map((p: any) => p.price);
       const minPrice = Math.min(...prices);
       const maxPrice = Math.max(...prices);
 
-      // console.log(maxPrice)
 
       setFilterOptions(prev => ({
         ...prev,
@@ -182,7 +162,6 @@ const AllProducts = () => {
               }}
 
               onChange={(e) => {
-                // console.log(e.target.value)
                 setSearchTerm(e.target.value)
               }}
 
@@ -208,7 +187,7 @@ const AllProducts = () => {
 
 
         {/* SIDEBAR FILTER */}
-        <FilterSideBar ref={sidebarRef} maxPrice={maxPrice} minPrice={minPrice} handleSearch={handleSearch} handleRangeChange={handleRangeChange} searchTerm={searchTerm} filterOptions={filterOptions} setFilterOptions={setFilterOptions} sidebarVisible={sidebarVisible} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} setSidebarVisible={setSidebarVisible} />
+        <FilterSideBar ref={sidebarRef} maxPrice={maxPrice} minPrice={minPrice} handleSearch={handleSearch} handleRangeChange={handleRangeChange}  filterOptions={filterOptions} setFilterOptions={setFilterOptions} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible} />
 
         {/* THE BELOW FILTER IS FOR LARGE DEIVCES */}
         <section className={`${style.filters}`}>
@@ -265,7 +244,6 @@ const AllProducts = () => {
               <p>Product Size</p>
 
               {sizes && sizes.map(item =>{
-  // console.log("size item", item)
   return <section key={item}>
     <Checkbox itemID={item} color='primary' checked={filterOptions.sizes.includes(item)} onChange={(e) => setFilterOptions(p => {
       return {

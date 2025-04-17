@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import style from './ProductsList.module.css'
 
 import EastIcon from '@mui/icons-material/East';

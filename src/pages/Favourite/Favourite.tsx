@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styles from "./Favourite.module.css";
 import { FavouriteItem } from "../../Types/types";
 // import { favouriteItems } from "../../Utils/product";
@@ -17,9 +17,8 @@ const FavouriteItems: React.FC = () => {
   // let favouritesStore = useSelector((state:RootState)=> state.favourite.favourites)
 
   let {data:favourites, isLoading, isError, error} = useFetchFavourite()
-      const { data: products, isLoading:productLoading, isError:isProductError, error:productError } = useFetchProducts();
+      const { data: products } = useFetchProducts();
   
-  // console.log(favourites)
 
 
   // if(isLoading){

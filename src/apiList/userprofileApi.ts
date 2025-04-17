@@ -4,11 +4,9 @@ import { userAddress } from "../slices/user";
 
 export const verifyPassword = async(password:string)=>{
     try {
-        console.log("verifypassword api password",password)
         const response = await Api.patch(`/profile/verifypassword`,{password} );
       return response.data;
     } catch (error: any) {
-      console.log(error)
       throw error;
     }
   }

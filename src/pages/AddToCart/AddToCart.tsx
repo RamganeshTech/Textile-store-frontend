@@ -5,8 +5,7 @@ import { Button } from "@mui/material";
 
 import { CartItem } from "../../Types/types";
 import AddToCartSingle from "../../subcomponents/AddtoCartSingle/AddToCartSingle";
-import { AppDispatch, RootState } from "../../store/store";
-import { useSelector } from "react-redux";
+import { AppDispatch } from "../../store/store";
 import { useDispatch } from "react-redux";
 import { useFetchCart } from "../../apiList/cartApi";
 import Loading from "../../components/LoadingState/Loading";
@@ -17,12 +16,11 @@ const AddToCart: React.FC = () => {
   // const [cart, setCart] = useState<CartItem[]>(initialCart);
 
   // let reduxCart = useSelector((state: RootState) => state.cart.carts)
-  let { data: cart, isLoading, isError, error } = useFetchCart()
+  let { data: cart, isLoading, } = useFetchCart()
   let navigate = useNavigate()
 
   let dispatch = useDispatch<AppDispatch>()
 
-  console.log("cart Items", cart)
 
   const totalAmount = useMemo(() => {
     if (!cart) return 0;

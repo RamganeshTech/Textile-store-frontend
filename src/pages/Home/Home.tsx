@@ -1,5 +1,5 @@
 // import React from 'react'
-import { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import style from './Home.module.css'
 import Carousel from "../../components/Carousel/Carousel";
 import SubCarousel from "../../components/Subcarousel/SubCarousel";

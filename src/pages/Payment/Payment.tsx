@@ -1,14 +1,10 @@
-import React, { ChangeEvent, FormEvent, useEffect, useMemo, useState } from 'react'
+import React, { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import style from './Payment.module.css'
 import { Button, TextField } from '@mui/material'
-import { validateChangePassword, validateDeliveryDetails } from '../../Utils/validation'
+import { validateDeliveryDetails } from '../../Utils/validation'
 import { useSelector } from 'react-redux'
-import { AppDispatch, RootState } from '../../store/store'
-import { useFetchCart } from '../../apiList/cartApi'
+import { RootState } from '../../store/store'
 
-import { useDispatch } from "react-redux";
-import { setItems } from '../../slices/buyItems';
-import { useCreateOrder } from '../../apiList/paymentApi'
 
 export interface BookinginfoType {
     username: string

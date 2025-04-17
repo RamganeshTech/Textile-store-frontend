@@ -5,8 +5,6 @@ import { useDispatch } from 'react-redux';
 import { useChangeAddress } from '../../apiList/userprofileApi';
 import { Button, CircularProgress, TextField } from '@mui/material';
 import { validateAddress } from '../../Utils/validation';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
 
 const inputFields = [
     { name: "doorno", placeholder: "Door No" },
@@ -19,7 +17,6 @@ const inputFields = [
 
 const EditAddress = () => {
 
-    let user = useSelector((state:RootState)=> state.user.address)
 
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [globalError, setGlobalError] = useState<string | null>(null);
@@ -36,7 +33,7 @@ const EditAddress = () => {
     })
 
 
-    let { mutate, isPending, isError, error, data, isSuccess } = useChangeAddress();
+    let { mutate, isPending, isError, error } = useChangeAddress();
 
     let dispatch = useDispatch()
 
@@ -68,7 +65,6 @@ const EditAddress = () => {
             mutate(address, {
                 onSuccess: (data) => {
                   dispatch(setUser({ address: data.data }));
-                  console.log(data.data)
                   setSuccessMessage("Address updated successfully!");
 
 
@@ -89,17 +85,11 @@ const EditAddress = () => {
     }
 
       useEffect(()=>{
-        console.log("isError boolean", isError)
         if(isError){
             let message = (error as any)?.response?.data?.message || error?.message || "Something went wrong"
             setGlobalError(message)
         }
       }, [isError])
-
-
-      useEffect(()=>{
-        console.log("partial errors", errors)
-      }, [errors])
 
     return (
         <div className={styles[`container`]}>

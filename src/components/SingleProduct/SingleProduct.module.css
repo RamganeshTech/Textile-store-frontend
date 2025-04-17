@@ -55,10 +55,6 @@
     /* border: 2px solid red; */
 }
 
-.singleSideImg:focus {
-    /* outline: 2px solid #0a0a0a; */
-}
-
 .mainImgContainer {
     height: 100%;
     width: 100%;

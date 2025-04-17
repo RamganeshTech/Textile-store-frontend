@@ -1,11 +1,10 @@
-import { useIsMutating, useMutation, useQuery } from "@tanstack/react-query"
+import {  useMutation, useQuery } from "@tanstack/react-query"
 import Api from "../apiClient/apiClient"
-import { TrySharp } from "@mui/icons-material"
 
 export const adminLogin = async (loginData:{email:string, password:string})=>{
    try{
     const {data}= await Api.post('/admin/adminlogin', loginData)
-    console.log(data)
+    // console.log(data)
     return data
    }
    catch(error){
@@ -16,7 +15,7 @@ export const adminLogin = async (loginData:{email:string, password:string})=>{
 export const adminLogout = async ()=>{
   try{
     const {data}= await Api.post('/admin/adminlogout')
-    console.log(data)
+    // console.log(data)
     return data
   }
   catch(error){
@@ -27,7 +26,7 @@ export const adminLogout = async ()=>{
 export const isAdminAuthenticated = async ()=>{
     try{
         const {data}= await Api.get('/admin/isauthenticated')
-        console.log(data)
+        // console.log(data)
         return data
       }
       catch(error){

@@ -1,6 +1,5 @@
 // SuccessAlert.tsx
 import { Button } from "@mui/material";
-import React from "react";
 
 type Props = {
   message: string;

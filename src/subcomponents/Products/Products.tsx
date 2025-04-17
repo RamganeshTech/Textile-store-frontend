@@ -13,7 +13,6 @@ import StarRating from '../../components/StarRating/StarRating';
 import { useAddToCart, useFetchCart, useRemoveFromCart } from '../../apiList/cartApi';
 import { useAddToFavourite, useFetchFavourite, useRemoveFavourite } from '../../apiList/favouriteApi';
 import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
-import { AxiosError } from 'axios';
 
 type singleProductprop = {
     product: ProductType
@@ -27,7 +26,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
     // const [isFavourite, setIsFavourite] = useState<boolean>(false)
     // const [isInCart, setIsInCart] = useState(false);
 
-    const [rating, setRating] = useState<number>(product.reviewStar);
+    const [rating] = useState<number>(product.reviewStar);
 
     const { data: cartItems } = useFetchCart();
     const { mutate: removeCartmutate, isPending: removeCartPending } = useRemoveFromCart();
@@ -38,7 +37,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
     let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, reset:addFavResetError  } = useAddToFavourite()
 
-    const { data: favourites, isLoading, isError } = useFetchFavourite();
+    const { data: favourites } = useFetchFavourite();
 
     const handleFavourite = () => {
 
@@ -52,14 +51,15 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         // const selectedColor = firstAvailable?.colors.find(c => c.availableStock > 0)?.color || '';
 
         // if (!selectedSize || !selectedColor) {
-        //     console.warn("No available size/color found for this product.");
         //     return;
         // }
 
-        if (isFavourite) {
+        if (isFavourite && !removeFavPending) {
             removeFavourite({ productId: product._id, });
         } else {
-            addFavourite({ productId: product._id,});
+            if(!addFavPending){
+                addFavourite({ productId: product._id,});
+            }
         }
         // setIsFavourite(!isFavourite);
     };
@@ -88,7 +88,6 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
     }, [favourites, product._id]);
 
     const handleCart = () => {
-        console.log("addCartPending", addCartPending)
         if (isInCart && !removeCartPending) {
             removeCartmutate({productId: product._id, size: firstSelectedSize, color:firstSelectedColor });
         } else if(!addCartPending) {
@@ -97,8 +96,6 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         // setIsInCart(!isInCart);
     };
 
-    // console.log(addCartError && (AxiosError(addCartError))?.status)
-    // console.log(addCartError)
     return (
         <div className={`${style.mainProduct}`}>
 

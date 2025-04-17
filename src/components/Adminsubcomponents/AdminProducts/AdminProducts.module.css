@@ -100,8 +100,6 @@
     overflow: hidden;
   }
 
-
-  
   .price {
     font-size: clamp(1rem, 1.5vw, 1.5rem); /* ~20px */
     color: #e63946; 

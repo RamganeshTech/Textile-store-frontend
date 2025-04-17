@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { useForm, useFieldArray, SubmitHandler } from "react-hook-form";
+import { useForm, useFieldArray } from "react-hook-form";
 import { useCreateProduct, useEditProduct, useUploadImage } from "../../../apiList/productApi";
 import styles from "./AddProduct.module.css";
 import { CircularProgress, TextField } from "@mui/material";
 import { Button } from "@mui/material";
-import Loading from "../../../components/LoadingState/Loading";
 import CreateProductSuccess from "../../../Shared/CreateProductSuccess/CreateProductSuccess";
 // import { AddOutlined } from "@mui/icons-material";
 
@@ -213,12 +212,8 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
 
       // alert("Product Created!");
     } catch (err) {
-      console.error("Error uploading images or creating product:", err);
     }
   };
-
-  // console.log("imageUploadLoading", imageUploadLoading)
-
 
   return (
     <div className="w-[100vw] !p-[20px] !mt-[70px] bg-[#fafafa]">

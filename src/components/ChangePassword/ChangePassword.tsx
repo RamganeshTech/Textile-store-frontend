@@ -3,13 +3,11 @@ import { TextField, Button, CircularProgress, Box, IconButton } from "@mui/mater
 import styles from "./ChangePassword.module.css";
 import { validateChangePassword } from "../../Utils/validation";
 import { useChangePassword } from "../../apiList/userprofileApi";
-import { useNavigate } from "react-router-dom";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const ChangePassword: React.FC = () => {
 
 
-  let navigate = useNavigate()
 
   const [form, setForm] = useState({
     currentPassword: "",
@@ -26,7 +24,7 @@ const ChangePassword: React.FC = () => {
 
 
 
-  let { mutate, isPending, error, isError } = useChangePassword();
+  let { mutate, isPending } = useChangePassword();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -40,7 +38,6 @@ const ChangePassword: React.FC = () => {
       mutate(form, {
         onSuccess: (data) => {
           if (data.ok) {
-            console.log(data.message)
 
             setErrorMessage("")
             setSuccessMessage(data.message);
@@ -59,16 +56,10 @@ const ChangePassword: React.FC = () => {
     }
     catch (error) {
       if (error instanceof Error) {
-        console.log(error.message)
         setSuccessMessage("")
         setErrorMessage(error.message)
       }
     };
-  }
-
-
-  if (isError) {
-    console.log(error)
   }
 
   return (

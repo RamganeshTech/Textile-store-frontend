@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Button, CircularProgress } from "@mui/material";
 import styles from "./UpdateUserEmail.module.css";
-import { useNavigate } from "react-router-dom";
 import { useChangeEmail } from "../../../apiList/userprofileApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../slices/user";
@@ -12,7 +11,7 @@ const UpdateUserEmail: React.FC = () => {
 
 
 
-  let { mutate, isPending, isError, error, data } = useChangeEmail();
+  let { mutate, isPending, isError, error } = useChangeEmail();
 
   let dispatch = useDispatch()
 
@@ -31,7 +30,6 @@ const UpdateUserEmail: React.FC = () => {
       mutate(email, {
         onSuccess: (data) => {
           if (data.ok) {
-            console.log(data.message)
             dispatch(setUser(({email: email})))
 
             setSuccessMessage(data.message);
@@ -50,18 +48,9 @@ const UpdateUserEmail: React.FC = () => {
       // (that is outiside of the mutate will be caught here the bakcend will be caught in 
       // error variable itself form the mutation)
       if (error instanceof Error) {
-        console.log(error.message)
       }
     };
   }
-
-
-  if (isError) {
-    console.log(error, isError)
-  }
-
-  console.log(data)
-
   return (
     <div className={styles[`container`]}>
       <h2 className={styles[`title`]}>Change Email</h2>

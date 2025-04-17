@@ -1,6 +1,6 @@
-import { ChangeEvent, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import style from './SingleProduct.module.css'
-import { Button, CircularProgress, IconButton, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton } from '@mui/material';
 
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -13,10 +13,8 @@ import { CartItem, ProductType } from '../../Types/types';
 // import products from '../../Utils/product';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { FaStar } from "react-icons/fa";
 import StarRating from '../StarRating/StarRating';
-import { useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '../../store/store';
+import { AppDispatch } from '../../store/store';
 import { useAddToCart, useFetchCart, useRemoveFromCart, useRemoveQuantityFromCart } from '../../apiList/cartApi';
 import { useAddToFavourite, useFetchFavourite, useRemoveFavourite } from '../../apiList/favouriteApi';
 import { useFetchProducts } from '../../apiList/productApi';
@@ -28,21 +26,15 @@ import { useDispatch } from 'react-redux';
 import Loading from '../LoadingState/Loading';
 import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
 
-type reviewprouducts = {
-    reviewername: (string | null),
-    review: (string | null),
-    email: (string | null),
-    stars: (number | null)
-}
 
 const SingleProduct = () => {
     let { id: paramsid } = useParams()
     let navigate = useNavigate()
     const dispatch = useDispatch<AppDispatch>();
 
-    const { data: products, isLoading: singleProductLoading, error } = useFetchProducts();
+    const { data: products, isLoading: singleProductLoading } = useFetchProducts();
 
-    let { data: cartItems, isLoading: cartLoading, isError: cartIsError, error: cartError } = useFetchCart()
+    let { data: cartItems } = useFetchCart()
 
     let { data: reviewItems, isLoading: reviewIsLoading, isError: reviewIsError, error: reviewError } = useFetchReview(paramsid as string)
 
@@ -74,9 +66,9 @@ const SingleProduct = () => {
     const { mutate: removeFromCartMutation, isPending: removeCartPending } = useRemoveFromCart();
     const { mutate: removeSingleQuantity, isPending: removeQuantiytyPending, error: removeQuantityError, isError: isRemoveQuanError, reset: removeFavQuanReset } = useRemoveQuantityFromCart()
 
-    const { data: favourites, isLoading: favLoading, isError: favIsError } = useFetchFavourite();
-    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, reset: addFavResetError } = useAddToFavourite()
-    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, reset: removeFavResetError } = useRemoveFavourite()
+    const { data: favourites,  } = useFetchFavourite();
+    let { mutate: addFavourite, isError: addFavIsError, error: addFavError, reset: addFavResetError } = useAddToFavourite()
+    let { mutate: removeFavourite, isError: removeFavIsError, error: removeFavError, reset: removeFavResetError } = useRemoveFavourite()
 
     useEffect(() => {
         setCustomLoading(true)
@@ -96,13 +88,11 @@ const SingleProduct = () => {
             }
             setCustomLoading(false)
 
-            console.log("singleProduct", product)
         }
 
 
     }, [products, paramsid]);
 
-    console.log("favourites", favourites)
 
     useEffect(() => {
         if (cartItems && product) {
@@ -134,7 +124,6 @@ const SingleProduct = () => {
         if (favourites && favourites.items && product) {
             return favourites?.items.some(
                 (fav: any) => {
-                    // console.log("favourites", fav.productId)
                     return fav?.productId?._id === product._id
                 }
 
@@ -151,8 +140,6 @@ const SingleProduct = () => {
     }
 
     const handleFavourite = () => {
-        // console.log("size from favourties", selectedSize)
-        // console.log("colors from favourties", selectedColor)
         if (isFavourite) {
 
             if (product)
@@ -169,7 +156,6 @@ const SingleProduct = () => {
 
         if (!product) return;
 
-        // console.log(maxStock)
         if (action === "increment" && currentQuantity < availableStock) {
             setCurrentQuantity(p => Math.min((p as number) + 1, availableStock))
             addCartmutate({ productId: id, quantity: 1, price: product?.price, color: selectedColor, size: selectedSize }); // Send only the increment change
@@ -194,9 +180,6 @@ const SingleProduct = () => {
             setSelectedImage(selectedColorImages[0]);
         }
     }, [selectedColorImages]);
-
-    console.log("reviewError", reviewError)
-    // console.log(reviewIsLoading)
 
     if (singleProductLoading || customLoading) {
         return <div className='mt-[70px] w-[100vw] h-[100vh]  flex items-center justify-center'>
@@ -342,7 +325,7 @@ const SingleProduct = () => {
                             {product.sizeVariants
                                 .find(variant => variant.size === selectedSize)
                                 ?.colors.map(colorObj => {
-                                    const colorDetails = product.colorVariants.find(cv => cv.color === colorObj.color);
+                                    // const colorDetails = product.colorVariants.find(cv => cv.color === colorObj.color);
 
                                     return (
                                         <button
@@ -470,7 +453,7 @@ const SingleProduct = () => {
                     {!showUsersReview ?
                         <UserReview currentProductId={paramsid} reviewItems={reviewIsError ? (reviewError as any).response.data.data : reviewItems} />
                         :
-                        <OthersReview reviewItems={reviewItems} reviewIsError={reviewIsError} reviewIsLoading={reviewIsLoading} reviewError={reviewError} product={product} />
+                        <OthersReview reviewItems={reviewItems} reviewIsError={reviewIsError} reviewIsLoading={reviewIsLoading} reviewError={reviewError}  />
                     }
                 </div>
             </main>

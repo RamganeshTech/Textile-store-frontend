@@ -1,10 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useMemo } from 'react'
 import { ProductType } from '../../../Types/types'
 import style from './AdminProducts.module.css'
 import { Button } from '@mui/material'
-import { useDeleteProduct, useEditProduct } from '../../../apiList/productApi'
-import { useParams } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useDeleteProduct } from '../../../apiList/productApi'
 import ErrorComponent from '../../../Shared/ErrorComponent/ErrorComponent'
 
 type AdminProductsProp = {
