@@ -77,11 +77,12 @@
 .sidebar ul {
     list-style: none;
     padding: 0;
-    margin: 50px 0 0 0; 
+    margin: 10px 0 0 0; 
+    /* border: 2px solid red; */
   }
   
   .sidebar ul li {
-    padding: 15px 20px; 
+    padding: 15px 10px; 
     border-bottom: 1px solid rgba(0, 0, 0, 0.1); 
     font-size: 18px; 
     font-weight: 500; 

@@ -1,0 +1,20 @@
+.maincontainer{
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 70px !important;
+    min-height: 70vh;
+}
+
+.listproducts{
+    width: 90%;
+    min-height: 90vh;
+}
+
+.heading{
+    font-size: clamp(14px,5vw, 30px);
+    padding: 25px 0 5px;
+    font-weight: 600;
+    color: #088ce4;
+}

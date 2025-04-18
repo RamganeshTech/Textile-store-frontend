@@ -7,7 +7,6 @@ import store from './../store/store';
 const getRefreshtoken = async (): Promise<{ ok: boolean }>=>{
     try{
      let {data} = await Api.get('/auth/refreshtoken')
-     console.log("from reresht toeken api", data)
         store.dispatch(setUser({isAuthenticated:data.ok, userId:data.userId}))
          return {ok:data.ok}
     }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import style from './ProductsList.module.css'
 
 import EastIcon from '@mui/icons-material/East';
@@ -25,7 +25,7 @@ const ProductsList:React.FC<ProductsListProp> = ({products, width="w-[100%]"}) =
 
             <section className={`${style.productslist}`}>
                 <div className={`${style.innerDiv}`}>
-                    {products.map((product, i) =>
+                    {products.slice(0,8).map((product, i) =>
                         <Products key={i} product={product} />
                     )}
                  

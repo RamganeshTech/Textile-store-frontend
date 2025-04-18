@@ -12,41 +12,47 @@ interface UpdateOrDeleteReviewType {
     productId:string,
     id:string,
     stars?:number,
-    description?:string
+    description?:string|null
 }
 
 const fetchReview = async (productId:string)=>{
-    let {data} = await Api.get(`/review/getallreviews/${productId}`)
-    console.log(data)
+    try{
+        let {data} = await Api.get(`/review/getallreviews/${productId}`)
     return data.data;
+    }
+    catch(error){
+        throw error;
+    }
 }
 
 const createReview = async (reviewData:ReviewType)=>{
-    // console.log(reviewData, "reveiwData form create review")
-    let {data} = await Api.post('/review/addreview', reviewData)
-    console.log(data)
-    return data.data;
+   try{
+     let {data} = await Api.post('/review/addreview', reviewData)
+     return data.data;
+   }
+   catch(error){
+    throw error;
+   }
 }
 
 const editReview = async ({productId, id:reviewId, description, stars}:UpdateOrDeleteReviewType)=>{
-    console.log(reviewId, "from the edit review")
     let {data} = await Api.patch(`/review/editreview/${reviewId}`, {productId, description, stars})
-    console.log(data)
     return data.data;
 }
 
 const deleteReview = async ({productId, id:reviewId}:UpdateOrDeleteReviewType)=>{
-    console.log(productId, "from delete review appi")
     let {data} = await Api.delete(`/review/removereview/${reviewId}?productId=${productId}`)
-    console.log(data)
     return data.data;
 }
 
 
 const useFetchReview = (productId:string)=>{
     return useQuery({
-        queryKey:['review'],
+        queryKey:['review', productId],
         queryFn:()=> fetchReview(productId),
+        staleTime: 1000 * 60 * 10,
+        retry: false, 
+        refetchOnWindowFocus: false,
     })
 }
 
@@ -54,7 +60,7 @@ const useCreateReview = ()=>{
     return useMutation({
         mutationFn:createReview,
           onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["review"] });
+            queryClient.invalidateQueries({ queryKey: ["review"],  exact: false });
           },
     })
 }
@@ -63,7 +69,7 @@ const useEditReview = ()=>{
     return useMutation({
         mutationFn:editReview,
           onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["review"] });
+            queryClient.invalidateQueries({ queryKey: ["review"],  exact: false   });
           },
     })
 }
@@ -72,7 +78,7 @@ const useDeleteReview = ()=>{
     return useMutation({
         mutationFn:deleteReview,
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ["review"] });
+            queryClient.invalidateQueries({ queryKey: ["review"], exact: false  });
           },
     })
 }

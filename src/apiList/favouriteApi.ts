@@ -5,30 +5,30 @@ import { queryClient } from "../QueryClient/queryClient";
 
 type FavouriteParamType = {
     productId:string,
-    size:string,
-    color:string
+    // image:string,
+    // size:string,
+    // color:string
 }
 
 const fetchFavourites = async ()=>{
     let {data} = await Api.get('/favourite/getfavouriteitems')
-   console.log(data)
+//    console.log(data)
 
     return data.data
 }
 
 
 const addToFavourite = async (favouriteItem:FavouriteParamType)=>{
-    console.log(favouriteItem)
     let {data} = await Api.post('/favourite/addtofavourite', favouriteItem)
-   console.log(data)
+//    console.log(data)
 
     return data.data
 }
 
 
-const removeFromFavourite = async (favouritedata:FavouriteParamType)=>{
+const removeFromFavourite = async (favouritedata:{productId:String})=>{
     let {data} = await Api.delete('/favourite/deletefavouriteitem', {data: favouritedata})
-   console.log(data)
+//    console.log(data)
 
     return data.data
 }
@@ -37,7 +37,9 @@ export const useFetchFavourite = ()=>{
     return useQuery({
         queryKey: ["favourite"],
         queryFn:fetchFavourites,
-        staleTime: 1 * 1000 * 60
+        staleTime: 1000 * 60 * 10,
+        refetchOnWindowFocus: false,
+        retry:false,
     })
 }
 

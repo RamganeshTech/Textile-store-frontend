@@ -1,16 +1,9 @@
-import React, { useEffect, useState } from 'react'
-import style from './SubCarousel.module.css'
+import { useEffect, useState } from 'react'
 
 import Banner1 from '../../assets/subcarousel/S_BANNER_2.webp'
 import Banner2 from '../../assets/subcarousel/S_BANNER_3.webp'
 import Banner3 from '../../assets/subcarousel/S_BANNER_4.webp'
 import Banner4 from '../../assets/subcarousel/subbanner1.webp'
-
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination } from "swiper/modules";
 
 const images: string[] = [
     Banner1, Banner2, Banner3, Banner4, Banner2, Banner4, Banner2, Banner4, Banner2
@@ -29,13 +22,13 @@ const SubCarousel = () => {
         }
     }, [])
 
-    const prevSlide = () => {
-        setimgCarouselIndex(prev => (prev - 1 + images.length) % images.length)
-    }
+    // const prevSlide = () => {
+    //     setimgCarouselIndex(prev => (prev - 1 + images.length) % images.length)
+    // }
 
-    const nextSlide = () => {
-        setimgCarouselIndex(prev => prev + 1 % images.length)
-    }
+    // const nextSlide = () => {
+    //     setimgCarouselIndex(prev => prev + 1 % images.length)
+    // }
 
     return (
         // <main className={`${style.subcarousel_main}`}>

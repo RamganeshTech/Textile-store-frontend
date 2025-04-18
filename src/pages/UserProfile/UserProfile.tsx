@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { List, ListItem, ListItemText, Divider, Button, ListItemButton } from "@mui/material";
+import { List, ListItemText, Divider, ListItemButton } from "@mui/material";
 import styles from "./UserProfile.module.css";
 import { useMutation } from "@tanstack/react-query";
 import { logoutUser } from "../../apiList/userauthApi";
@@ -34,7 +34,6 @@ const UserProfile: React.FC = () => {
       setShowUserProfile(true)
     }
     else {
-      console.log("calling in else condition")
       setShowUserProfile(false)
     }
   }, [location.pathname])
@@ -90,6 +89,25 @@ const UserProfile: React.FC = () => {
             </ListItemButton>
             <Divider />
             <ListItemButton
+              onClick={() => navigate("./editaddress")}
+              className={`${styles.listItem}`}
+            >
+              <ListItemText primary="Edit Address"
+                sx={{
+                  "& .MuiTypography-root": {
+                    fontSize: {
+                      xs: "18px",  // Small screens (mobile)
+                      sm: "22px",  // Tablets
+                      md: "22px",  // Medium screens
+                      lg: "24px",  // Large screens
+                      xl: "26px",
+                    },
+                    textAlign: "center",
+                  },
+                }}
+              />
+            </ListItemButton>
+            {/* <ListItemButton
               onClick={() => navigate("./myorders")}
               className={`${styles.listItem}`}
             >
@@ -107,7 +125,7 @@ const UserProfile: React.FC = () => {
                   },
                 }}
               />
-            </ListItemButton>
+            </ListItemButton> */}
             <Divider />
             <ListItemButton onClick={() => logout()} className={styles.listItem}>
               <ListItemText

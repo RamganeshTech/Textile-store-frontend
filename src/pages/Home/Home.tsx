@@ -1,5 +1,5 @@
 // import React from 'react'
-import { useState, useEffect, useRef } from "react";
+import { useEffect } from "react";
 import style from './Home.module.css'
 import Carousel from "../../components/Carousel/Carousel";
 import SubCarousel from "../../components/Subcarousel/SubCarousel";
@@ -29,7 +29,7 @@ const Home = () => {
 
 
     const dispatch = useDispatch<AppDispatch>();
-    const { data: products, isLoading, error } = useFetchProducts();
+    const { data: products, isLoading, error, isError } = useFetchProducts();
     const reduxProducts = useSelector((state: RootState) => state.products.products);
 
     // Sync React Query data to Redux
@@ -39,30 +39,19 @@ const Home = () => {
         }
     }, [products, dispatch]);
 
-    if (isLoading) return <p>Loading products...</p>;
-    if (error) return <p>Error: {(error as any).message}</p>;
-
-console.log(products)
-
-
-
-if(isLoading){
-  return ( <div className="mt-[70px] h-[20vh] w-[100vw] flex justify-center items-center">
-    <Loading />
-  </div>)
-}
-
-console.log(error)
-  
   return (
     <div className={`mt-[70px] ${style.maincontainer}`}>
         <Carousel />
         <SubCarousel />
-       {isLoading ?
-       <div className="h-[20vh] w-[100vw] flex justify-center items-center">
+        {!isLoading && isError &&  <div className="h-[80vh] sm:h-[90vh] w-[100vw] flex justify-center items-center">
+          <p className="text-lg sm:text-2xl lg:text-4xl">{(error as any)?.response?.data?.message || (error as any)?.message || "Something went wrong"}</p>
+          </div>}
+
+       {!isError && isLoading &&  <div className="h-[80vh] sm:h-[90vh] w-[100vw] flex justify-center items-center">
          <Loading />
-       </div>
-       :<ProductsList products={reduxProducts}/>}
+       </div>}
+
+       {!isError && !isLoading &&<ProductsList products={reduxProducts} />}
     </div>
   )
 }

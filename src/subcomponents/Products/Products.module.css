@@ -35,6 +35,12 @@
     cursor: pointer;
 }
 
+.lazy_blur{
+    /* filter: blur(10px); */
+    opacity: 0.5;
+    transition: filter 0.4s ease;
+}
+
 .imgcontainer button {
     position: absolute;
     top: 10px;

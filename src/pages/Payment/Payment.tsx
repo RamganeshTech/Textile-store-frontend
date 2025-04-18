@@ -1,9 +1,10 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState, useMemo } from 'react'
 import style from './Payment.module.css'
 import { Button, TextField } from '@mui/material'
 import { validateDeliveryDetails } from '../../Utils/validation'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store/store'
+
 
 export interface BookinginfoType {
     username: string
@@ -45,13 +46,75 @@ const Payment = () => {
     const [errors, setErrors] = useState<Partial<Record<keyof BookinginfoType, string>>>({});
 
     let user = useSelector((state: RootState) => state.user)
+    let buyItems = useSelector((state: RootState) => state.buyItems.items)
 
+    // let { data: cart, isLoading, isError, error } = useFetchCart()
 
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         let { name, value } = e.target
         setBookingInfo((p) => ({ ...p, [name]: value }))
     }
+
+    // const totalAmount = useMemo(() => {
+    //     if (!cart) return 0;
+
+    //     return cart.reduce((sum: number, item: any) => {
+    //         return sum + (item.productId.price * item.quantity);
+    //     }, 0);
+    // }, [cart]);
+
+    // const totalQuantity = useMemo(() => {
+    //     if (!cart) return 0;
+
+    //     return cart.reduce((sum: number, item: any) => {
+    //         return sum + item.quantity;
+    //     }, 0);
+    // }, [cart]);
+
+
+    // combining redux for single 
+    // let { singleProductAmount, singleProductQuantity }: { singleProductAmount: number, singleProductQuantity: number } = useMemo(() => {
+
+    //     let singleProductQuantity = 0;
+    //     let singleProductAmount = 0;
+
+    //     if (buyItems.length === 1) {
+    //         singleProductQuantity = buyItems.reduce((acc, curr) => {
+    //             return acc + curr.quantity
+    //         }, 0)
+
+    //         singleProductAmount = buyItems.reduce((acc, curr) => {
+    //             return acc + curr.singleQuantityPrice
+    //         }, 0)
+    //     }
+
+    //     return { singleProductAmount, singleProductQuantity }
+    // }, [])
+
+
+    // using api if the length is multiple
+    // let { multipleProductAmount, multipleProductQuantity }: { multipleProductAmount: number, multipleProductQuantity: number } = useMemo(() => {
+
+    //     let multipleProductQuantity = 0;
+    //     let multipleProductAmount = 0;
+
+    //     if (cart.length > 1) {
+    //         multipleProductQuantity = cart.reduce((sum: number, item: any) => {
+    //                     return sum + item.quantity;
+    //                 }, 0);
+
+    //         multipleProductAmount = cart.reduce((sum: number, item: any) => {
+    //                     return sum + (item.productId.price * item.quantity);
+    //                 }, 0);
+    //     }
+
+    //     return { multipleProductAmount, multipleProductQuantity }
+    // }, [cart])
+
+
+    const totalQuantity = useMemo(() => buyItems.reduce((acc, item) => acc + item.quantity, 0), []);
+    const totalAmount = useMemo(() => buyItems.reduce((acc, item) => acc + (item.quantity * item.singleQuantityPrice), 0), []);
 
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -77,11 +140,14 @@ const Payment = () => {
         console.log("Form submitted successfully!", bookingInfo);
     };
 
+
+    // const {data:createOrder, isPending``:createorderIsPending, isError:createorderIsError} = useCreateOrder()
+
     useEffect(() => {
         // Create the new booking object using user data, defaulting to empty strings if not present
         const newBookingInfo: BookinginfoType = {
             username: user.userName || '',
-            doorno: user.address?.doorNo || '',
+            doorno: user.address?.doorno || '',
             street: user.address?.street || '',
             state: user.address?.state || '',
             district: user.address?.district || '',
@@ -92,7 +158,6 @@ const Payment = () => {
         };
 
 
-        console.log(newBookingInfo,)
         console.log(newBookingInfo,)
 
         let newErrors: Partial<Record<keyof BookinginfoType, string>> = {};
@@ -118,6 +183,14 @@ const Payment = () => {
 
     return (
         <main className={`${style.maincontainer}`}>
+
+            {/* {isRemoveQuanError && [401, 403].includes((removeQuantityError as any)?.response?.status) &&
+                    <ErrorComponent message={(removeQuantityError as any)?.response?.data?.message || removeQuantityError?.message as string}
+                        showLoginButton={true} onClose={() => {
+                            removeFavQuanReset()
+                        }
+                        } />} */}
+
             <div className={`${style.innerDiv}`}>
                 <section className={`${style.inputfields}`}>
                     <form action="" onSubmit={handleSubmit} className={`${style.inputform}`}>
@@ -137,13 +210,13 @@ const Payment = () => {
                                         width: "100%",
                                         "& .MuiInputBase-input": {
                                             height: {
-                                              xs: "10px",
-                                              sm: "10px",
-                                              md: "10px",
-                                              lg: "15px",
-                                              xl: "15px",
+                                                xs: "10px",
+                                                sm: "10px",
+                                                md: "10px",
+                                                lg: "15px",
+                                                xl: "15px",
                                             },
-                                          }
+                                        }
                                     }}
                                 />
                                 {/* {errors[name as keyof BookinginfoType] && (
@@ -156,6 +229,27 @@ const Payment = () => {
                 </section>
 
                 <section className={`${style.cartDiv}`}>
+
+                <div className={`${style.productListPayment}`}>
+                            <p className='text-2xl font-normal text-[#2473ea]'>Products</p>
+                            <div className={style.innerdiv}>
+                            {buyItems.map((item) => (
+                                <div key={item.itemId} className={`${style.cartItem}`}>
+                                    <div className={style.imgwrapper}>
+                                    <img src={item.productImg} alt={item.itemId} className={style.productImage} />
+
+                                    </div>
+                                    <div className={style.productInfo}>
+                                        <p><strong>{item.productName}</strong></p>
+                                        <p>Price: <span>₹{item.singleQuantityPrice}</span></p>
+                                        <p>Quantity: <span>{item.quantity}</span></p>
+                                        <p>Color: <span>{item.color}</span> </p>
+                                        <p>Size: <span>{item.size}</span> </p>
+                                    </div>
+                                </div>
+                            ))}
+                            </div>
+                        </div>
                     <div className={`${style.cartinnerDiv}`}>
                         <div>
                             <p>Cart Details</p>
@@ -163,12 +257,12 @@ const Payment = () => {
 
                         <div>
                             <p>Total Amount</p>
-                            <span>₹2000</span>
+                            <span>₹{totalAmount}</span>
                         </div>
 
                         <div>
                             <p>Total Items</p>
-                            <span>3</span>
+                            <span>{totalQuantity}</span>
                         </div>
 
                         <div className='w-[100%] !flex !justify-center '>

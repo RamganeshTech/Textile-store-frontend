@@ -1,21 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import style from './Products.module.css'
 
 import { Button, CircularProgress, IconButton } from '@mui/material'
 
-import img1 from '../../assets/subcarousel/S_BANNER_2.webp'
 
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-
-import StarIcon from "@mui/icons-material/Star";
-import StarBorderIcon from "@mui/icons-material/StarBorder";
 
 import { ProductType } from '../../Types/types';
 import { Link, useLocation } from 'react-router-dom';
 import StarRating from '../../components/StarRating/StarRating';
 import { useAddToCart, useFetchCart, useRemoveFromCart } from '../../apiList/cartApi';
 import { useAddToFavourite, useFetchFavourite, useRemoveFavourite } from '../../apiList/favouriteApi';
+import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
 
 type singleProductprop = {
     product: ProductType
@@ -24,97 +21,185 @@ type singleProductprop = {
 const Products: React.FC<singleProductprop> = ({ product }) => {
 
     let location = useLocation()
+    const notAvailableimage = "https://th.bing.com/th/id/OIP.Skr-oJ6BWg_K65k5uDiMdgHaHa?w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
 
-    const [isFavourite, setIsFavourite] = useState<boolean>(false)
-    const [isInCart, setIsInCart] = useState(false);
+    // const [isFavourite, setIsFavourite] = useState<boolean>(false)
+    // const [isInCart, setIsInCart] = useState(false);
 
-    const [rating, setRating] = useState<number>(product.reviewStar);
-
-    // Function to render stars dynamically
-    const renderStars = (rating: number) => {
-        const stars = [];
-        for (let i = 1; i <= 5; i++) {
-            if (i <= rating) {
-                stars.push(<StarIcon key={i} className={`${style.staricon}`} sx={{
-                    fill: "gold",
-                    // fontSize: "clamp(16px, 2vw, 24px)" 
-                }} />);
-            } else if (i - 0.5 === rating) {
-                stars.push(<StarIcon key={i} className={`${style.staricon}`} sx={{
-                    fill: "gold", opacity: 0.5,
-                    // fontSize: "clamp(16px, 2vw, 24px)" 
-                }} />);
-            } else {
-                stars.push(<StarBorderIcon key={i} className={`${style.staricon}`} sx={{
-                    fill: "gray",
-                    // fontSize: "clamp(16px, 2vw, 24px)" 
-                }} />);
-            }
-        }
-        return stars;
-    };
+    const [rating] = useState<number>(product.reviewStar);
 
     const { data: cartItems } = useFetchCart();
     const { mutate: removeCartmutate, isPending: removeCartPending } = useRemoveFromCart();
 
-    let { mutate: addCartmutate, isPending: addCartPending } = useAddToCart()
+    let { mutate: addCartmutate, isPending: addCartPending, isError: addCartIsError, error: addCartError, reset: addcartResetError } = useAddToCart()
 
-    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, } = useRemoveFavourite()
+    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, reset: removeFavResetError } = useRemoveFavourite()
 
-    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, } = useAddToFavourite()
+    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, reset: addFavResetError } = useAddToFavourite()
 
-    const { data: favourites, isLoading, isError } = useFetchFavourite();
+    const { data: favourites } = useFetchFavourite();
 
     const handleFavourite = () => {
-        if (isFavourite) {
-            removeFavourite({ productId: product._id, size: product.size, color: product.color });
+
+        // const firstAvailable = product.sizeVariants.map(sizeVariant =>
+        //     sizeVariant.colors.find(color => color.availableStock > 0)
+        // );
+
+        // product.colorVariants.find(colors=> colors.color === firstAvailable?.colors.)
+
+        // const selectedSize = firstAvailable?.size || '';
+        // const selectedColor = firstAvailable?.colors.find(c => c.availableStock > 0)?.color || '';
+
+        // if (!selectedSize || !selectedColor) {
+        //     return;
+        // }
+
+        if (isFavourite && !removeFavPending) {
+            removeFavourite({ productId: product._id, });
         } else {
-            addFavourite({ productId: product._id, size: product.size, color: product.color });
+            if (!addFavPending) {
+                addFavourite({ productId: product._id, });
+            }
         }
-        setIsFavourite(!isFavourite);
+        // setIsFavourite(!isFavourite);
     };
 
+    // Get first available size and color with stock
+    const firstAvailable = useMemo(() => {
+        return product.sizeVariants.find(sizeVariant =>
+            sizeVariant.colors.some(color => color.availableStock > 0)
+        );
+    }, [product]);
 
-    const handleCart = () => {
-        if (isInCart) {
-            removeCartmutate(product._id);
-        } else {
-            addCartmutate({ productId: product._id, quantity: 1, price: product.price });
-        }
-        setIsInCart(!isInCart);
-    };
+    const firstSelectedSize = firstAvailable?.size || '';
+    const firstSelectedColor = firstAvailable?.colors.find(c => c.availableStock > 0)?.color || '';
 
+    // Get the image for that color
+    const productImage = useMemo(() => {
+        return product.colorVariants.find(cv => cv.color === firstSelectedColor)?.images?.[0] || '';
+    }, [product.colorVariants, firstSelectedColor]);
 
-
-    useEffect(() => {
-        if (cartItems) {
-            const exists = cartItems.some((item: any) => {
-                return item.productId._id === product._id
-            });
-            setIsInCart(exists);
-        }
+    const isInCart = useMemo(() => {
+        return cartItems?.some((item: any) => item?.productId?._id === product._id) || false;
     }, [cartItems, product._id]);
 
-
-    useEffect(() => {
-        if (favourites && favourites.items) {
-            const exists = favourites.items.some((fav: any) => {
-                // console.log("favourites product Id",fav.productId)
-                // console.log("product._id",product._id)
-                return fav.productId._id === product._id
-            });
-            setIsFavourite(exists);
-        }
+    const isFavourite = useMemo(() => {
+        return favourites?.items?.some((fav: any) => fav?.productId?._id === product._id) || false;
     }, [favourites, product._id]);
+
+    const handleCart = () => {
+        if (isInCart && !removeCartPending) {
+            removeCartmutate({ productId: product._id, size: firstSelectedSize, color: firstSelectedColor });
+        } else if (!addCartPending) {
+            addCartmutate({ productId: product._id, quantity: 1, price: product.price, size: firstSelectedSize, color: firstSelectedColor });
+        }
+        // setIsInCart(!isInCart);
+    };
+
+
+    // useEffect(() => {
+    //     const images = document.querySelectorAll('img[data-src]');
+
+    //     const observer = new IntersectionObserver((entries, obs) => {
+    //         entries.forEach(entry => {
+    //             if (entry.isIntersecting) {
+    //                 const img = entry.target as HTMLImageElement;
+    //                 img.src = img.dataset.src!; // Set the actual image URL from data-src
+    //                 img.removeAttribute('data-src'); // Clean up the data-src attribute
+    //                 obs.unobserve(img); // Unobserve once the image is loaded
+    //             }
+    //         });
+    //     }, {
+    //         rootMargin: '100px', // Preload images 100px before they come into view
+    //     });
+
+    //     images.forEach(img => observer.observe(img));
+
+    //     return () => observer.disconnect(); // Clean up the observer when component is unmounted
+    // }, []);
+
+    const getBlurredCloudinaryUrl = (originalUrl: string) => {
+        if (!originalUrl.includes('/upload/')) return originalUrl;
+        return originalUrl.replace('/upload/', '/upload/e_blur:1000,q_10/');
+    };
+
+    // const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    //     const img = e.target as HTMLImageElement;
+    
+    //     // Check if the image source is different from the blurred one
+    //     if (img.src !== img.dataset.src) {
+    //       console.log('Image loaded:', img.src);
+    //       img.src = img.dataset.src!; // Set the actual image URL from data-src
+    //       img.removeAttribute('data-src'); // Clean up the data-src attribute
+    //       img.classList.remove(style.lazy_blur); // Remove the blur class
+    //     }
+    //   };
+
 
     return (
         <div className={`${style.mainProduct}`}>
-            {/* <Link to={`/product/${product.id}`}> */}
+
+            {addCartIsError && [401, 403].includes((addCartError as any)?.response?.status) &&
+                <ErrorComponent message={(addCartError as any)?.response?.data?.message || addCartError?.message as string}
+                    showLoginButton={true} onClose={() => {
+                        addcartResetError()
+                    }
+                    } />}
+
+            {addFavIsError && [401, 403].includes((addFavError as any)?.response?.status) && <ErrorComponent
+                message={(addFavError as any)?.response?.data?.message || addFavError?.message as string}
+                showLoginButton={true}
+                onClose={() => {
+                    addFavResetError()
+                }
+                } />}
+
+
+            {removeFavIsError && [401, 403].includes((removeFavError as any)?.response?.status) && <ErrorComponent
+                message={(removeFavError as any)?.response?.data?.message || removeFavError?.message as string}
+                showLoginButton={true}
+                onClose={() => {
+                    removeFavResetError()
+                }
+                }
+            />}
 
             <section className={`${style.product}`}>
                 <div className={`${style.imgcontainer}`}>
                     <Link to={`/product/${product._id}`} >
-                        <img src={product.images[0]} alt="" style={{ pointerEvents: "none" }} />
+
+                        {/* <img
+                         loading={location.pathname.includes('allproducts') ? 'lazy' : "eager"} 
+                        src={productImage ? productImage : notAvailableimage}
+                         alt="" 
+                         style={{ pointerEvents: "none" }} /> */}
+
+
+                        <img
+                            src={getBlurredCloudinaryUrl(productImage)} // Show blurred version by default
+                            data-src={productImage} // Actual image will be loaded when in view
+                            alt={product.productName}
+                            className={style.lazy_blur}
+                            loading="lazy" // Native lazy loading support
+                            style={{
+                                width: '100%',
+                                // height: 'auto',
+                                transition: 'filter 0.4s ease',
+                            }}
+                            onLoad={(e) => {
+                                const img = e.currentTarget;
+                            
+                                // If we're still on the blurred URL, swap to the real one:
+                                if (img.src.includes('/e_blur:1000,q_10/')) {
+                                  img.src = productImage;      // 2) load the real image
+                                } else {
+                                  // Otherwise, we just loaded the real image → remove the blur class
+                                  img.classList.remove(style.lazy_blur);
+                                }
+                              }}
+                            />
+                            
+
                     </Link>
                     <IconButton
                         sx={{ backgroundColor: "fff" }}
@@ -140,26 +225,16 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                         <div className={`${style.rating}`}>
                             <span>Rating: </span>
                             <span>
-                                {/* {renderStars(rating)} */}
                                 <StarRating rating={rating} />
                             </span>
                         </div>
                     </Link>
-                    {/* <Button variant='contained' className={`${style.addtocart}`}
-                        onClick={() => addCartmutate({ productId: product._id, quantity: 1, price: product.price })}
-                        sx={{
-                            // height: "25%",
-                            // width: "90%",
-                            display: "flex",
-                            margin: "5px auto",
-                        }}
-                    >Add to cart</Button> */}
 
                     <Button
                         variant="contained"
                         className={style.addtocart}
                         onClick={handleCart}
-                        sx={{ display: "flex", margin: "5px auto"}}
+                        sx={{ display: "flex", margin: "5px auto" }}
                     >
                         {isInCart ? (
                             removeCartPending ? (
@@ -176,7 +251,6 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                     </Button>
                 </div>
             </section>
-            {/* </Link> */}
         </div>
 
     )

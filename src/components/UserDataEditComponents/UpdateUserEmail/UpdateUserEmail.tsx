@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { TextField, Button, CircularProgress } from "@mui/material";
 import styles from "./UpdateUserEmail.module.css";
-import { useNavigate } from "react-router-dom";
 import { useChangeEmail } from "../../../apiList/userprofileApi";
 import { useDispatch } from "react-redux";
 import { setUser } from "../../../slices/user";
@@ -12,7 +11,7 @@ const UpdateUserEmail: React.FC = () => {
 
 
 
-  let { mutate, isPending, isError, error, data } = useChangeEmail();
+  let { mutate, isPending, isError, error } = useChangeEmail();
 
   let dispatch = useDispatch()
 
@@ -23,16 +22,15 @@ const UpdateUserEmail: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (!email) {
-        throw new Error("Please enter the Email")
-      }
+      // if (!email) {
+      //   throw new Error("Please enter the Email")
+      // }
 
 
       mutate(email, {
         onSuccess: (data) => {
           if (data.ok) {
-            console.log(data.message)
-            dispatch(setUser({ isAuthenticated: true, userId: null, email: email, userName: null }))
+            dispatch(setUser(({email: email})))
 
             setSuccessMessage(data.message);
 
@@ -46,19 +44,13 @@ const UpdateUserEmail: React.FC = () => {
       })
     }
     catch (error) {
+      // so if you wnat to handle that custom throw error message it will be catched here 
+      // (that is outiside of the mutate will be caught here the bakcend will be caught in 
+      // error variable itself form the mutation)
       if (error instanceof Error) {
-        console.log(error.message)
       }
     };
   }
-
-
-  if (isError) {
-    console.log(error, isError)
-  }
-
-  console.log(data)
-
   return (
     <div className={styles[`container`]}>
       <h2 className={styles[`title`]}>Change Email</h2>
@@ -79,7 +71,7 @@ const UpdateUserEmail: React.FC = () => {
             className={styles[`inputField`]}
           />
           {isError && <div className={`${styles.errormessage}`}>
-            <p>{error?.message}</p>
+            <p>{(error as any)?.response?.data?.message || error?.message || "Something went wrong"}</p>
             {/* <p>error ocuuere man man man</p> */}
           </div>}
         </div>

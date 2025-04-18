@@ -1,0 +1,53 @@
+/* SuccessMessage.module.css */
+.success_message {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translate(-50%, 100px);
+    background-color: #38a169;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    opacity: 0;
+    animation: fadeInSlideDown 0.4s ease-out forwards;
+    z-index: 9999;
+  }
+  
+  .success_message.hide {
+    animation: fadeOutSlideUp 0.4s ease-in forwards !important;
+  }
+  
+  @keyframes fadeInSlideDown {
+    0% {
+      opacity: 0;
+      /* transform: translate(-50%, -30px); */
+    }
+
+    50%{
+        opacity: .5;
+    }
+
+    100% {
+      opacity: 1;
+      /* transform: translate(-50%, 100px); */
+    }
+  }
+  
+  @keyframes fadeOutSlideUp {
+    0% {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    50% {
+        opacity: .5;
+        transform: translate(-50%, -15);
+    }
+
+    100% {
+      opacity: 0;
+      transform: translate(-50%, -30px);
+    }
+  }
+  

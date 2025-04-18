@@ -1,0 +1,127 @@
+/* Container for the entire form */
+.container {
+  max-width: 90%; /* Increase width for horizontal space */
+  margin: 20px auto;
+  padding: 20px;
+  /* background: #fafafa; */
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+/* Heading styling */
+.heading {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* Main form layout */
+.form {
+  display: grid;
+  grid-template-columns: 1fr; /* default: single column */
+  gap: 16px;
+}
+
+/* For rows of inputs that share space horizontally */
+.row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* Individual input styling */
+.input {
+  flex: 1; /* input takes equal share in row */
+  min-width: 200px;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* For textarea elements */
+.textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Section headings */
+.section {
+  margin-top: 20px;
+}
+
+.subHeading {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+/* Variant container: using grid for variants */
+.variantBox {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* spread horizontally */
+  gap: 12px;
+  border: 1px solid #ddd;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+/* Container for nested arrays (like images or colors within variants) */
+.nestedBox {
+  /* display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
+  gap: 8px;
+  padding: 8px;
+  border: 1px dashed #aaa;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+/* For groups of inputs arranged in one row */
+.inputGroup {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Simple row for individual items within nested arrays */
+.row {
+  display: flex;
+  align-items: start;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+/* Buttons */
+.addButton,
+.removeButton,
+.submitButton {
+  background: #1976d2;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.removeButton {
+  background: #d32f2f;
+}
+
+.addButton {
+  background: #388e3c;
+}
+
+.submitButton {
+  background: #1976d2;
+  font-size: 16px;
+  margin-top: 16px;
+  justify-self: center;
+  width: 200px;
+}

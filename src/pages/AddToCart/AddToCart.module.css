@@ -41,7 +41,7 @@
 .itemDetails {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
     flex: 1;
     /* border: 2px solid red; */
 }
@@ -108,6 +108,12 @@
 }
 
 
+@media (min-width:769px) and (max-width:1025px){
+    .quantityContainer {
+        width: clamp(15%, 1vw , 25%) !important;
+    }
+}
+
 @media (max-width:768px){
 
      .cartItem{
@@ -145,7 +151,7 @@
 
 
     .quantityContainer {
-        width: 30%;
+        width: 30% !important;
     }
     
     .deleteBtn {
@@ -186,7 +192,7 @@
     }
 
     .quantityContainer {
-        width: 35%;
+        width: 45% !important;
         padding: 10px 5px;
         gap: 0;
         height: 30px;
@@ -198,7 +204,15 @@
     }
     
     .deleteBtn {
-        width: 30%;
+        width: 50%;
+    }
+
+    .totalContainer {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+        gap: 10px;
     }
 
     .totalContainer p{
