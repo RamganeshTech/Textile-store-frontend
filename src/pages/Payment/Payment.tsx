@@ -1,7 +1,7 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import style from './Payment.module.css'
 import { Button, TextField } from '@mui/material'
-import { validateChangePassword, validateDeliveryDetails } from '../../Utils/validation'
+import { validateDeliveryDetails } from '../../Utils/validation'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store/store'
 

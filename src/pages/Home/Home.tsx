@@ -29,7 +29,7 @@ const Home = () => {
 
 
     const dispatch = useDispatch<AppDispatch>();
-    const { data: products, isLoading, isError, error } = useFetchProducts();
+    const { data: products, isLoading, error } = useFetchProducts();
     const reduxProducts = useSelector((state: RootState) => state.products.products);
 
     // Sync React Query data to Redux
