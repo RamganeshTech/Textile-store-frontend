@@ -1,0 +1,100 @@
+.cardContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 1rem;
+    margin: 1rem 0;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+    width: 100%;
+    gap: 1.5rem;
+    /* border: 2px solid red; */
+    height: 350px;
+    animation: fadein .3s ease-in;
+  }
+  
+  /* Wraps the image so you can control sizing/aspect ratio */
+  .imageWrapper {
+    width: 30%; /* you can adjust this width as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  /* The product image */
+  .productImage {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    object-fit: cover;
+  }
+  
+  /* The details on the right side */
+  .details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* gap: 5px; */
+  }
+  
+  /* Product title */
+  .title {
+    margin: 0;
+    font-size: clamp(1rem, 1.8vw, 2rem); /* ~20px */
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    white-space: wrap;
+    line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .price {
+    font-size: clamp(1rem, 1.5vw, 1.5rem); /* ~20px */
+    color: #e63946; 
+    font-weight: 500;
+  }
+  
+  .sizes,
+  .colors {
+    margin: 0.25rem 0;
+    font-size: .95rem;
+    color: #555;
+    line-height: 1.4;
+  }
+  
+  .sizes strong,
+  .colors strong {
+    color: #222;
+    margin-right: 0.25rem;
+    font-size: clamp(1rem, 1.3vw, 2rem);
+  }
+  
+  .sizes span,
+  .colors span {
+    color: #333;
+    margin-right: 0.15rem;
+    font-size: clamp(.85rem, 1.5vw, 2rem);
+  }
+  
+  @media (max-width:426px){
+    .details{
+      gap: 0px;
+    }
+
+    .sizes,
+    .colors {
+      line-height: 1.1;
+    }
+  }
+
+  @keyframes fadein {
+    from{opacity: 0;}
+    to{opacity: 1;}    
+  }

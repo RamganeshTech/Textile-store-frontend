@@ -1,22 +1,13 @@
 import Api from "../apiClient/apiClient";
 import { useMutation } from "@tanstack/react-query";
-
-
-`/profile/updateemail',
-/profile/updatephoneno', 
-/profile/updateusername',
-/profile/verifypassword',
-/profile/changepassword',
-`
-
+import { userAddress } from "../slices/user";
 
 export const verifyPassword = async(password:string)=>{
     try {
-        console.log("verifypassword api password",password)
         const response = await Api.patch(`/profile/verifypassword`,{password} );
       return response.data;
     } catch (error: any) {
-      throw error.response?.data || "Something went wrong";
+      throw error;
     }
   }
 
@@ -25,7 +16,7 @@ export const verifyPassword = async(password:string)=>{
       const response = await Api.patch(`/profile/changepassword`, data);
       return response.data;
     } catch (error: any) {
-      throw error.response?.data || "Something went wrong";
+      throw error;
     }
   }
 
@@ -34,7 +25,7 @@ export const updateUserEmail = async(email:string)=>{
       const response = await Api.patch(`/profile/updateemail`, {email});
       return response.data;
     } catch (error: any) {
-      throw error.response?.data || "Something went wrong";
+      throw error;
     }
   }
 
@@ -44,7 +35,7 @@ export const updateUserEmail = async(email:string)=>{
       const response = await Api.patch(`/profile/updatephoneno`, {phoneNo});
       return response.data;
     } catch (error: any) {
-      throw error.response?.data || "Something went wrong";
+      throw error;
     }
   }
 
@@ -54,7 +45,16 @@ export const updateUserEmail = async(email:string)=>{
       const response = await Api.patch(`/profile/updateusername`, {userName});
       return response.data;
     } catch (error: any) {
-      throw error.response?.data || "Something went wrong";
+      throw error;
+    }
+  }
+
+  export const updateAddress = async(userData:userAddress)=>{
+    try {
+      const response = await Api.patch(`/profile/updateaddress`, userData);
+      return response.data;
+    } catch (error: any) {
+      throw error;
     }
   }
 
@@ -96,3 +96,10 @@ export const useVerifyPassword = ()=>{
        
      })
  }
+
+ export const useChangeAddress = ()=>{
+  return useMutation({
+       mutationFn: updateAddress,
+     
+   })
+}

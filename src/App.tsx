@@ -18,41 +18,69 @@ import UpdateUserEmail from './components/UserDataEditComponents/UpdateUserEmail
 import UpdateUserName from './components/UserDataEditComponents/UpdateUserName/UpdateUserName'
 import UpdateUserPhoneNo from './components/UserDataEditComponents/UpdateUserPhoneNo/UpdateUserPhoneNo'
 import Payment from './pages/Payment/Payment'
+import useIsAuthenticated from './hooks/useIsAuthenticated'
+import EditAddress from './components/EditAddress/EditAddress'
+import AddProduct from './pages/admin/AddProduct/AddProduct'
+import ProtectedRoutes from './components/ProtectedRoutes/ProtectedRoutes'
+import AdminLogin from './pages/admin/AdminLogin/AdminLogin'
+import ProtectedAdminRoutes from './components/ProtectedRoutes/ProtectedAdminRoutes'
+import ListProducts from './pages/admin/ListProducts/ListProducts'
+import PaymentSuccessfull from './components/PaymentStatus/PaymentSuccessfull'
+import PaymentFailure from './components/PaymentStatus/PaymentFailure'
 
 function App() {
-
+  useIsAuthenticated()
   return (
     <>
       <Navbar />
-     
 
 
-        <Routes>
-          <Route index element={<Home />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/forgotpassword' element={<ForgotPassword />} />
-          <Route path='/reset-password' element={<ForgotPassword />} />
-          <Route path='/product/:id' element={<SingleProduct />} />
-          <Route path='/cart' element={<AddToCart />} />
-          <Route path='/favourite' element={<Favourite />} />
-          <Route path='/allproducts' element={<AllProducts />} />
-          <Route path='/payment' element={<Payment />} />
 
-          <Route path='/userprofile' element={<UserProfile />}>
+      <Routes>
+        <Route index element={<Home />} />
+        <Route path='/login' element={<Login />} />
+        <Route path='/forgotpassword' element={<ForgotPassword />} />
+        <Route path='/reset-password' element={<ForgotPassword />} />
+        <Route path='/product/:id' element={<SingleProduct />} />
+        <Route path='/cart' element={<AddToCart />} />
+        <Route path='/favourite' element={<Favourite />} />
+        <Route path='/allproducts' element={<AllProducts />} />
+        <Route path='/payment' element={<Payment />} />
+        <Route path='/redirect-url/paymentsuccess/:merchantTransactionId' element={<PaymentSuccessfull />} />
+        <Route path='/redirect-url/paymentfailure/:merchantTransactionId' element={<PaymentFailure />} />
 
+        <Route path='/adminlogin' element={<AdminLogin />} />
+        <Route path='/admin/addproduct' element={
+          <ProtectedAdminRoutes >
+            <AddProduct />
+          </ProtectedAdminRoutes>
+        } />
+
+        <Route path='/admin/listproducts' element={
+          <ProtectedAdminRoutes >
+            <ListProducts />
+          </ProtectedAdminRoutes>
+        } />
+
+        <Route path='/userprofile' element={
+          <ProtectedRoutes>
+            <UserProfile />
+          </ProtectedRoutes>
+        }>
           <Route path='verifypassword' element={<VerifyPassword />} />
+          <Route path='editaddress' element={<EditAddress />} />
           <Route path='changepassword' element={<ChangePassword />} />
           <Route path='myorders' element={<MyOrders />} />
           <Route path='editaccountinfo' element={<EditAccountinfo />} />
           <Route path='editemail' element={<UpdateUserEmail />} />
           <Route path='editphonenumber' element={<UpdateUserPhoneNo />} />
           <Route path='editusername' element={<UpdateUserName />} />
-         
-          </Route>
-          
 
-        </Routes>
-        <Footer />
+        </Route>
+
+
+      </Routes>
+      <Footer />
     </>
   )
 }

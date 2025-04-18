@@ -1,23 +1,23 @@
-import React, { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import style from '../SingleProduct/SingleProduct.module.css'
-import { Button, TextField } from '@mui/material';
+import { Button, CircularProgress } from '@mui/material';
 import { FaStar } from 'react-icons/fa';
 import { useCreateReview, useDeleteReview, useEditReview } from '../../apiList/reviewApi';
 import { ReviewType } from '../../Types/types';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
+import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
 
 type reviewprouducts = {
     reviewername: (string | null),
     review: (string | null),
-    email: (string | null),
+    // email: (string | null),
     // stars: (number | null)
 }
 
 type UserReviewProps = {
     reviewItems: ReviewType[],
     currentProductId: string | undefined,
-
 }
 
 
@@ -27,15 +27,17 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
     let user = useSelector((state: RootState) => state.user)
     // let user = { userId: "67e50bcd420994f6168c1020" }
 
-    // console.log("redux user", user)
 
     const [review, setReview] = useState<reviewprouducts>({
         reviewername: null,
         review: null,
-        email: null,
+        // email: null,
         // stars: null
     })
 
+    const [showFullDescription, setShowFullDescription] = useState<boolean>(false);
+    const [reviewCustomError, setReviewCustomError] = useState<string | null>(null);
+    const [reviewLimit, setReviewLimit] = useState<number>(500);
     const [selectedStars, setSelectedStars] = useState(0);
     const [hoveredStars, setHoveredStars] = useState(0);
     const [currentReview, setCurrentReview] = useState<ReviewType>({
@@ -47,47 +49,54 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
         _id: ""
     });
 
-
     const [reviewCreated, setReviewCreated] = useState<boolean>(false);
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
-
-
-
     const handleStarClick = (star: number) => {
-        console.log("selected star", star)
         setSelectedStars(star);
     };
 
     const handleReviewChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = event.target;
-        setReview(prev => {
-            return { ...prev, [name]: value }
-        })
+
+        if (name === 'review') {
+            // Only restrict review (description) input to 500 chars
+            if (value.length <= 500) {
+                setReview(prev => ({ ...prev, [name]: value }));
+                setReviewLimit(500 - value.length);
+            }
+        } else {
+            // For other fields like reviewername, allow full input
+            setReview(prev => ({ ...prev, [name]: value }));
+        }
     }
 
+    let { mutate: createReviewMutate, isSuccess, isPending: createReviewPending, isError: createReviewIsError, error: createReviewError, reset: createResetError } = useCreateReview()
+    let { mutate: editReviewMutate, isPending: editReviewPending, } = useEditReview()
+    let { mutate: deleteReviewMutate, isPending: deleteReviewPending } = useDeleteReview()
 
-    let { mutate: createReviewMutate, isSuccess } = useCreateReview()
-    let { mutate: editReviewMutate } = useEditReview()
-    let { mutate: deleteReviewMutate } = useDeleteReview()
+    // NEWLY ADDED
+    let yourReview = useMemo(() => {
+        if (!reviewItems) return null;
+        return reviewItems.find(review => {
+            return review.userId === user.userId
+        }
+        )
+    }, [reviewItems])
 
 
     const getCurrentReview = () => {
-        let review = reviewItems.find(review => {
-
-            // console.log(review.userId, "review.userId")
-            // console.log(user.userId,"user.userId" )
-            return review.userId === user.userId
-        })
-        console.log("is review avaible", review)
-        if (review) {
+        // let review = reviewItems.find(review => {
+        //     return review.userId === user.userId
+        // })
+        if (yourReview) {
             setCurrentReview({
-                description: review?.description as string,
-                userId: review?.userId as string,
-                stars: (review?.stars || 0),
-                profileImg: review?.profileImg as string,
-                userName: review?.userName as string,
-                _id: review?._id
+                description: yourReview?.description as string,
+                userId: yourReview?.userId as string,
+                stars: (yourReview?.stars || 0),
+                profileImg: yourReview?.profileImg as string,
+                userName: yourReview?.userName as string,
+                _id: yourReview?._id
             })
 
             setReviewCreated(true)
@@ -100,15 +109,29 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
 
 
     const handleSubmit = () => {
-        console.log("selectedStars", selectedStars)
-        createReviewMutate({ productId: (currentProductId as string), description: review.review, star: selectedStars })
-        if (isSuccess) {
-            setReviewCreated(true)
+        try {
+
+            if (!selectedStars && !review.review) {
+                throw new Error("please select the stars or write any review in description")
+            }
+
+            if (!createReviewPending && (selectedStars || review.review)) {
+                createReviewMutate({ productId: (currentProductId as string), description: review.review, star: selectedStars })
+            }
+            if (isSuccess) {
+                setReviewCreated(true)
+            }
+        }
+        catch (error) {
+            if (error instanceof Error)
+                setReviewCustomError(error.message)
         }
     }
 
     const handleDeleteReview = () => {
-        deleteReviewMutate({ productId: (currentProductId as string), id: currentReview._id as string })
+        if (!deleteReviewPending) {
+            deleteReviewMutate({ productId: (currentProductId as string), id: currentReview._id as string })
+        }
         setReviewCreated(false);
         setCurrentReview({
             userName: "",
@@ -118,20 +141,20 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
             userId: "",
             _id: ""
         });
-        setReview({ reviewername: null, review: null, email: null });
+        setReview({ reviewername: null, review: null, });
         // setIsEditing(false)
     }
 
     const handleEditReview = () => {
-        // console.log(currentReview)
         if (currentReview) {
-            console.log("selectedStars in edit review update", selectedStars)
-            editReviewMutate({
-                productId: currentProductId as string,
-                id: currentReview._id as string,
-                description: review.review || currentReview.description,
-                stars: selectedStars || currentReview.stars
-            });
+            if (!editReviewPending) {
+                editReviewMutate({
+                    productId: currentProductId as string,
+                    id: currentReview._id as string,
+                    description: review.review || null ,
+                    stars: selectedStars || currentReview.stars
+                });
+            }
 
             setIsEditing(false);
             setReviewCreated(true);  // Ensure form appears
@@ -140,40 +163,49 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
     }
 
     const handleCancelUpdateReview = () => {
-        console.log("getting called")
-
         setIsEditing(false)
-        setReviewCreated(true)
-        setCurrentReview({
-            userName: "",
-            description: "",
-            profileImg: "",
-            stars: 0,
-            userId: "",
-            _id: ""
+        // setReviewCreated(true)
+        // setCurrentReview({
+        //     userName: "",
+        //     description: "",
+        //     profileImg: "",
+        //     stars: 0,
+        //     userId: "",
+        //     _id: ""
+        // })
+    }
+
+    const handleEnableEditing = () => {
+        setIsEditing(true);
+        setReviewCreated(false);
+        setReview({
+            reviewername: yourReview?.userName || null,
+            review: yourReview?.description || null,
+            // email: user.email || ""
         })
+        setSelectedStars(yourReview?.stars || 0)
+        // Ensure form appears
     }
 
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-          if (containerRef.current && event.target instanceof Node && !containerRef.current.contains(event.target)) {
-            handleCancelUpdateReview();
-          }
+            if (containerRef.current && event.target instanceof Node && !containerRef.current.contains(event.target)) {
+                handleCancelUpdateReview();
+            }
         };
-      
+
         document.addEventListener("mousedown", handleClickOutside);
-      
+
         return () => {
-          document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("mousedown", handleClickOutside);
         };
-      }, [handleCancelUpdateReview]);
-      
+    }, [handleCancelUpdateReview]);
+
 
     useEffect(() => {
         getCurrentReview()
-        // console.log(currentReview)
     }, [reviewItems, user.userId])
     return (
         <section ref={containerRef} className={`${style.reviewContainer}   !flex !justify-center !items-center`}>
@@ -182,6 +214,16 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
             {/* <span className={`${style.reviewStars}`}>
      {review.stars}
 </span> */}
+
+            {(createReviewIsError || reviewCustomError) && <ErrorComponent onClose={() => {
+                createResetError()
+                setReviewCustomError(null)
+            }} message={reviewCustomError || (createReviewError as any).response.data.message || createReviewError?.message as string}
+                showLoginButton={
+                    (createReviewError as any)?.status === 401 ||
+                    (createReviewError as any)?.status === 403
+                }
+            />}
 
             {reviewCreated ?
                 <div className={`${style.reviewDisplay}  w-full sm:w-[90%] flex flex-col justify-center items-center gap-5`}>
@@ -197,16 +239,31 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                         ))}
                     </div>
 
-                    <p className={` ${style.reviewText} text-lg  `}>{currentReview?.description}</p>
+
+
+                    <p className={` ${style.reviewText} text-lg !text-wrap  `}>
+                        {
+                            currentReview?.description ? <>
+                                {showFullDescription ? currentReview?.description : currentReview?.description.slice(0, 200)}
+                                <span className='cursor-pointer' onClick={() => setShowFullDescription(!showFullDescription)}>
+                                    {currentReview?.description.length > 150 ? showFullDescription ? "see less" : "see more..." : null}</span>
+                            </> : ""
+                        }
+                    </p>
                     {/* <p className={`${style.reviewerName}`}><span className={`text-lg font-semibold`}>By:</span> {currentReview?.userName}</p> */}
 
                     <div className={`${style.buttonContainer} w-[40%] flex justify-center items-center gap-4`}>
-                        <Button variant='contained' onClick={() => {
-                            setIsEditing(true);
-                            setReviewCreated(false);  // Ensure form appears
-                        }}
+                        <Button variant='contained' onClick={handleEnableEditing}
                         >Edit</Button>
-                        <Button variant='contained' onClick={handleDeleteReview} color='error'>Delete</Button>
+                        <Button variant='contained' onClick={handleDeleteReview} color='error' sx={{
+                            width: {
+                                xs: "83px",
+                                lg: "83px",
+                            }
+
+                        }}>
+                            {deleteReviewPending ? <CircularProgress sx={{ color: "#fafafa" }} size={23} thickness={5} /> : "Delete"}
+                        </Button>
                     </div>
                 </div>
                 :
@@ -225,7 +282,6 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                                 onMouseEnter={() => setHoveredStars(star)} // Hover effect
                                 onMouseLeave={() => setHoveredStars(0)} // Reset hover
                                 onClick={() => {
-                                    console.log("Star clicked:", star);
                                     handleStarClick(star);
                                 }}
                             />
@@ -233,6 +289,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                     </div>
 
                     <div className={`${style.reiviewDescription}`}>
+                        <p>Characters remaining {reviewLimit}/500</p>
                         <textarea name="review" id="" placeholder='Write a Review' rows={1}
                             value={review.review as string}
                             onChange={handleReviewChange}
@@ -242,22 +299,30 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
 
                     <div className={`${style.reviewerAccountInfo}`}>
 
-                        <TextField type="text" name="reviewerName"
+                        {/* <TextField type="text" name="reviewername"
+                            label="Name"
                             placeholder='Enter Name'
-
                             value={review.reviewername}
                             onChange={handleReviewChange}
                             className={`${style.reviewtextField}`}
-                        />
+                        /> */}
 
-                        <TextField type="email" name="email"
+                        {/* <TextField type="email" name="email"
+                            label="Email"
                             placeholder='Enter Email'
+
                             value={review.email}
                             onChange={handleReviewChange}
                             className={`${style.reviewtextField}`}
 
-
-                        />
+                            sx={{
+                                marginTop: {
+                                    xs: "5px",
+                                    md: "10px",
+                                    lg: "10px"
+                                }
+                            }}
+                        /> */}
                     </div>
 
                     <div className={`${style.submitContainer}`}>
@@ -268,14 +333,16 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                                     Cancel
                                 </Button> */}
 
-                                <Button variant='contained'  className=' sm:!h-[40px] !text-[16px] !p-[10px] !h-[25px] lg:!text-[20px] md:!text-[16px]  text-nowrap' onClick={handleEditReview}>
-                                    POST
+                                <Button variant='contained' className=' sm:!h-[40px] !text-[16px] !p-[10px] !h-[25px] lg:!text-[20px] md:!text-[16px]  text-nowrap' onClick={handleEditReview}>
+                                    {/* POST */}
+                                    {editReviewPending ? <CircularProgress sx={{ color: "#fafafa" }} size={25} thickness={5} /> : "POST"}
+
                                 </Button>
                             </div>
 
                         ) : (
                             <Button variant='contained' onClick={handleSubmit}>
-                                Submit
+                                {createReviewPending ? <CircularProgress sx={{ color: "#fafafa" }} size={25} thickness={5} /> : "Submit"}
                             </Button>
                         )}
                     </div>

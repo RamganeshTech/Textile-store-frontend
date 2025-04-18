@@ -1,12 +1,13 @@
-import React from 'react'
 import style from '../SingleProduct/SingleProduct.module.css'
-import { ProductType, ReviewType } from '../../Types/types'
+import {  ReviewType } from '../../Types/types'
 import StarRating from '../StarRating/StarRating'
-import { useFetchReview } from '../../apiList/reviewApi'
+import { CircularProgress } from '@mui/material'
 
-type OthersReviewProps ={
-    product:ProductType,
-    reviewItems: ReviewType[]
+type OthersReviewProps = {
+    reviewItems: ReviewType[],
+    reviewIsError: boolean,
+    reviewIsLoading: boolean,
+    reviewError: any
 }
 
 interface SingleReviewType {
@@ -14,39 +15,45 @@ interface SingleReviewType {
     userName: string,
     stars: number,
     description: string,
-    userId:string
-    profileImg:string,
+    userId: string
+    profileImg: string,
 }
 
-const OthersReview = ({product, reviewItems}:OthersReviewProps) => {
-
-    
-  return (
-    <section className={`${style.othersMainReview}`}>
-    {/* <p> See Others Review</p> */}
+const OthersReview = ({ reviewItems, reviewError, reviewIsError, reviewIsLoading }: OthersReviewProps) => {
+    return (
+        <section className={`${style.othersMainReview}`}>
+            {/* <p> See Others Review</p> */}
 
 
-    <div className={`${style.innerReviewDiv}`}>
-        {reviewItems && reviewItems?.length>0 && reviewItems?.map((singleReview:SingleReviewType) =>
-            <div key={singleReview._id} className={`${style.singleReviewContainer}`}>
-                <div>
-                    <StarRating rating={singleReview.stars} />
-                </div>
-                <div className={`${style.userinfoContainer}`}>
-                    <img src={singleReview.profileImg} alt="" />
-                    <p>{singleReview.userName}</p>
-                </div>
+            <div className={`${style.innerReviewDiv}`}>
 
-                <div>
-                    <p>{singleReview.description}</p>
-                </div>
+                {reviewIsLoading && (<div className='h-[30vh] flex justify-center items-center'>
+                    <CircularProgress sx={{ color: "#000000" }} size={25} thickness={5} /></div>)}
+
+                {!reviewIsLoading && reviewIsError && (<div className='h-[30vh] text-[20px] sm:text-[26px] flex justify-center items-center'>
+                    <p>{reviewError?.response?.data?.message || reviewError.message || "something went wrong"}</p>
+                </div>)}
+
+                {!reviewIsLoading && !reviewIsError && reviewItems && reviewItems?.length > 0 && reviewItems?.map((singleReview: SingleReviewType) =>
+                    <div key={singleReview._id} className={`${style.singleReviewContainer}`}>
+                        <div>
+                            <StarRating rating={singleReview.stars} />
+                        </div>
+                        <div className={`${style.userinfoContainer}`}>
+                            <img src={singleReview.profileImg} alt="" />
+                            <p>{singleReview.userName}</p>
+                        </div>
+
+                        <div>
+                            <p>{singleReview.description}</p>
+                        </div>
+                    </div>
+                )}
             </div>
-        )}
-    </div>
 
 
-</section>
-  )
+        </section>
+    )
 }
 
 export default OthersReview

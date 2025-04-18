@@ -1,33 +1,31 @@
 export type ReviewType = {
-    // userName: string;
-    // profileImg: string;
-    // description: string;
-    // stars: number;
-
-
     _id?: string
     userName: string,
     stars: number,
     description: string,
     userId:string
     profileImg:string,
-
   };
   
   export type ProductType = {
     _id:string;
     productName: string;
     price: number;
-    size: string;
-    availableSizes: string[];
-    color: string;
-    availableColors: string[];
-    availableStocks: number;
-    images: string[];
     description: string;
     reviews: ReviewType[];
-    reviewStar: number;
     category?:string;
+    colorVariants: {
+      color: string;
+      images: string[];
+    }[];
+    sizeVariants: {
+      size: 'XS' | 'S' | 'M' | 'L' | 'XL' | 'XXL';
+      colors: {
+        color: string;
+        availableStock: number;
+      }[];
+    }[];
+    reviewStar: number;
   };
 
 
@@ -35,19 +33,17 @@ export type ReviewType = {
     _id: string;
     quantity: number;
     productId: ProductType
-    price:number
+    price:number,
+    image:string,
+    size:string,
+    color:string,
   }
   
 
   export interface FavouriteItem {
     _id: string;
-    // productImg: string;
-    // productTitle: string;
-    // price: number;
-    // availableStocks: number;
-    // rating?:number;
     productId:ProductType,
-    size:string,
-    color:string,
+    // size:string,
+    // color:string,
+    image:string
   }
-  

@@ -4,7 +4,6 @@ import { Button, IconButton, Radio, TextField } from '@mui/material'
 import Checkbox from '@mui/material/Checkbox';
 import { Close } from '@mui/icons-material'
 import { FilterOptionsType } from '../../pages/AllProducts/AllProducts';
-import { useFilterProuducts, useSearchProducts } from '../../apiList/productApi';
 import { arrival, availabilities, categories, sizes } from '../../constants/filterConstants';
 import Slider from 'rc-slider';
 import "rc-slider/assets/index.css";
@@ -14,11 +13,8 @@ type FilterSideBarProp = {
   ref: (React.RefObject<HTMLDivElement> | null),
   sidebarVisible: boolean,
   setSidebarVisible: React.Dispatch<React.SetStateAction<boolean>>,
-  setSelectedCategory: React.Dispatch<React.SetStateAction<string>>,
-  selectedCategory: string,
   setFilterOptions: React.Dispatch<React.SetStateAction<FilterOptionsType>>,
   filterOptions: FilterOptionsType,
-  searchTerm: string,
   handleSearch: () => void
   handleRangeChange: (value: number | number[]) => void;
   maxPrice: number;
@@ -40,21 +36,10 @@ const FilterCategory: React.FC<{ title: string; children: React.ReactNode }> = (
   );
 };
 
-const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSearch, minPrice, maxPrice, handleRangeChange, searchTerm, setFilterOptions, filterOptions, sidebarVisible, setSidebarVisible, setSelectedCategory, selectedCategory }, ref) => {
-
-  const [value, setValue] = useState<number>(50); // Initial value
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValue(Number(event.target.value));
-  };
-
+const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSearch, minPrice, maxPrice, handleRangeChange, setFilterOptions, filterOptions, sidebarVisible, setSidebarVisible }, ref) => {
 
   //  let { mutate: searchMutate, data: searchData, isError: searchIsError, error: searchError, isPending: searchPending } = useSearchProducts()
   //   let { mutate: applyFiltersMutate, data: filterData, isError: filterIsError, error: filterError, isPending: filterPending } = useFilterProuducts()
-
-  const percentage = value;
-
-
 
   return (
     <section id='sidebar' ref={ref} className={`${style.sidebar} ${sidebarVisible ? style.visible : ''}`}>
@@ -62,7 +47,6 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
         <h3 className='text-lg'>Filters</h3>
         <IconButton
           onClick={() => {
-            console.log("Closing sidebar"); // Debug line
             setSidebarVisible(false);
           }}
           // variant="contained"
@@ -74,7 +58,7 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
       <div className={style.sidebarinnerDiv}>
         <FilterCategory title="Product Category">
           {categories && categories.map(item =>
-            <section>
+            <section key={item}>
               <Checkbox id={item} color='primary' onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setFilterOptions((prev) => ({
                   ...prev,
@@ -93,7 +77,7 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
 
         <FilterCategory title="Product Availability">
           {availabilities && availabilities.map(item =>
-            <section>
+            <section key={item}>
               <Checkbox id={item} color='primary' onChange={(e) => setFilterOptions(p => {
                 return {
                   ...p,
@@ -113,7 +97,7 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
 
         <FilterCategory title="Product Size">
           {sizes && sizes.map(item =>
-            <section>
+            <section key={item}>
               <Checkbox id={item} color='primary' onChange={(e) => setFilterOptions(p => {
                 return {
                   ...p,
@@ -233,7 +217,6 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
         {/* <Button variant='contained' className={`${style.applyBtn}`} onClick={()=> applyFiltersMutate(filterOptions)}>Apply</Button> */}
 
         <Button variant='contained' className={`${style.applyBtn}`} onClick={() => {
-          // console.log(filterOptions)
           // searchMutate({ search: searchTerm, filter: filterOptions })
           handleSearch()
         }
@@ -245,4 +228,4 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
 }
 );
 
-export default FilterSideBar
+export default React.memo(FilterSideBar)

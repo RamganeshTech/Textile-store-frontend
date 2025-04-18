@@ -1,6 +1,6 @@
-import { ChangeEvent, useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import style from './SingleProduct.module.css'
-import { Button, CircularProgress, IconButton, TextField } from '@mui/material';
+import { Button, CircularProgress, IconButton } from '@mui/material';
 
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
@@ -11,60 +11,123 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import { CartItem, ProductType } from '../../Types/types';
 
 // import products from '../../Utils/product';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
-import { FaStar } from "react-icons/fa";
 import StarRating from '../StarRating/StarRating';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../store/store';
+import { AppDispatch } from '../../store/store';
 import { useAddToCart, useFetchCart, useRemoveFromCart, useRemoveQuantityFromCart } from '../../apiList/cartApi';
 import { useAddToFavourite, useFetchFavourite, useRemoveFavourite } from '../../apiList/favouriteApi';
 import { useFetchProducts } from '../../apiList/productApi';
 import UserReview from '../Review/UserReview';
 import OthersReview from '../Review/OthersReview';
 import { useFetchReview } from '../../apiList/reviewApi';
+import { clearItems, setItems } from '../../slices/buyItems';
+import { useDispatch } from 'react-redux';
+import Loading from '../LoadingState/Loading';
+import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
+import RelatedItem from '../RelatedItem/RelatedItem';
 
-type reviewprouducts = {
-    reviewername: (string | null),
-    review: (string | null),
-    email: (string | null),
-    stars: (number | null)
-}
 
 const SingleProduct = () => {
     let { id: paramsid } = useParams()
+    let navigate = useNavigate()
+    const dispatch = useDispatch<AppDispatch>();
 
-    const { data: products, isLoading, error } = useFetchProducts();
+    const { data: products, isLoading: singleProductLoading } = useFetchProducts();
 
-    let { data: cartItems, isLoading: cartLoading, isError: cartIsError, error: cartError } = useFetchCart()
+    let { data: cartItems } = useFetchCart()
 
     let { data: reviewItems, isLoading: reviewIsLoading, isError: reviewIsError, error: reviewError } = useFetchReview(paramsid as string)
-
 
     // let products = useSelector((state: RootState) => state.products.products)
 
     const [product, setProduct] = useState<ProductType | null>(null)
 
-    const [tempQuantity, setTempQuantity] = useState<number>(1)
     const [isInCart, setIsInCart] = useState<boolean>(false);
     const [currentQuantity, setCurrentQuantity] = useState<number>(0);
+    const [customLoading, setCustomLoading] = useState<boolean>(false)
 
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    const [isFavourite, setIsFavourite] = useState<boolean>(false)
-    // const [review, setReview] = useState<reviewprouducts>({
-    //     reviewername: null,
-    //     review: null,
-    //     email: null,
-    //     stars: null
-    // })
-    const [selectedColor, setSelectedColor] = useState(product?.availableColors[0]); // Default to first color
-    const [selectedSize, setSelectedSize] = useState(product?.availableSizes[0]);
+    const [selectedColor, setSelectedColor] = useState<string>("");
+    const [selectedSize, setSelectedSize] = useState<string>("");
 
     // const [selectedStars, setSelectedStars] = useState(0);
     // const [hoveredStars, setHoveredStars] = useState(0);
 
     const [showUsersReview, setshowUserReview] = useState<boolean>(true);
     const [activeReview, setactiveReview] = useState<boolean>(true);
+
+    const [relatedItems, setRelatedItems] = useState<[]>([]);
+
+    let { mutate: addCartmutate, isPending: addCartPending, isError: addCartIsError, error: addCartError, reset: addcartResetError } = useAddToCart()
+    const { mutate: removeFromCartMutation, isPending: removeCartPending } = useRemoveFromCart();
+    const { mutate: removeSingleQuantity, isPending: removeQuantiytyPending, error: removeQuantityError, isError: isRemoveQuanError, reset: removeFavQuanReset } = useRemoveQuantityFromCart()
+
+    const { data: favourites, } = useFetchFavourite();
+    let { mutate: addFavourite, isError: addFavIsError, error: addFavError, reset: addFavResetError } = useAddToFavourite()
+    let { mutate: removeFavourite, isError: removeFavIsError, error: removeFavError, reset: removeFavResetError } = useRemoveFavourite()
+
+    useEffect(() => {
+        setCustomLoading(true)
+        if (products) {
+            const found = products.find(({ _id }: { _id: string }) => _id === paramsid);
+            if (found) {
+                setProduct(found);
+                // Set defaults from nested structure
+                if (found.colorVariants.length > 0) {
+                    setSelectedColor(found.colorVariants[0].color);
+                }
+                if (found.sizeVariants.length > 0) {
+                    setSelectedSize(found.sizeVariants[0].size);
+                }
+            } else {
+                setProduct(null);
+            }
+            setCustomLoading(false)
+
+        }
+
+
+    }, [products, paramsid]);
+
+
+    useEffect(() => {
+        if (cartItems && product) {
+            const foundItem = cartItems.find((item: CartItem) =>
+                item.productId._id === product._id &&
+                item.size === selectedSize &&
+                item.color === selectedColor
+            );
+            if (foundItem) {
+                setIsInCart(true);
+                // setTempQuantity(foundItem.quantity);
+                setCurrentQuantity(foundItem.quantity);
+            } else {
+                setIsInCart(false);
+                // setTempQuantity(1);
+                setCurrentQuantity(1);
+            }
+        }
+    }, [cartItems, product, selectedSize, selectedColor]);
+
+
+
+    const availableStock = useMemo(() => product?.sizeVariants.find(sv => sv.size === selectedSize)
+        ?.colors.find(c => c.color === selectedColor)?.availableStock || 0, [product, selectedSize, selectedColor])
+
+    const selectedColorImages = useMemo(() => product?.colorVariants.find(cv => cv.color === selectedColor)?.images || [], [product, selectedSize, selectedColor])
+
+    let isFavourite = useMemo(() => {
+        if (favourites && favourites.items && product) {
+            return favourites?.items.some(
+                (fav: any) => {
+                    return fav?.productId?._id === product._id
+                }
+
+            );
+        }
+    }, [favourites, product, selectedSize, selectedColor]);
 
     const handleColorSelect = (color: string) => {
         setSelectedColor(color);
@@ -74,97 +137,90 @@ const SingleProduct = () => {
         setSelectedSize(size)
     }
 
-    // const handleStarClick = (star: number) => {
-    //     setSelectedStars(star);
-    // };
-
-    let { mutate: addCartmutate, isPending: addCartPending } = useAddToCart()
-    const { mutate: removeFromCartMutation, isPending: removeCartPending } = useRemoveFromCart();
-    const { mutate: removeSingleQuantity, isPending: removeQuantiytyPending } = useRemoveQuantityFromCart()
-
-    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, } = useRemoveFavourite()
-
-    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, } = useAddToFavourite()
-
-    const { data: favourites, isLoading: favLoading, isError: favIsError } = useFetchFavourite();
-
     const handleFavourite = () => {
-        // console.log("size from favourties", product.size)
-        // console.log("colors from favourties", product.color)
         if (isFavourite) {
 
             if (product)
-                removeFavourite({ productId: product._id, size: product.size, color: product.color });
+                removeFavourite({ productId: product._id });
         } else {
             if (product)
-                addFavourite({ productId: product._id, size: product.size, color: product.color });
+                addFavourite({ productId: product._id });
+            // setIsFavourite(!isFavourite);
         }
-        setIsFavourite(!isFavourite);
     };
 
     const handleQuantity = (id: string, action: "increment" | "decrement") => {
-        const maxStock = product?.availableStocks || 0;
+        // const maxStock = product?.availableStocks || 0;
 
-        // console.log(maxStock)
-        if (action === "increment" && currentQuantity < maxStock) {
-            setCurrentQuantity(p => Math.min((p as number) + 1, maxStock))
-            addCartmutate({ productId: id, quantity: 1, price: product?.price }); // Send only the increment change
+        if (!product) return;
+
+        if (action === "increment" && currentQuantity < availableStock) {
+            setCurrentQuantity(p => Math.min((p as number) + 1, availableStock))
+            addCartmutate({ productId: id, quantity: 1, price: product?.price, color: selectedColor, size: selectedSize }); // Send only the increment change
         }
         else if (action === "decrement" && currentQuantity > 1) {
             setCurrentQuantity(p => Math.max((p as number) - 1, 1))
-            removeSingleQuantity({ id, quantity: 1 }); // Send only the decrement change
+            removeSingleQuantity({ id, quantity: 1, color: selectedColor, size: selectedSize }); // Send only the decrement change
         }
     }
 
-
-    useEffect(() => {
-        setProduct(() => {
-            // console.log(products)
-            let product = products?.find(({ _id }: { _id: string }) => _id === paramsid)
-            // console.log(product)
-            if (!product) {
-                return null
-            }
-            return product
+    const handleBuyItem = () => {
+        if (product) {
+            dispatch(clearItems())
+            dispatch(setItems({ itemId: product._id, productImg: selectedImage, productName: product.productName, singleQuantityPrice: product.price, quantity: currentQuantity, size: selectedSize, color: selectedColor }));
         }
+        navigate('/payment')
+    }
 
-        )
-    }, [])
-
+    // selected image
+    useEffect(() => {
+        if (selectedColorImages.length > 0) {
+            setSelectedImage(selectedColorImages[0]);
+        }
+    }, [selectedColorImages]);
 
     useEffect(() => {
-        if (cartItems && Array.isArray(cartItems)) {
-            const foundItem = cartItems.find((item: CartItem) => {
-                // console.log(item)
-                return item.productId._id === product?._id
+        const images = document.querySelectorAll('img[data-src]');
+
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target as HTMLImageElement;
+                    img.src = img.dataset.src!;
+                    img.removeAttribute('data-src');
+                    obs.unobserve(img);
+                }
             });
+        }, {
+            rootMargin: '100px',
+        });
 
-            // console.log("foundItem", foundItem)
-            // console.log("caling addtocat btn change functionity useeffect")
-            if (foundItem) {
-                setIsInCart(true);
-                setTempQuantity(foundItem.quantity);
-                setCurrentQuantity(foundItem.quantity)
-            } else {
-                setIsInCart(false);
-                setTempQuantity(1);
-                setCurrentQuantity(1);
-            }
-        }
-    }, [cartItems, product]);
+        images.forEach(img => observer.observe(img));
 
+        return () => observer.disconnect();
+    }, [ selectedImage]); // Run when images change
 
     useEffect(() => {
-        if (favourites && favourites.items && product) {
-            const exists = favourites.items.some((fav: any) => {
-                // console.log("favourites product Id",fav.productId)
-                // console.log("product._id",product._id)
-                return fav.productId._id === product._id
-            });
-            setIsFavourite(exists);
-        }
-    }, [favourites, product?._id]);
+        if (product)
+            setRelatedItems(() => {
+                let filteredItems = products.filter((prod: ProductType) => {
+                    return product.category === prod.category && product._id !== prod._id
+                })
 
+                if (filteredItems.length) {
+                    return filteredItems
+                }
+
+                let allItems = products.slice(0, 10)
+                return allItems
+            })
+    }, [product])
+
+    if (singleProductLoading || customLoading) {
+        return <div className='mt-[70px] w-[100vw] h-[100vh]  flex items-center justify-center'>
+            <Loading />
+        </div>
+    }
 
     if (!product) return;
 
@@ -172,29 +228,125 @@ const SingleProduct = () => {
         <>
             <main className={`${style.maincontainer}`}>
 
+                {addCartIsError && [401, 403].includes((addCartError as any)?.response?.status) &&
+                    <ErrorComponent message={(addCartError as any)?.response?.data?.message || addCartError?.message as string}
+                        showLoginButton={true} onClose={() => {
+                            addcartResetError()
+                        }
+                        } />}
+
+                {isRemoveQuanError && [401, 403].includes((removeQuantityError as any)?.response?.status) &&
+                    <ErrorComponent message={(removeQuantityError as any)?.response?.data?.message || removeQuantityError?.message as string}
+                        showLoginButton={true} onClose={() => {
+                            removeFavQuanReset()
+                        }
+                        } />}
+
+                {addFavIsError && [401, 403].includes((addFavError as any)?.response?.status) &&
+                    <ErrorComponent
+                        message={(addFavError as any)?.response?.data?.message || addFavError?.message as string}
+                        showLoginButton={true}
+                        onClose={() => {
+                            addFavResetError()
+                        }
+                        } />}
+
+
+                {removeFavIsError && [401, 403].includes((removeFavError as any)?.response?.status) &&
+                    <ErrorComponent
+                        message={(removeFavError as any)?.response?.data?.message || removeFavError?.message as string}
+                        showLoginButton={true}
+                        onClose={() => {
+                            removeFavResetError()
+                        }
+                        }
+                    />}
 
                 <div className={`${style.navigationcontiner}`}>
                     <Link to={'/'}>
                         Home
                     </Link>
                     {'>'}
-                    <span>{product?.productName} lovelovelove</span>
+                    <span>{product?.productName} chudidhar with some professional</span>
                 </div>
 
                 <section className={`${style.productMainInfo}`}>
-
                     <section className={`${style.imagecontainer}`}>
 
                         <aside className={`${style.sideimgContainer}`}>
-                            {product.images.map((image: string, i: number) =>
+                            {/* {product.images.map((image: string, i: number) =>
                                 <div key={i} className={`${style.singleSideImg}`} tabIndex={0}>
                                     <img src={image} alt="image 1" />
                                 </div>
+                            )} */}
+
+                            {selectedColorImages.map((image: string, i: number) => {
+                                // <div key={i} className={`${style.singleSideImg}`}
+                                // onClick={() => setSelectedImage(image)}
+                                // style={{ border: selectedImage === image ? '2px solid black' : 'none' }}
+                                // tabIndex={0}>
+                                //  <img
+                                //   src={image}
+                                //  alt={`Side image ${i}`}
+                                // />
+                                // </div>
+                                const blurred = image.replace('/upload/', '/upload/e_blur:1000,q_10/');
+                                return <div key={i} className={`${style.singleSideImg}`}
+                                    onClick={() => setSelectedImage(image)}
+                                    style={{ border: selectedImage === image ? '2px solid black' : 'none' }}
+                                    tabIndex={0}>
+                                    <img
+                                        src={blurred} // placeholder image
+                                        data-src={image}
+                                        //  src={image}
+                                        alt={`Side image ${i}`}
+                                        style={{
+                                            width: '100%',
+                                            height: 'auto',
+                                            filter: 'blur(8px)',
+                                            transition: 'filter 0.3s ease',
+                                        }}
+                                        onLoad={(e) => {
+                                            const target = e.currentTarget;
+                                            target.style.filter = 'none';
+                                        }}
+                                    />
+                                </div>
+                            }
                             )}
                         </aside>
 
                         <div className={`${style.mainImgContainer}`}>
-                            <img src={product.images[0]} alt="Selected Image" />
+                            {/* {selectedImage ? <img src={selectedImage} alt="Selected" /> : selectedColorImages.length > 0 ? (
+                                <img src={selectedColorImages[0]}
+                                    data-src=""
+                                    alt="Selected" />
+                            ) : (
+                                <div>No image available</div>
+                            )} */}
+                            {selectedImage || selectedColorImages.length > 0 ? (() => {
+                                const realImage = selectedImage || selectedColorImages[0];
+                                const blurred = realImage.replace('/upload/', '/upload/e_blur:1000,q_10/');
+
+                                return (
+                                    <img
+                                        src={blurred}
+                                        data-src={realImage}
+                                        alt="Selected"
+                                        style={{
+                                            width: '100%',
+                                            height: 'auto',
+                                            filter: 'blur(8px)',
+                                            transition: 'filter 0.4s ease',
+                                        }}
+                                        onLoad={(e) => {
+                                            e.currentTarget.style.filter = 'none';
+                                        }}
+                                    />
+                                );
+                            })() : (
+                                <div>No image available</div>
+                            )}
                         </div>
                     </section>
 
@@ -202,7 +354,6 @@ const SingleProduct = () => {
                         <div className={`${style.productNameCont}`}>
                             <p>{product?.productName}</p>
                         </div>
-
 
                         <div className={`${style.ratingContainer}`}>
                             {/* <p>{product.reviewStar}</p> */}
@@ -218,19 +369,26 @@ const SingleProduct = () => {
                         </div>
 
                         <div className={`${style.sizeContainer}`}>
-                            {product.availableSizes.map((size, i) =>
+                            {/* {product.availableSizes.map((size, i) =>
                                 <button key={i} onClick={() => handleSizeSelect(size)}>
                                     <p>{size}</p>
                                 </button>
-                            )}
+                            )} */}
+
+                            {product.sizeVariants.map((variant, i) => (
+                                <button className={`${selectedSize === variant.size ? "bg-black text-white" : "bg-white text-black"}`} key={i} onClick={() => handleSizeSelect(variant.size)}>
+                                    <p>{variant.size}</p>
+                                </button>
+                            ))}
                         </div>
 
                         <div className={`${style.selectedColor}`}>
                             {/* <p>{product.color}</p> */}
+                            {/* <p>Selected Color: <span>{selectedColor}</span></p> */}
                         </div>
 
                         <div className={`${style.colorsContainer}`}>
-                            {product.availableColors.map(color =>
+                            {/* {product.availableColors.map(color =>
                                 // <button className={`${style.colors} bg-[${color}] `}></button>
                                 <button
                                     className={`${style.colors} ${selectedColor === color ? "selected" : ""}`}
@@ -248,13 +406,33 @@ const SingleProduct = () => {
                                     }}
                                     onClick={() => handleColorSelect(color)}
                                 ></button>
-                            )}
+                            )} */}
+                            {product.sizeVariants
+                                .find(variant => variant.size === selectedSize)
+                                ?.colors.map(colorObj => {
+                                    // const colorDetails = product.colorVariants.find(cv => cv.color === colorObj.color);
+
+                                    return (
+                                        <button
+                                            key={colorObj.color}
+                                            className={`${style.colors} ${selectedColor === colorObj.color ? "selected" : ""}`}
+                                            style={{
+                                                backgroundColor: colorObj.color,
+                                                border: "1px solid #0a0a0a",
+                                                // outline: selectedColor === colorObj.color ? "3px solid #fafafa18" : "none",
+                                                boxShadow: selectedColor === colorObj.color ? "0 0 5px rgba(0, 0, 0, 1)" : "none",
+                                                padding: selectedColor === colorObj.color ? "5px !important" : "0",
+                                            }}
+                                            onClick={() => handleColorSelect(colorObj.color)}
+                                        ></button>
+                                    );
+                                })}
+
                         </div>
 
                         <div className={`${style.quantityContainer}`}>
                             <p>Quantity</p>
                             <div className={`${style.quantityBtns}`}>
-
                                 <IconButton
                                     disabled={currentQuantity <= 1}
                                     onClick={() => handleQuantity(product._id, "decrement")}>
@@ -275,35 +453,29 @@ const SingleProduct = () => {
                                         currentQuantity
                                     )}
                                 </div>
-
-                                {/* {(removeQuantiytyPending || !addCartPending) ? <CircularProgress size={50} thickness={5} sx={{ color: "#000", border: "2px solid red" }} /> : currentQuantity} */}
                                 <IconButton
-                                    disabled={currentQuantity >= product.availableStocks}
+                                    disabled={currentQuantity >= availableStock}
                                     onClick={() => handleQuantity(product._id, "increment")}>
                                     <AddIcon />
                                 </IconButton>
                             </div>
                         </div>
 
-
                         <section className={`${style.transactionBtns}`}>
                             <div>
                                 {!isInCart ? <Button variant='contained'
                                     className={`${style.addToCartBtn}`}
-                                    onClick={() => addCartmutate({ productId: product._id, quantity: 1, price: product.price })}
-
+                                    onClick={() => addCartmutate({ productId: product._id, quantity: currentQuantity, price: product.price, size: selectedSize, color: selectedColor })}
                                 >
                                     {addCartPending ? <CircularProgress size={19} thickness={5} sx={{ color: "#fafafa" }} /> : "Add to Cart"}
                                 </Button>
                                     :
                                     <Button variant='contained'
                                         className={`${style.addToCartBtn}`}
-                                        onClick={() => removeFromCartMutation(product._id)}
-
+                                        onClick={() => removeFromCartMutation({ productId: product._id, size: selectedSize, color: selectedColor })}
                                     >
                                         {removeCartPending ? <CircularProgress size={19} thickness={5} sx={{ color: "#fafafa" }} /> : "Remove From Cart"}
                                     </Button>
-
                                 }
 
                                 <IconButton
@@ -320,7 +492,7 @@ const SingleProduct = () => {
                                 </IconButton>
                             </div>
 
-                            <Button variant='contained' className={`${style.buynowBtn}`}>
+                            <Button variant='contained' className={`${style.buynowBtn}`} onClick={() => handleBuyItem()}>
                                 Buy Now
                             </Button>
                         </section>
@@ -336,7 +508,6 @@ const SingleProduct = () => {
                         <p>{product.description}</p>
                     </div>
                 </section>
-
 
                 <div className={`${style.reviewMainContainer}`}>
 
@@ -365,101 +536,31 @@ const SingleProduct = () => {
                     </nav>
 
                     {!showUsersReview ?
-                        // (<section className={`${style.reviewContainer}`}>
-                        //     {/* <p className={`${style.reviewheading}`}>Review our product</p> */}
-
-                        //     {/* <span className={`${style.reviewStars}`}>
-                        //      {review.stars}
-                        // </span> */}
-
-
-                        //     <div className={`${style.reviewStars}`}>
-                        //         {[1, 2, 3, 4, 5].map((star) => (
-                        //             <FaStar
-                        //                 key={star}
-                        //                 size={24}
-                        //                 // className={selectedStars >= star ? style.activeStar : style.inactiveStar}
-                        //                 className={`
-                        //                     ${star <= (hoveredStars || selectedStars) ? style.activeStar : style.inactiveStar}
-                        //                     ${style.reviewstars}
-                        //                 `}
-                        //                 onMouseEnter={() => setHoveredStars(star)} // Hover effect
-                        //                 onMouseLeave={() => setHoveredStars(0)} // Reset hover
-                        //                 onClick={() => handleStarClick(star)}
-                        //             />
-                        //         ))}
-                        //     </div>
-
-                        //     <div className={`${style.reiviewDescription}`}>
-                        //         <textarea name="review" id="" placeholder='Write a Review' rows={1}
-                        //             value={review.review as string}
-                        //             onChange={handleReviewChange}
-                        //         >
-                        //         </textarea>
-                        //     </div>
-
-                        //     <div className={`${style.reviewerAccountInfo}`}>
-
-                        //         {/* <label htmlFor="">Name</label> */}
-                        //         <TextField type="text" name="reviewerName"
-                        //             placeholder='Enter Name'
-
-                        //             value={review.reviewername}
-                        //             onChange={handleReviewChange}
-                        //             className={`${style.reviewtextField}`}
-                        //         />
-
-
-
-
-                        //         {/* <label htmlFor="">Email</label> */}
-                        //         <TextField type="email" name="email"
-                        //             placeholder='Enter Email'
-                        //             value={review.email}
-                        //             onChange={handleReviewChange}
-                        //             className={`${style.reviewtextField}`}
-
-
-                        //         />
-                        //     </div>
-
-                        //     <div className={`${style.submitContainer}`}>
-                        //         <Button variant='contained'>
-                        //             Submit
-                        //         </Button>
-                        //     </div>
-                        // </section>)
-                        <UserReview currentProductId={paramsid} reviewItems={reviewItems} />
+                        <UserReview currentProductId={paramsid} reviewItems={reviewIsError ? (reviewError as any).response.data.data : reviewItems} />
                         :
-                        // <section className={`${style.othersMainReview}`}>
-                        //     {/* <p> See Others Review</p> */}
-
-
-                        //     <div className={`${style.innerReviewDiv}`}>
-                        //         {product.reviews.map(singleReview =>
-                        //             <div className={`${style.singleReviewContainer}`}>
-                        //                 <div>
-                        //                     <StarRating rating={singleReview.stars} />
-                        //                 </div>
-                        //                 <div className={`${style.userinfoContainer}`}>
-                        //                     <img src={singleReview.profileImg} alt="" />
-                        //                     <p>{singleReview.ownerName}</p>
-                        //                 </div>
-
-                        //                 <div>
-                        //                     <p>{singleReview.description}</p>
-                        //                 </div>
-                        //             </div>
-                        //         )}
-                        //     </div>
-
-
-                        // </section>
-                        <OthersReview reviewItems={reviewItems} product={product} />
-
+                        <OthersReview reviewItems={reviewItems} reviewIsError={reviewIsError} reviewIsLoading={reviewIsLoading} reviewError={reviewError} />
                     }
                 </div>
 
+
+                <div className={style.relatedcontainer}>
+                    <section className={style.relatedinnerdiv}>
+                        <h1 className={style.relatedHeading}>People also searched for</h1>
+                        <div className={style.relatedlist}>
+                            {relatedItems.map((item: ProductType) => {
+
+                                return (
+
+                                    <Link className='w-[45%]  xl:!w-[14%] lg:w-[20%] md:w-[25%] sm:w-[25%] shrink-0 sm:h-[100%] h-[50%] !h-custom-tablet' to={`/product/${item._id}`} key={item._id}>
+                                        <RelatedItem item={item} product={product} />
+                                    </Link>
+
+                                )
+                            }
+                            )}
+                        </div>
+                    </section>
+                </div>
             </main>
         </>
     )

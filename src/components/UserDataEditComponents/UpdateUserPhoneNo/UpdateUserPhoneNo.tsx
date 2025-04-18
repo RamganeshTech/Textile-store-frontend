@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { TextField, Button, CircularProgress } from "@mui/material";
 import styles from "./UpdateUserPhoneNo.module.css";
 import { useChangePhoneNo } from "../../../apiList/userprofileApi";
+
 
 const UpdateUserPhoneNo: React.FC = () => {
 
@@ -9,7 +10,7 @@ const UpdateUserPhoneNo: React.FC = () => {
   const [localError, setLocalError] = useState<string>("")
 
 
-  let { mutate, isPending, isError, error, data } = useChangePhoneNo();
+  let { mutate, isPending, isError} = useChangePhoneNo();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
 
@@ -32,9 +33,8 @@ const UpdateUserPhoneNo: React.FC = () => {
 
       mutate(PhoneNo.trim(), {
         onSuccess: (data) => {
-          console.log(data)
           if (data.ok) {
-            console.log(data.message)
+            setLocalError("")
 
             setSuccessMessage(data.message);
 
@@ -44,19 +44,23 @@ const UpdateUserPhoneNo: React.FC = () => {
             }, 3000);
 
           }
-        }
+        },
+        onError(error:any) {
+
+          let message = error?.response?.data.message || error?.message || "something went wrong"
+          setLocalError(message)
+        },
       })
 
-      setLocalError("")
 
     }
     catch (error) {
       if (error instanceof Error) {
-        console.log(error.message)
         setLocalError(error.message)
       }
     };
   }
+
 
   return (
     <div className={styles[`container`]}>
@@ -71,28 +75,29 @@ const UpdateUserPhoneNo: React.FC = () => {
             label="PhoneNo"
             type="phone"
             name="PhoneNo"
+            // error={isError}
             value={PhoneNo}
             onChange={handleChange}
             fullWidth
             required
             className={styles[`inputField`]}
           />
-          {isError && <div className={`${styles.errormessage}`}>
-            <p>{error?.message}</p>
+          {localError && <div className={`${styles.errormessage}`}>
+            <p>{localError}</p>
             {/* <p>error ocuuere man man man</p> */}
           </div>}
 
 
-          {localError && !isError && <div className={`${styles.errormessage}`}>
+          {/* {localError && isError && <div className={`${styles.errormessage}`}>
             <p>{localError}</p>
-          </div>}
+          </div>} */}
         </div>
         <Button
           type="submit"
           variant="contained"
           className={styles[`submitButton`]}
         >
-          {isPending ? <CircularProgress sx={{ color: "#fafafa" }} size={25} /> : "Update Phone Number"}
+          {!isError && isPending ? <CircularProgress sx={{ color: "#fafafa" }} size={25} /> : "Update Phone Number"}
         </Button>
       </form>
     </div>

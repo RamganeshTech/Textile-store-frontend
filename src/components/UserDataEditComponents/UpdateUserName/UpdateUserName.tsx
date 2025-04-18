@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 import { TextField, Button, CircularProgress } from "@mui/material";
 import styles from "./UpdaeUserName.module.css";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setUser, UserState } from "../../../slices/user";
+import { setUser } from "../../../slices/user";
 import { useChangeUserName } from "../../../apiList/userprofileApi";
 import store from "../../../store/store";
 
 const UpdateUserName: React.FC = () => {
 
 
-  let navigate = useNavigate()
 
   const [userName, setUserName] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   
 
-  let {mutate, isPending, isError, error,data} = useChangeUserName();
+  let {mutate, isPending, isError, error} = useChangeUserName();
 
   let dispatch = useDispatch()
 
@@ -28,14 +26,13 @@ const UpdateUserName: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-     if(!userName){
-        throw new Error("Please enter the Username")
-     }
+    //  if(!userName){
+    //     throw new Error("Please enter the Username")
+    //  }
      
      mutate(userName, {
        onSuccess:(data)=>{
          if (data.ok) {
-           console.log(data.message)
            const currentState = store.getState().user; 
             dispatch(setUser({...currentState,userName }))
 
@@ -51,7 +48,6 @@ const UpdateUserName: React.FC = () => {
     }
     catch (error) {
       if(error instanceof Error){
-        console.log(error.message)
       }   
   };
 }
@@ -78,7 +74,7 @@ const UpdateUserName: React.FC = () => {
           className={styles[`inputField`]}
         />
             {isError && <div className={`${styles.errormessage}`}>
-            <p>{error?.message}</p>
+            <p>{(error as any)?.response?.data?.message || error?.message || "Something went wrong"}</p>
             {/* <p>error ocuuere man man man</p> */}
           </div>} 
       </div>
