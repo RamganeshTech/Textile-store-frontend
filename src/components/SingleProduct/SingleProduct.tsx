@@ -49,12 +49,8 @@ const SingleProduct = () => {
 
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-
-
-
     const [selectedColor, setSelectedColor] = useState<string>("");
     const [selectedSize, setSelectedSize] = useState<string>("");
-
 
     // const [selectedStars, setSelectedStars] = useState(0);
     // const [hoveredStars, setHoveredStars] = useState(0);
@@ -63,8 +59,6 @@ const SingleProduct = () => {
     const [activeReview, setactiveReview] = useState<boolean>(true);
 
     const [relatedItems, setRelatedItems] = useState<[]>([]);
-
-
 
     let { mutate: addCartmutate, isPending: addCartPending, isError: addCartIsError, error: addCartError, reset: addcartResetError } = useAddToCart()
     const { mutate: removeFromCartMutation, isPending: removeCartPending } = useRemoveFromCart();
@@ -186,13 +180,39 @@ const SingleProduct = () => {
     }, [selectedColorImages]);
 
     useEffect(() => {
+        const images = document.querySelectorAll('img[data-src]');
+
+        const observer = new IntersectionObserver((entries, obs) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const img = entry.target as HTMLImageElement;
+                    img.src = img.dataset.src!;
+                    img.removeAttribute('data-src');
+                    obs.unobserve(img);
+                }
+            });
+        }, {
+            rootMargin: '100px',
+        });
+
+        images.forEach(img => observer.observe(img));
+
+        return () => observer.disconnect();
+    }, [ selectedImage]); // Run when images change
+
+    useEffect(() => {
         if (product)
             setRelatedItems(() => {
                 let filteredItems = products.filter((prod: ProductType) => {
-                    return product.category === prod.category
+                    return product.category === prod.category && product._id !== prod._id
                 })
 
-                return filteredItems || []
+                if (filteredItems.length) {
+                    return filteredItems
+                }
+
+                let allItems = products.slice(0, 10)
+                return allItems
             })
     }, [product])
 
@@ -260,20 +280,71 @@ const SingleProduct = () => {
                                 </div>
                             )} */}
 
-                            {selectedColorImages.map((image: string, i: number) => (
-                                <div key={i} className={`${style.singleSideImg}`}
+                            {selectedColorImages.map((image: string, i: number) => {
+                                // <div key={i} className={`${style.singleSideImg}`}
+                                // onClick={() => setSelectedImage(image)}
+                                // style={{ border: selectedImage === image ? '2px solid black' : 'none' }}
+                                // tabIndex={0}>
+                                //  <img
+                                //   src={image}
+                                //  alt={`Side image ${i}`}
+                                // />
+                                // </div>
+                                const blurred = image.replace('/upload/', '/upload/e_blur:1000,q_10/');
+                                return <div key={i} className={`${style.singleSideImg}`}
                                     onClick={() => setSelectedImage(image)}
                                     style={{ border: selectedImage === image ? '2px solid black' : 'none' }}
                                     tabIndex={0}>
-                                    <img src={image} alt={`Side image ${i}`} />
+                                    <img
+                                        src={blurred} // placeholder image
+                                        data-src={image}
+                                        //  src={image}
+                                        alt={`Side image ${i}`}
+                                        style={{
+                                            width: '100%',
+                                            height: 'auto',
+                                            filter: 'blur(8px)',
+                                            transition: 'filter 0.3s ease',
+                                        }}
+                                        onLoad={(e) => {
+                                            const target = e.currentTarget;
+                                            target.style.filter = 'none';
+                                        }}
+                                    />
                                 </div>
-                            ))}
+                            }
+                            )}
                         </aside>
 
                         <div className={`${style.mainImgContainer}`}>
-                            {selectedImage ? <img src={selectedImage} alt="Selected" /> : selectedColorImages.length > 0 ? (
-                                <img src={selectedColorImages[0]} alt="Selected" />
+                            {/* {selectedImage ? <img src={selectedImage} alt="Selected" /> : selectedColorImages.length > 0 ? (
+                                <img src={selectedColorImages[0]}
+                                    data-src=""
+                                    alt="Selected" />
                             ) : (
+                                <div>No image available</div>
+                            )} */}
+                            {selectedImage || selectedColorImages.length > 0 ? (() => {
+                                const realImage = selectedImage || selectedColorImages[0];
+                                const blurred = realImage.replace('/upload/', '/upload/e_blur:1000,q_10/');
+
+                                return (
+                                    <img
+                                        src={blurred}
+                                        data-src={realImage}
+                                        alt="Selected"
+                                        style={{
+                                            width: '100%',
+                                            height: 'auto',
+                                            filter: 'blur(8px)',
+                                            transition: 'filter 0.4s ease',
+                                        }}
+                                        onLoad={(e) => {
+                                            e.currentTarget.style.filter = 'none';
+                                        }}
+                                    />
+                                );
+                            })() : (
                                 <div>No image available</div>
                             )}
                         </div>
@@ -473,62 +544,22 @@ const SingleProduct = () => {
 
 
                 <div className={style.relatedcontainer}>
-                    <div className={style.relatedinnerdiv}>
+                    <section className={style.relatedinnerdiv}>
                         <h1 className={style.relatedHeading}>People also searched for</h1>
                         <div className={style.relatedlist}>
                             {relatedItems.map((item: ProductType) => {
 
                                 return (
-                                <>
-                                <Link className='w-[15%] h-[100%]' to={`/product/${item._id}`} key={item._id}>
-                                <RelatedItem item={item} product={product} />
-                                </Link>
-                                {/* <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                <RelatedItem item={item} product={product} />
-                                 */}
-                                </>
-                            )
+
+                                    <Link className='w-[45%]  xl:!w-[14%] lg:w-[20%] md:w-[25%] sm:w-[25%] shrink-0 sm:h-[100%] h-[50%] !h-custom-tablet' to={`/product/${item._id}`} key={item._id}>
+                                        <RelatedItem item={item} product={product} />
+                                    </Link>
+
+                                )
                             }
                             )}
                         </div>
-                    </div>
+                    </section>
                 </div>
             </main>
         </>

@@ -28,7 +28,7 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
         return products.find((product: ProductType) => product._id === item.productId._id)
     }, [products, item.productId._id])
 
-    
+
     const { data: cartItems } = useFetchCart();
     let { mutate: removeFavourite, isPending: removefavpending } = useRemoveFavourite()
     let { mutate: addCartmutate, isPending: addcartPending } = useAddToCart()
@@ -40,25 +40,25 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
         color: null
     })
 
-//    let firstAvailable: { size: (string | null), color: (string | null) } = {
-//     size: null,
-//     color: null
-// };
-//     const checkingFirst = useMemo(() => {
+    //    let firstAvailable: { size: (string | null), color: (string | null) } = {
+    //     size: null,
+    //     color: null
+    // };
+    //     const checkingFirst = useMemo(() => {
 
-//         product?.sizeVariants?.some(size => {
-//             return size?.colors?.some(color => {
-//                 if (color.availableStock > 0) {
-//                     setFirstAvailable((prev)=> ({...prev, size: size.size, color: color.color}))
-//                     // firstAvailable.size = size.size;
-//                     // firstAvailable.color = color.color;
-//                     return true; // Stop inner loop
-//                 }
-//                 return false;
-//             });
-//         });
-//     // return cartItems?.some((cartitem: any) => cartitem.productId._id === item.productId._id && firstAvailable.size === cartitem.size && firstAvailable.color === cartitem.color) || false;
-// }, [cartItems, item._id]);
+    //         product?.sizeVariants?.some(size => {
+    //             return size?.colors?.some(color => {
+    //                 if (color.availableStock > 0) {
+    //                     setFirstAvailable((prev)=> ({...prev, size: size.size, color: color.color}))
+    //                     // firstAvailable.size = size.size;
+    //                     // firstAvailable.color = color.color;
+    //                     return true; // Stop inner loop
+    //                 }
+    //                 return false;
+    //             });
+    //         });
+    //     // return cartItems?.some((cartitem: any) => cartitem.productId._id === item.productId._id && firstAvailable.size === cartitem.size && firstAvailable.color === cartitem.color) || false;
+    // }, [cartItems, item._id]);
 
 
     // const isInCart = cartItems?.some((cartitem: any) =>{
@@ -67,18 +67,18 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
     //     return cartitem.productId._id === item.productId._id && cartitem.size === item.size && cartitem.color === item.color
     // } )
 
-    const handleRemove = (e:React.MouseEvent<HTMLButtonElement>,id: string) => {
+    const handleRemove = (e: React.MouseEvent<HTMLButtonElement>, id: string) => {
         // setFavourites(prev => prev.filter(item => item._id !== id));
         // console.log("favourite items id", id)
         e.preventDefault()
         e.stopPropagation()
-        if(!removefavpending){
+        if (!removefavpending) {
             removeFavourite({ productId: id, })
         }
 
     };
 
-    const handleCart = (e:React.MouseEvent<HTMLButtonElement>) => {
+    const handleCart = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         e.stopPropagation()
         // let firstAvailable: { size: (string | null), color: (string | null) } = {
@@ -102,7 +102,7 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
 
             if (isInCart && !removeCartPending) {
                 removeCartmutate({ productId: item.productId._id, size: firstAvailable.size, color: firstAvailable.color });
-            } else if(!addcartPending) {
+            } else if (!addcartPending) {
                 addCartmutate({ productId: item.productId._id, quantity: 1, price: item.productId.price, size: firstAvailable.size, color: firstAvailable.color })
             }
         }
@@ -113,38 +113,70 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
 
     useEffect(() => {
         if (!product?.sizeVariants) return;
-      
-        for (const size of product.sizeVariants) {
-          for (const color of size.colors) {
-            if (color.availableStock > 0) {
-              setFirstAvailable({ size: size.size, color: color.color });
-              return; // exit once we find the first match
-            }
-          }
-        }
-      }, [product]);
 
-    const isInCart = useMemo(()=>{
+        for (const size of product.sizeVariants) {
+            for (const color of size.colors) {
+                if (color.availableStock > 0) {
+                    setFirstAvailable({ size: size.size, color: color.color });
+                    return; // exit once we find the first match
+                }
+            }
+        }
+    }, [product]);
+
+    const isInCart = useMemo(() => {
         return cartItems?.some((cartitem: any) => cartitem.productId._id === item.productId._id && firstAvailable.size === cartitem.size && firstAvailable.color === cartitem.color) || false;
     }, [firstAvailable, cartItems])
 
+    const getBlurredCloudinaryUrl = (originalUrl: string) => {
+        if (!originalUrl.includes('/upload/')) return originalUrl;
+        return originalUrl.replace('/upload/', '/upload/e_blur:1000,q_10/');
+    };
 
 
     return (
         <div key={item?._id} className={styles.favouriteItem}>
-            <img src={item?.image} alt={item?.productId.productName} className={styles.image} />
+            {/* <img
+             src={item?.image}
+              alt={item?.productId.productName}
+              
+              className={styles.image} /> */}
+
+
+            <img
+               src={getBlurredCloudinaryUrl(item?.image)} // Show blurred version by default
+               data-src={item?.image} // Actual image will be loaded when in view
+               alt={item.productId.productName}
+               className={styles.image}
+               loading="lazy" // Native lazy loading support
+               style={{
+                   // height: 'auto',
+                   transition: 'filter 0.4s ease',
+               }}
+               onLoad={(e) => {
+                   const img = e.currentTarget;
+               
+                   // If we're still on the blurred URL, swap to the real one:
+                   if (img.src.includes('/e_blur:1000,q_10/')) {
+                     img.src = item.image;      // 2) load the real image
+                   } else {
+                     // Otherwise, we just loaded the real image → remove the blur class
+                     img.classList.remove(styles.lazy_blur);
+                   }
+                 }}
+               />
 
             <div className={styles.itemDetails}>
                 {/* <Link to={`/product/${item.productId._id}`}> */}
 
-                    <h2>{item.productId.productName} watcheswatches watches  watcheswatches watches  watcheswatches watches  watches watches Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellat nostrum dolore vitae ipsa, totam voluptatem sit mollitia ad earum dicta.</h2>
-                    <p>Price: <span>${item?.productId.price?.toFixed(2)}</span></p>
-                    <div className='flex gap-[5px] items-center'>
-                        {/* <p>size: <span className=' !font-semibold !text-[16px] sm:!text-[18px] md:!text-[20px]'>{item.size}</span></p> */}
-                        {/* {" "} */}
-                        {/* <p>color: <span className=' !font-semibold  !text-[16px] sm:!text-[18px] md:!text-[20px]'>{item.color}</span></p> */}
-                    </div>
-                    <p><StarRating rating={item?.productId.reviewStar ?? 0} /></p>
+                <h2>{item.productId.productName} watcheswatches watches  watcheswatches watches  watcheswatches watches  watches watches Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellat nostrum dolore vitae ipsa, totam voluptatem sit mollitia ad earum dicta.</h2>
+                <p>Price: <span>${item?.productId.price?.toFixed(2)}</span></p>
+                <div className='flex gap-[5px] items-center'>
+                    {/* <p>size: <span className=' !font-semibold !text-[16px] sm:!text-[18px] md:!text-[20px]'>{item.size}</span></p> */}
+                    {/* {" "} */}
+                    {/* <p>color: <span className=' !font-semibold  !text-[16px] sm:!text-[18px] md:!text-[20px]'>{item.color}</span></p> */}
+                </div>
+                <p><StarRating rating={item?.productId.reviewStar ?? 0} /></p>
                 {/* </Link>  */}
 
                 <div className={`${styles.btncontainer}`}>
@@ -174,7 +206,7 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
                         )}
                     </Button>
 
-                    <IconButton disabled={removefavpending} className={styles.deleteBtn} onClick={(e) => handleRemove(e,item.productId._id)}>
+                    <IconButton disabled={removefavpending} className={styles.deleteBtn} onClick={(e) => handleRemove(e, item.productId._id)}>
                         {removefavpending ? <CircularProgress size={24} thickness={4} sx={{ color: "#fafafa" }} /> : <DeleteOutline />}
                     </IconButton>
                 </div>

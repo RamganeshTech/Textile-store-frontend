@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import style from './Products.module.css'
 
 import { Button, CircularProgress, IconButton } from '@mui/material'
@@ -31,11 +31,11 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
     const { data: cartItems } = useFetchCart();
     const { mutate: removeCartmutate, isPending: removeCartPending } = useRemoveFromCart();
 
-    let { mutate: addCartmutate, isPending: addCartPending, isError: addCartIsError, error: addCartError , reset:addcartResetError} = useAddToCart()
+    let { mutate: addCartmutate, isPending: addCartPending, isError: addCartIsError, error: addCartError, reset: addcartResetError } = useAddToCart()
 
-    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, reset:removeFavResetError } = useRemoveFavourite()
+    let { mutate: removeFavourite, isPending: removeFavPending, isError: removeFavIsError, error: removeFavError, reset: removeFavResetError } = useRemoveFavourite()
 
-    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, reset:addFavResetError  } = useAddToFavourite()
+    let { mutate: addFavourite, isPending: addFavPending, isError: addFavIsError, error: addFavError, reset: addFavResetError } = useAddToFavourite()
 
     const { data: favourites } = useFetchFavourite();
 
@@ -57,8 +57,8 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         if (isFavourite && !removeFavPending) {
             removeFavourite({ productId: product._id, });
         } else {
-            if(!addFavPending){
-                addFavourite({ productId: product._id,});
+            if (!addFavPending) {
+                addFavourite({ productId: product._id, });
             }
         }
         // setIsFavourite(!isFavourite);
@@ -89,46 +89,117 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
     const handleCart = () => {
         if (isInCart && !removeCartPending) {
-            removeCartmutate({productId: product._id, size: firstSelectedSize, color:firstSelectedColor });
-        } else if(!addCartPending) {
-            addCartmutate({ productId: product._id, quantity: 1, price: product.price, size: firstSelectedSize, color:firstSelectedColor });
+            removeCartmutate({ productId: product._id, size: firstSelectedSize, color: firstSelectedColor });
+        } else if (!addCartPending) {
+            addCartmutate({ productId: product._id, quantity: 1, price: product.price, size: firstSelectedSize, color: firstSelectedColor });
         }
         // setIsInCart(!isInCart);
     };
 
+
+    // useEffect(() => {
+    //     const images = document.querySelectorAll('img[data-src]');
+
+    //     const observer = new IntersectionObserver((entries, obs) => {
+    //         entries.forEach(entry => {
+    //             if (entry.isIntersecting) {
+    //                 const img = entry.target as HTMLImageElement;
+    //                 img.src = img.dataset.src!; // Set the actual image URL from data-src
+    //                 img.removeAttribute('data-src'); // Clean up the data-src attribute
+    //                 obs.unobserve(img); // Unobserve once the image is loaded
+    //             }
+    //         });
+    //     }, {
+    //         rootMargin: '100px', // Preload images 100px before they come into view
+    //     });
+
+    //     images.forEach(img => observer.observe(img));
+
+    //     return () => observer.disconnect(); // Clean up the observer when component is unmounted
+    // }, []);
+
+    const getBlurredCloudinaryUrl = (originalUrl: string) => {
+        if (!originalUrl.includes('/upload/')) return originalUrl;
+        return originalUrl.replace('/upload/', '/upload/e_blur:1000,q_10/');
+    };
+
+    // const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    //     const img = e.target as HTMLImageElement;
+    
+    //     // Check if the image source is different from the blurred one
+    //     if (img.src !== img.dataset.src) {
+    //       console.log('Image loaded:', img.src);
+    //       img.src = img.dataset.src!; // Set the actual image URL from data-src
+    //       img.removeAttribute('data-src'); // Clean up the data-src attribute
+    //       img.classList.remove(style.lazy_blur); // Remove the blur class
+    //     }
+    //   };
+
+
     return (
         <div className={`${style.mainProduct}`}>
 
-             {addCartIsError &&   [401, 403].includes((addCartError as any)?.response?.status)  && 
-             <ErrorComponent message={(addCartError as any)?.response?.data?.message || addCartError?.message as string} 
-             showLoginButton={true} onClose={()=> { 
-              addcartResetError()
-             }
-            }/>}
+            {addCartIsError && [401, 403].includes((addCartError as any)?.response?.status) &&
+                <ErrorComponent message={(addCartError as any)?.response?.data?.message || addCartError?.message as string}
+                    showLoginButton={true} onClose={() => {
+                        addcartResetError()
+                    }
+                    } />}
 
-           {addFavIsError && [401, 403].includes((addFavError as any)?.response?.status) && <ErrorComponent 
-           message={(addFavError as any)?.response?.data?.message || addFavError?.message as string}
-           showLoginButton={true}
-           onClose={()=> { 
-              addFavResetError()
-             }
-            } />}
+            {addFavIsError && [401, 403].includes((addFavError as any)?.response?.status) && <ErrorComponent
+                message={(addFavError as any)?.response?.data?.message || addFavError?.message as string}
+                showLoginButton={true}
+                onClose={() => {
+                    addFavResetError()
+                }
+                } />}
 
 
-            {removeFavIsError && [401, 403].includes((removeFavError as any)?.response?.status) && <ErrorComponent 
-            message={(removeFavError as any)?.response?.data?.message || removeFavError?.message as string}
-            showLoginButton={true} 
-            onClose={()=> { 
-                removeFavResetError()
-               }
-              } 
+            {removeFavIsError && [401, 403].includes((removeFavError as any)?.response?.status) && <ErrorComponent
+                message={(removeFavError as any)?.response?.data?.message || removeFavError?.message as string}
+                showLoginButton={true}
+                onClose={() => {
+                    removeFavResetError()
+                }
+                }
             />}
 
             <section className={`${style.product}`}>
                 <div className={`${style.imgcontainer}`}>
                     <Link to={`/product/${product._id}`} >
-                        <img loading={location.pathname.includes('allproducts') ? 'lazy' : "eager"} 
-                        src={productImage ? productImage : notAvailableimage} alt="" style={{ pointerEvents: "none" }} />
+
+                        {/* <img
+                         loading={location.pathname.includes('allproducts') ? 'lazy' : "eager"} 
+                        src={productImage ? productImage : notAvailableimage}
+                         alt="" 
+                         style={{ pointerEvents: "none" }} /> */}
+
+
+                        <img
+                            src={getBlurredCloudinaryUrl(productImage)} // Show blurred version by default
+                            data-src={productImage} // Actual image will be loaded when in view
+                            alt={product.productName}
+                            className={style.lazy_blur}
+                            loading="lazy" // Native lazy loading support
+                            style={{
+                                width: '100%',
+                                // height: 'auto',
+                                transition: 'filter 0.4s ease',
+                            }}
+                            onLoad={(e) => {
+                                const img = e.currentTarget;
+                            
+                                // If we're still on the blurred URL, swap to the real one:
+                                if (img.src.includes('/e_blur:1000,q_10/')) {
+                                  img.src = productImage;      // 2) load the real image
+                                } else {
+                                  // Otherwise, we just loaded the real image → remove the blur class
+                                  img.classList.remove(style.lazy_blur);
+                                }
+                              }}
+                            />
+                            
+
                     </Link>
                     <IconButton
                         sx={{ backgroundColor: "fff" }}
