@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import style from './Products.module.css'
 
 import { Button, CircularProgress, IconButton } from '@mui/material'
@@ -8,7 +8,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 import { ProductType } from '../../Types/types';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import StarRating from '../../components/StarRating/StarRating';
 import { useAddToCart, useFetchCart, useRemoveFromCart } from '../../apiList/cartApi';
 import { useAddToFavourite, useFetchFavourite, useRemoveFavourite } from '../../apiList/favouriteApi';
@@ -20,7 +20,7 @@ type singleProductprop = {
 
 const Products: React.FC<singleProductprop> = ({ product }) => {
 
-    let location = useLocation()
+    // let location = useLocation()
     const notAvailableimage = "https://th.bing.com/th/id/OIP.Skr-oJ6BWg_K65k5uDiMdgHaHa?w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
 
     // const [isFavourite, setIsFavourite] = useState<boolean>(false)
@@ -96,28 +96,6 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         // setIsInCart(!isInCart);
     };
 
-
-    // useEffect(() => {
-    //     const images = document.querySelectorAll('img[data-src]');
-
-    //     const observer = new IntersectionObserver((entries, obs) => {
-    //         entries.forEach(entry => {
-    //             if (entry.isIntersecting) {
-    //                 const img = entry.target as HTMLImageElement;
-    //                 img.src = img.dataset.src!; // Set the actual image URL from data-src
-    //                 img.removeAttribute('data-src'); // Clean up the data-src attribute
-    //                 obs.unobserve(img); // Unobserve once the image is loaded
-    //             }
-    //         });
-    //     }, {
-    //         rootMargin: '100px', // Preload images 100px before they come into view
-    //     });
-
-    //     images.forEach(img => observer.observe(img));
-
-    //     return () => observer.disconnect(); // Clean up the observer when component is unmounted
-    // }, []);
-
     const getBlurredCloudinaryUrl = (originalUrl: string) => {
         if (!originalUrl.includes('/upload/')) return originalUrl;
         return originalUrl.replace('/upload/', '/upload/e_blur:1000,q_10/');
@@ -176,7 +154,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
 
                         <img
-                            src={getBlurredCloudinaryUrl(productImage)} // Show blurred version by default
+                            src={getBlurredCloudinaryUrl(productImage) || notAvailableimage} // Show blurred version by default
                             data-src={productImage} // Actual image will be loaded when in view
                             alt={product.productName}
                             className={style.lazy_blur}
