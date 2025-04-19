@@ -104,7 +104,6 @@
 .addtocart {
     position: relative;
     overflow: hidden;
-    background-color: #0c0d0d;
     width: 90%;
     height: 40px;
     display: flex;
@@ -120,10 +119,7 @@
 }
 
 .addtocart:hover{
-    /* background-color: #003a73; */
-    /* background-color: #05294e; */
     background-color: #033261;
-
 }
 
 .addtocart::after {
