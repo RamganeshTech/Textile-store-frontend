@@ -18,7 +18,7 @@
     width: 100%;
     height: 100%;
     padding: 10px;
-    justify-content: space-between;
+    justify-content: center;
     align-items: start;
 }
 
@@ -107,7 +107,7 @@
     gap: 10px;
     width: 80%;
     /* border: 2px solid red; */
-    /* justify-content: center; */
+    justify-content: start  ;
     align-items: center;
 }
 
@@ -134,12 +134,10 @@ gap: 5px;
 
 .applybtncontainer{
     width: 100%;
-    /* height: 25px !important; */
     font-size: clamp(12px, 3vw, 18px);
     display: flex;
     align-items: center;
     justify-content: center;
-    /* margin: 20px auto 10px; */
     border-bottom: 1px solid #34333328; 
     padding: 20px 0;
 }
@@ -214,7 +212,6 @@ gap: 5px;
     align-items: center;
   }
   
-  /* When dropdown is open, allow enough max-height to display options */
   .filterOptions.open {
     max-height: 300px;
   }
@@ -234,66 +231,9 @@ gap: 5px;
     text-transform: none;
   }
 
-  /* .slider-container {
-    width: 300px;
-    margin: 20px;
-    text-align: center;
-}
-
-.blue-slider {
-    -webkit-appearance: none; 
-    appearance: none;
-    width: 100%;
-    height: 4px;
-    background: transparent; 
-    cursor: pointer;
-}
-
-
-.blue-slider::-webkit-slider-runnable-track {
-    height: 4px;
-    border-radius: 5px;
-    background: #ccc; 
-}
-
-
-.blue-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px;
-    height: 16px;
-    background: white;
-    border: 2px solid #3182ce; 
-    border-radius: 50%;
-    cursor: pointer;
-    margin-top: -6px; 
-}
-
-
-.blue-slider::-moz-range-track {
-    height: 4px;
-    border-radius: 5px;
-    background: #ccc; 
-}
-
-.blue-slider::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    background: white;
-    border: 2px solid #3182ce; 
-    border-radius: 50%;
-    cursor: pointer;
-} */
-
-/* .blue-slider {
-    background: linear-gradient(to right, #3182ce 0%, #3182ce var(--value, 50%), #ccc var(--value, 50%), #ccc 100%);
-}
-   */
-
    .slidercontainer {
     width: 100% !important;
     max-width: 200px;
-    /* margin: auto; */
-    /* padding: 20px; */
     /* border: 2px solid red; */
     display: flex;
     justify-content: center;
@@ -329,7 +269,7 @@ gap: 5px;
 @media (max-width:426px){
 
     .innerDiv{
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         flex-direction: column;
         flex: 1;

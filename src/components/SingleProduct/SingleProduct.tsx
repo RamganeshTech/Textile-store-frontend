@@ -187,7 +187,7 @@ const SingleProduct = () => {
                 if (entry.isIntersecting) {
                     const img = entry.target as HTMLImageElement;
                     img.src = img.dataset.src!;
-                    img.removeAttribute('data-src');
+                    // img.removeAttribute('data-src');
                     obs.unobserve(img);
                 }
             });

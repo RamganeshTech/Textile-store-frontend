@@ -25,7 +25,7 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
 
 
     const product = useMemo(() => {
-        return products.find((product: ProductType) => product._id === item.productId._id)
+        return products?.find((product: ProductType) => product._id === item.productId._id)
     }, [products, item.productId._id])
 
 
@@ -162,6 +162,7 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
                    } else {
                      // Otherwise, we just loaded the real image → remove the blur class
                      img.classList.remove(styles.lazy_blur);
+                     img.removeAttribute("data-src")
                    }
                  }}
                />

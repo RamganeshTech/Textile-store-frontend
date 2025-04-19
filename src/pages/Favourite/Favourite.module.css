@@ -75,9 +75,6 @@
     border: none;
     padding: 5px 10px;
     cursor: pointer;
-    border-radius: 16px ;
-    /* width: 5%; */
-    /* height: 30px; */
 }
 
 .deleteBtn:hover {
@@ -89,8 +86,6 @@
     border: none;
     padding: 5px 10px;
     cursor: pointer;
-    border-radius: 16px ;
-    /* width: 5%;  */
     height: 40px;
 }
 
@@ -170,7 +165,6 @@
     }
 
    .deleteBtn {
-      /* border: 2px solid blue !important; */
       width: 100% !important;
       border-radius: 8px !important;
    }

@@ -17,11 +17,11 @@ import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
 type singleProductprop = {
     product: ProductType
 }
+const notAvailableimage = "https://th.bing.com/th/id/OIP.Skr-oJ6BWg_K65k5uDiMdgHaHa?w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
 
 const Products: React.FC<singleProductprop> = ({ product }) => {
 
     // let location = useLocation()
-    const notAvailableimage = "https://th.bing.com/th/id/OIP.Skr-oJ6BWg_K65k5uDiMdgHaHa?w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
 
     // const [isFavourite, setIsFavourite] = useState<boolean>(false)
     // const [isInCart, setIsInCart] = useState(false);
@@ -103,7 +103,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
     // const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     //     const img = e.target as HTMLImageElement;
-    
+
     //     // Check if the image source is different from the blurred one
     //     if (img.src !== img.dataset.src) {
     //       console.log('Image loaded:', img.src);
@@ -173,10 +173,10 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                                 } else {
                                   // Otherwise, we just loaded the real image → remove the blur class
                                   img.classList.remove(style.lazy_blur);
+                                  img.removeAttribute('data-src');
                                 }
                               }}
                             />
-                            
 
                     </Link>
                     <IconButton
