@@ -25,7 +25,7 @@ const SizeVariantInput: React.FC<{
     name: `sizeVariants.${index}.colors`,
   });
 
-  const [imagecontainer, setImagecontainer] = useState<{ image: number, color: string }[]>([{ image: 1, color: "" }])
+  const [imagecontainer] = useState<{ image: number, color: string }[]>([{ image: 1, color: "" }])
 
   const handleFileSelect = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -82,7 +82,7 @@ const SizeVariantInput: React.FC<{
                 placeholder="Stock"
                 className={styles.input}
               />
-              {imagecontainer.map((image, i) =>
+              {imagecontainer.map((_, i) =>
                 <div key={i} className="w-[100%]  flex !items-center gap-[5px]">
                   {/* <TextField
               type="file"
@@ -130,7 +130,7 @@ type AddProductProp = {
 
 const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, setEditProductId }) => {
 
-  const { register, control, handleSubmit, reset, setValue, watch } = useForm({
+  const { register, control, handleSubmit, reset, setValue } = useForm({
     defaultValues: {
       productName: "",
       price: 0,
