@@ -2,7 +2,7 @@
 import { useEffect } from "react";
 import style from './Home.module.css'
 import Carousel from "../../components/Carousel/Carousel";
-import SubCarousel from "../../components/Subcarousel/SubCarousel";
+// import SubCarousel from "../../components/Subcarousel/SubCarousel";
 import ProductsList from "../../components/ProductsList/ProductsList";
 
 // import products from '../../Utils/product';
@@ -42,7 +42,7 @@ const Home = () => {
   return (
     <div className={`mt-[70px] ${style.maincontainer}`}>
         <Carousel />
-        <SubCarousel />
+        {/* <SubCarousel /> */}
         {!isLoading && isError &&  <div className="h-[80vh] sm:h-[90vh] w-[100vw] flex justify-center items-center">
           <p className="text-lg sm:text-2xl lg:text-4xl">{(error as any)?.response?.data?.message || (error as any)?.message || "Something went wrong"}</p>
           </div>}

@@ -46,6 +46,7 @@ const Payment = lazy(() => import('./pages/Payment/Payment'));
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin/AdminLogin'));
 const AddProduct = lazy(() => import('./pages/admin/AddProduct/AddProduct'));
 const ListProducts = lazy(() => import('./pages/admin/ListProducts/ListProducts'));
+const NotFound = lazy(()=> import('./pages/NotFound/NotFound'))
 
 // Components
 const Footer = lazy(() => import('./components/Footer/Footer'));
@@ -60,6 +61,7 @@ const UpdateUserPhoneNo = lazy(() => import('./components/UserDataEditComponents
 const EditAddress = lazy(() => import('./components/EditAddress/EditAddress'));
 const PaymentSuccessfull = lazy(() => import('./components/PaymentStatus/PaymentSuccessfull'));
 const PaymentFailure = lazy(() => import('./components/PaymentStatus/PaymentFailure'));
+
 
 // Protected Routes
 const ProtectedRoutes = lazy(() => import('./components/ProtectedRoutes/ProtectedRoutes'));
@@ -117,7 +119,7 @@ function App() {
 
           </Route>
 
-
+          <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
       </Suspense>

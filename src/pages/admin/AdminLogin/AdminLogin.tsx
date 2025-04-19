@@ -44,17 +44,10 @@ const AdminLogin = () => {
 
             adminLogin(adminlogin, {
                 onSuccess:(data)=>{
-
                     dispatch(setAdminLogin({email:data.email, isAuthenticated:data.isAuthenticated}))
                     navigate('../admin/addproduct')
-                    
                 }
             })
-            
-            
-            
-
-
         }
         catch (error) {
             // let msg;
@@ -70,6 +63,25 @@ const AdminLogin = () => {
 
     return (
         <main className={style.container}>
+            {/* <div className='hidden sm:block'>
+                <Button variant='contained' onClick={()=> navigate('/')}
+                    sx={{
+                        position:"absolute",
+                        top:{
+                            // xs:"15%",
+                            sm:"20%",
+                            lg:"15%",
+                        },
+                        right:{
+                            // xs:"4%",
+                            sm:"4%",
+                            lg:"5%",
+                        }
+                    }}
+                    >
+                    Home
+                </Button>
+            </div> */}
             <section className={style.innercontainer}>
                 <h1 className={style.heading}>Admin Login</h1>
                 {isSuccess && <div className={style.successmessage}>Logged in successfull</div> }

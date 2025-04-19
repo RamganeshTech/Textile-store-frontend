@@ -15,8 +15,7 @@ import { setUser } from '../../slices/user';
 import { useDispatch } from 'react-redux';
 import { logoutUser } from '../../apiList/userauthApi';
 import { useAdminLogout } from '../../apiList/adminApi';
-import { ListAltOutlined, Logout } from '@mui/icons-material';
-import AddIcon from '@mui/icons-material/Add';
+import { AdminPanelSettingsOutlined, ListAltOutlined, Logout } from '@mui/icons-material';
 import { setAdminLogin } from '../../slices/admin';
 
 const Navbar: React.FC = () => {
@@ -135,7 +134,7 @@ const Navbar: React.FC = () => {
              } 
           </div>
 
-          <div className={`flex gap-2 items-center justify-center ${isAdminPage ? "!mr-[31%] sm:!mr-[0%]" : ""} `}>
+          <div className={`flex gap-2 items-center justify-center ${isAdminPage ? "!mr-[0%] sm:!mr-[0%]" : ""} `}>
             <img src="./src/assets/logo/build my business.png" alt="" className='w-[20%] h-[10%] md:w-[10%] md:h-[5%]' />
             <Link to={'/'} className='outline-none'>
               <h4 className={`${style.companyheading} text-nowrap text-[#3182ce] font-semibold`}>BMB Fashion</h4>
@@ -145,7 +144,7 @@ const Navbar: React.FC = () => {
           {!isAdminPage && <div className="flex gap-4">
             {/* <SearchIcon /> */}
             <Link to={'/admin/addproduct'}>
-              <AddIcon className={`${style.hideMobile}`} />
+              <AdminPanelSettingsOutlined className={`${style.hideMobile}`} />
             </Link>
             <Link to={'/cart'}>
               <ShoppingCartOutlinedIcon className={`${style.hideMobile}`} />
