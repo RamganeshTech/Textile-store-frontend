@@ -169,7 +169,7 @@ const FavouriteSingle = ({ item, products }: FavouriteSingleProps) => {
             <div className={styles.itemDetails}>
                 {/* <Link to={`/product/${item.productId._id}`}> */}
 
-                <h2>{item.productId.productName} watcheswatches watches  watcheswatches watches  watcheswatches watches  watches watches Lorem, ipsum dolor sit amet consectetur adipisicing elit. Repellat nostrum dolore vitae ipsa, totam voluptatem sit mollitia ad earum dicta.</h2>
+                <h2>{item.productId.productName}</h2>
                 <p>Price: <span>${item?.productId.price?.toFixed(2)}</span></p>
                 <div className='flex gap-[5px] items-center'>
                     {/* <p>size: <span className=' !font-semibold !text-[16px] sm:!text-[18px] md:!text-[20px]'>{item.size}</span></p> */}
