@@ -19,6 +19,16 @@
     height: 100%;
     width: 100%;
     object-fit: cover;
+    transition: transform .6s ease-in-out;
+}
+
+.relateditem:hover img {
+    transform: scale(1.10); /* Scale the image on hover */
+}
+
+.lazy_blur{
+    filter: blur(10px);
+    transition: filter 0.4s ease;
 }
 
 .relateddescription {

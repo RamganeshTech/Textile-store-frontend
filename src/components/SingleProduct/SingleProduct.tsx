@@ -25,7 +25,7 @@ import { clearItems, setItems } from '../../slices/buyItems';
 import { useDispatch } from 'react-redux';
 import Loading from '../LoadingState/Loading';
 import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
-// import RelatedItem from '../RelatedItem/RelatedItem';
+import RelatedItem from '../RelatedItem/RelatedItem';
 
 
 const SingleProduct = () => {
@@ -58,7 +58,7 @@ const SingleProduct = () => {
     const [showUsersReview, setshowUserReview] = useState<boolean>(true);
     const [activeReview, setactiveReview] = useState<boolean>(true);
 
-    // const [relatedItems, setRelatedItems] = useState<[]>([]);
+    const [relatedItems, setRelatedItems] = useState<[]>([]);
 
     let { mutate: addCartmutate, isPending: addCartPending, isError: addCartIsError, error: addCartError, reset: addcartResetError } = useAddToCart()
     const { mutate: removeFromCartMutation, isPending: removeCartPending } = useRemoveFromCart();
@@ -200,21 +200,21 @@ const SingleProduct = () => {
         return () => observer.disconnect();
     }, [ selectedImage]); // Run when images change
 
-    // useEffect(() => {
-    //     if (product)
-    //         setRelatedItems(() => {
-    //             let filteredItems = products.filter((prod: ProductType) => {
-    //                 return product.category === prod.category && product._id !== prod._id
-    //             })
+    useEffect(() => {
+        if (product)
+            setRelatedItems(() => {
+                let filteredItems = products.filter((prod: ProductType) => {
+                    return product.category === prod.category && product._id !== prod._id
+                })
 
-    //             if (filteredItems.length) {
-    //                 return filteredItems
-    //             }
+                if (filteredItems.length) {
+                    return filteredItems
+                }
 
-    //             let allItems = products.slice(0, 10)
-    //             return allItems
-    //         })
-    // }, [product])
+                let allItems = products.slice(0, 10)
+                return allItems
+            })
+    }, [product])
 
     if (singleProductLoading || customLoading) {
         return <div className='mt-[70px] w-[100vw] h-[100vh]  flex items-center justify-center'>
@@ -543,7 +543,7 @@ const SingleProduct = () => {
                 </div>
 
 
-                {/* <div className={style.relatedcontainer}>
+                 <div className={style.relatedcontainer}>
                     <section className={style.relatedinnerdiv}>
                         <h1 className={style.relatedHeading}>People also searched for</h1>
                         <div className={style.relatedlist}>
@@ -560,7 +560,7 @@ const SingleProduct = () => {
                             )}
                         </div>
                     </section>
-                </div> */}
+                </div> 
             </main>
         </>
     )

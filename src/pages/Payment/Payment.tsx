@@ -4,6 +4,9 @@ import { Button, TextField } from '@mui/material'
 import { validateDeliveryDetails } from '../../Utils/validation'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store/store'
+import axios from 'axios'
+import { loadRazorpayScript } from '../../razorpay/razorpay'
+import Api from '../../apiClient/apiClient'
 
 
 export interface BookinginfoType {
@@ -24,6 +27,7 @@ const inputFields = [
     { name: "street", placeholder: "Street" },
     { name: "state", placeholder: "State" },
     { name: "district", placeholder: "District" },
+    { name: "pincode",   placeholder: "Pincode" },    // ← add this
     { name: "landmark", placeholder: "Landmark" },
     { name: "email", placeholder: "Email" },
     { name: "phonenumber", placeholder: "Phone Number" },
@@ -54,6 +58,18 @@ const Payment = () => {
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         let { name, value } = e.target
         setBookingInfo((p) => ({ ...p, [name]: value }))
+
+        setErrors(prev => {
+            try {
+              validateDeliveryDetails(name as keyof BookinginfoType, value);
+              
+              // Safely remove the error for the current field
+              const { [name as keyof BookinginfoType]: _, ...rest } = prev;  // Use the correct type assertion here
+              return rest;  // Return the rest of the errors (without the current field)
+            } catch (err: any) {
+              return { ...prev, [name]: err.message };  // Add or update the error for the current field
+            }
+          });
     }
 
     // const totalAmount = useMemo(() => {
@@ -117,7 +133,8 @@ const Payment = () => {
     const totalAmount = useMemo(() => buyItems.reduce((acc, item) => acc + (item.quantity * item.singleQuantityPrice), 0), []);
 
 
-    const handleSubmit = (e: React.FormEvent) => {
+    // USE THIS IF THE RAZORPAY NOT WORKED
+    const handleSubmit = async (e: React.FormEvent, amount:number) => {
         e.preventDefault();
         let newErrors: Partial<Record<keyof BookinginfoType, string>> = {};
 
@@ -138,8 +155,57 @@ const Payment = () => {
 
         // Proceed with form submission logic here
         console.log("Form submitted successfully!", bookingInfo);
-    };
 
+
+        const isRazorpayReady = await loadRazorpayScript();
+        if (!isRazorpayReady) {
+          alert("Razorpay SDK failed to load. Are you online?");
+          return;
+        }
+      
+        try {
+          // Step 1: Create order by calling your backend
+          const { data } = await Api.post("/payment/order", {
+            amount, // in INR
+          });
+      
+          const { order } = data;
+      
+          // Step 2: Open Razorpay checkout
+          const options = {
+            key: import.meta.env.VITE_RAZORPAY_KEY_ID, // only public key here
+            amount: order.amount,
+            currency: "INR",
+            name: "BMB Fashion",
+            description: "Order Payment",
+            image: "/build%20my%20business.png",
+            order_id: order.id,
+            handler: async (response: any) => {
+              // Step 3: Send payment verification to backend
+              const verifyResponse = await Api.post("/payment/verify", response);
+      
+              if (verifyResponse.data.success) {
+                alert("✅ Payment Successful!");
+                // Update your UI, order status, redirect, etc.
+              } else {
+                alert("❌ Payment verification failed");
+              }
+            },
+            prefill: {
+              name: bookingInfo.username,
+              email: bookingInfo.email,
+              contact: bookingInfo.phonenumber,
+            },
+            theme: { color: "#1a73e8" },
+          };
+      
+          const rzp = new (window as any).Razorpay(options);
+          rzp.open();
+        } catch (err) {
+          console.error("Payment error", err);
+          alert("Something went wrong. Please try again.");
+        }
+    };
 
     // const {data:createOrder, isPending``:createorderIsPending, isError:createorderIsError} = useCreateOrder()
 
@@ -157,8 +223,6 @@ const Payment = () => {
             phonenumber: user.phoneNumber || '',
         };
 
-
-        console.log(newBookingInfo,)
 
         let newErrors: Partial<Record<keyof BookinginfoType, string>> = {};
         Object.keys(newBookingInfo).forEach((key) => {
@@ -193,7 +257,7 @@ const Payment = () => {
 
             <div className={`${style.innerDiv}`}>
                 <section className={`${style.inputfields}`}>
-                    <form action="" onSubmit={handleSubmit} className={`${style.inputform}`}>
+                    <form action=""  className={`${style.inputform}`}>
                         <h1>Delivery Details</h1>
                         {inputFields.map(({ name, placeholder }) => (
                             <div key={name} className={style.individualTextDiv}>
@@ -266,7 +330,9 @@ const Payment = () => {
                         </div>
 
                         <div className='w-[100%] !flex !justify-center '>
-                            <Button variant="contained" onClick={handleSubmit}>
+                            <Button variant="contained" 
+                              disabled={Object.keys(errors).length > 0}
+                            onClick={(e)=> handleSubmit(e,totalAmount)}>
                                 Submit
                             </Button>
                         </div>

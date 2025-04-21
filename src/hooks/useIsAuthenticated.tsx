@@ -1,15 +1,16 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { isAuthenticatedUser } from '../apiList/userauthApi'
 import { useDispatch } from 'react-redux'
 import { setUser } from '../slices/user'
 import { AppDispatch } from '../store/store'
 
-const useIsAuthenticated = async () => {
+const useIsAuthenticated = () => {
 
-    const dispatch = useDispatch<AppDispatch>();
-
+  const dispatch = useDispatch<AppDispatch>();
+  const [userAuthLoading, setUserAuthLoading] = useState<boolean>(true)
   useEffect(() => {
     const checkAuth = async () => {
+      setUserAuthLoading(true)
       try {
         const { ok, data }: { ok: boolean; data: any } = await isAuthenticatedUser();
 
@@ -44,10 +45,17 @@ const useIsAuthenticated = async () => {
           email: null,
         }));
       }
+      finally {
+        setUserAuthLoading(false)
+      }
     };
 
     checkAuth();
   }, [dispatch]);
+
+  return { userAuthLoading  }
+
+
 }
 
 export default useIsAuthenticated

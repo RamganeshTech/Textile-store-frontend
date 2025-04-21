@@ -71,7 +71,12 @@ import useIsAuthenticated from './hooks/useIsAuthenticated';
 
 
 function App() {
-  useIsAuthenticated()
+ const {userAuthLoading} =  useIsAuthenticated()
+
+  if(userAuthLoading){
+    return <div className='w-[100vw] h-[80vh] flex justify-center items-center'><Loading /></div>
+  }
+
   return (
     <>
       <Suspense fallback={ <div className='w-[100vw] h-[80vh] flex justify-center items-center'><Loading /></div>}>
@@ -86,7 +91,9 @@ function App() {
           <Route path='/cart' element={<AddToCart />} />
           <Route path='/favourite' element={<Favourite />} />
           <Route path='/allproducts' element={<AllProducts />} />
-          <Route path='/payment' element={<Payment />} />
+          <Route path='/payment' element={<ProtectedRoutes>
+            <Payment />
+            </ProtectedRoutes>} />
           <Route path='/redirect-url/paymentsuccess/:merchantTransactionId' element={<PaymentSuccessfull />} />
           <Route path='/redirect-url/paymentfailure/:merchantTransactionId' element={<PaymentFailure />} />
 
