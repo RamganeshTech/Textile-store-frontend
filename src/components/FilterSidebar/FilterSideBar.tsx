@@ -18,7 +18,7 @@ type FilterSideBarProp = {
   handleSearch: () => void
   handleRangeChange: (value: number | number[]) => void;
   maxPrice: number;
-  minPrice: number
+  minPrice: number;
 }
 
 
@@ -36,7 +36,7 @@ const FilterCategory: React.FC<{ title: string; children: React.ReactNode }> = (
   );
 };
 
-const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSearch, minPrice, maxPrice, handleRangeChange, setFilterOptions, filterOptions, sidebarVisible, setSidebarVisible }, ref) => {
+const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({handleSearch, minPrice, maxPrice, handleRangeChange, setFilterOptions, filterOptions, sidebarVisible, setSidebarVisible }, ref) => {
 
   //  let { mutate: searchMutate, data: searchData, isError: searchIsError, error: searchError, isPending: searchPending } = useSearchProducts()
   //   let { mutate: applyFiltersMutate, data: filterData, isError: filterIsError, error: filterError, isPending: filterPending } = useFilterProuducts()
@@ -141,8 +141,11 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
               range
               min={minPrice}
               max={maxPrice}
-              step={100}
-              value={[filterOptions.Min, filterOptions.Max]}
+              step={500}
+              value={[filterOptions.Min, 
+                filterOptions.Max === Infinity ? maxPrice : filterOptions.Max,
+
+              ]}
               onChange={handleRangeChange}
               trackStyle={[{ backgroundColor: "teal", height: 5 }]}
               handleStyle={[
@@ -184,11 +187,13 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
               <TextField
                 placeholder="Max"
                 className="custom-input"
-                value={filterOptions.Max}
+                value={filterOptions.Max === Infinity ? "10000+" : filterOptions.Max}
                 onChange={(e) => setFilterOptions(p => {
+                  const val = Number(e.target.value);
                   return {
                     ...p,
-                    Max: Number(e.target.value)
+                    // Max: Number(e.target.value)
+                    Max: val >= maxPrice ? Infinity : val
                   }
                 })}
                 sx={{
@@ -219,6 +224,7 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({ handleSea
         <Button variant='contained' className={`${style.applyBtn}`} onClick={() => {
           // searchMutate({ search: searchTerm, filter: filterOptions })
           handleSearch()
+          setSidebarVisible(false)
         }
         }>Apply</Button>
 

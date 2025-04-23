@@ -1,14 +1,14 @@
-import  { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
 import style from './AllProducts.module.css'
 import { SearchOutlined } from '@mui/icons-material'
-import { IconButton, Radio, TextField } from '@mui/material'
+import { CircularProgress, IconButton, Radio, TextField } from '@mui/material'
 // import products from '../../Utils/product'
 import ProductsFullList from '../../components/ProductsFullList/ProductsFullList'
 import Checkbox from '@mui/material/Checkbox';
 import TuneIcon from '@mui/icons-material/Tune';
 import { Button } from '@mui/material';
 import FilterSideBar from '../../components/FilterSidebar/FilterSideBar'
-import { useFetchProducts, useSearchProducts } from '../../apiList/productApi'
+import { useFetchProducts, useSearchProductsInfinite } from '../../apiList/productApi'
 import { ProductType } from '../../Types/types'
 import axios from 'axios'
 import Loading from '../../components/LoadingState/Loading'
@@ -37,6 +37,8 @@ const AllProducts = () => {
 
   const [sidebarVisible, setSidebarVisible] = useState<boolean>(false);
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [searchInput, setSearchInput] = useState<string>('');
+
   // const [selectedCategory, setSelectedCategory] = useState<string>('');
 
 
@@ -51,25 +53,49 @@ const AllProducts = () => {
   })
 
 
-  // const products = useSelector((state:RootState)=> state.products.products)
-  let { data: products, isLoading, } = useFetchProducts()
+  const [finalFilterOptions, setFinalFilterOptions] = useState<FilterOptionsType>({
+    category: [],
+    Min: 0,
+    Max: Infinity,
+    sizes: [],
+    colors: [],
+    availability: [],
+    arrival: null
+  })
 
-  let { mutate: searchMutate, data: searchData, error: searchError } = useSearchProducts()
-  // searchData = []
-  // products = []
+
+  // const products = useSelector((state:RootState)=> state.products.products)
+
+  // previous infinite scroll 
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    error,
+  } = useSearchProductsInfinite(searchTerm, finalFilterOptions);
+
+
+  const products = useMemo(() => {
+    return data?.pages.flatMap((page) => page.products) || [];
+  }, [data]);
+
   // let { mutate: applyFiltersMutate, data: filterData, isError: filterIsError, error: filterError, isPending: filterPending } = useFilterProuducts()
 
 
-
   const handleSearch = () => {
-    searchMutate({ search: searchTerm, filter: filterOptions })
+    setSearchTerm(searchInput)
+    setFinalFilterOptions(filterOptions)
   }
 
 
 
   function getErrorMessage(error: unknown): string {
     if (axios.isAxiosError(error)) {
-      return error.response?.data?.message || "Something went wrong!";
+      return error.response?.data?.message|| error?.message || "Something went wrong!";
     }
     return "An unexpected error occurred.";
   }
@@ -79,38 +105,47 @@ const AllProducts = () => {
       setFilterOptions((prev) => ({
         ...prev,
         Min: value[0],
-        Max: value[1],
+        // Max: value[1],
+        Max: value[1] === maxPrice ? Infinity : value[1], // If max value is reached, set to Infinity
       }));
     }
   };
 
 
+
+  useEffect(() => {
+    document.addEventListener("scroll", handleScroll)
+
+    return () => document.removeEventListener("scroll", handleScroll)
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
+
+
   const maxPrice = useMemo(() => {
+    // console.log(maxPrice)
     return products?.length > 0
       ? Math.max(...products?.map((p: ProductType) => p.price))
       : 10000;  // Default max if no products are there
   }, [products]);
 
+
   const minPrice = useMemo(() => 0, [])
 
-
-
   useEffect(() => {
-   
-    let dataToUse = searchData || products
-    if (dataToUse?.length > 0) {
-      const prices = dataToUse?.map((p: any) => p.price);
+
+    
+    if (products?.length > 0) {
+      const prices = products?.map((p: any) => p.price);
       const minPrice = Math.min(...prices);
-      const maxPrice = Math.max(...prices);
+      const maxPrice = Infinity
 
 
       setFilterOptions(prev => ({
         ...prev,
-        Min: prev.Min === 0 ? minPrice : prev.Min, // Update only if default
-        Max: prev.Max === Infinity ? maxPrice : prev.Max, // Update only if default
+        Min: prev.Min === 0 ? minPrice : prev.Min,
+        Max: prev.Max === Infinity ? maxPrice : prev.Max,
       }));
     }
-  }, [products, searchMutate, searchData]);
+  }, [products]);
 
   const sidebarRef = useRef<HTMLDivElement>(null);
 
@@ -130,6 +165,16 @@ const AllProducts = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [sidebarVisible]);
 
+
+  const handleScroll = () => {
+    // scrolly means how much i have scrolled
+    // innerheight means the visisble part
+    // scrollheight means the entire height of the web page or body
+    if (window.scrollY + window.innerHeight >= document.body.scrollHeight && hasNextPage && !isFetchingNextPage) {
+      fetchNextPage()
+    }
+  }
+
   return (
     <main className={`${style.maincontainer} mt-[70px] sm:mt-[70px]`}>
       <section className={`${style.innerDiv} `}>
@@ -144,7 +189,7 @@ const AllProducts = () => {
             <TextField
               placeholder="Search Products"
               // className="w-[90%]"
-              value={searchTerm}
+              value={searchInput}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   border: "none", // Removes the default border
@@ -162,13 +207,14 @@ const AllProducts = () => {
               }}
 
               onChange={(e) => {
-                setSearchTerm(e.target.value)
+                setSearchInput(e.target.value)
               }}
 
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault()
-                  searchMutate({ search: searchTerm, filter: filterOptions })
+                  setSearchTerm(searchInput)
+                  // searchMutate({ search: searchTerm, filter: filterOptions })
                 }
               }}
             />
@@ -187,7 +233,7 @@ const AllProducts = () => {
 
 
         {/* SIDEBAR FILTER */}
-        <FilterSideBar ref={sidebarRef} maxPrice={maxPrice} minPrice={minPrice} handleSearch={handleSearch} handleRangeChange={handleRangeChange}  filterOptions={filterOptions} setFilterOptions={setFilterOptions} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible} />
+        <FilterSideBar ref={sidebarRef} maxPrice={maxPrice} minPrice={minPrice} handleSearch={handleSearch} handleRangeChange={handleRangeChange} filterOptions={filterOptions} setFilterOptions={setFilterOptions} sidebarVisible={sidebarVisible} setSidebarVisible={setSidebarVisible} />
 
         {/* THE BELOW FILTER IS FOR LARGE DEIVCES */}
         <section className={`${style.filters}`}>
@@ -208,7 +254,7 @@ const AllProducts = () => {
                     }))
                   } />
                   <div>
-                    <label htmlFor={item}  className='cursor-pointer'>{item}</label>
+                    <label htmlFor={item} className='cursor-pointer'>{item}</label>
                   </div>
 
                 </section>
@@ -231,7 +277,7 @@ const AllProducts = () => {
                     }
                   })} />
                   <div>
-                    <label htmlFor={item}  className='cursor-pointer'>{item}</label>
+                    <label htmlFor={item} className='cursor-pointer'>{item}</label>
                   </div>
 
                 </section>
@@ -243,24 +289,24 @@ const AllProducts = () => {
             <div className={` ${style.filterscategory} ${style.productcategory}`}>
               <p>Product Size</p>
 
-              {sizes && sizes.map(item =>{
-  return <section key={item}>
-    <Checkbox itemID={item} color='primary' checked={filterOptions.sizes.includes(item)} onChange={(e) => setFilterOptions(p => {
-      return {
-        ...p,
-        sizes: e.target.checked ?
-          ([...p.sizes, item])
-          : p.sizes.filter(size => size !== item)
-      }
+              {sizes && sizes.map(item => {
+                return <section key={item}>
+                  <Checkbox itemID={item} color='primary' checked={filterOptions.sizes.includes(item)} onChange={(e) => setFilterOptions(p => {
+                    return {
+                      ...p,
+                      sizes: e.target.checked ?
+                        ([...p.sizes, item])
+                        : p.sizes.filter(size => size !== item)
+                    }
 
-    }
-    )} />
-    <div>
-      <label htmlFor={item} className='cursor-pointer'>{item}</label>
-    </div>
-  </section>
+                  }
+                  )} />
+                  <div>
+                    <label htmlFor={item} className='cursor-pointer'>{item}</label>
+                  </div>
+                </section>
               }
-             
+
               )}
             </div>
 
@@ -281,7 +327,7 @@ const AllProducts = () => {
                       }
                     })} />
                   <div>
-                    <label htmlFor={item}  className='cursor-pointer'>{item}</label>
+                    <label htmlFor={item} className='cursor-pointer'>{item}</label>
                   </div>
                 </section>
               )}
@@ -298,14 +344,17 @@ const AllProducts = () => {
                     min={minPrice}
                     max={maxPrice}
                     step={500}
-                    value={[filterOptions.Min, filterOptions.Max]}
+                    value={[filterOptions.Min,
+                      //  filterOptions.Max
+                      filterOptions.Max === Infinity ? maxPrice : filterOptions.Max,
+                      ]}
                     onChange={handleRangeChange}
                     trackStyle={[{ backgroundColor: "teal", height: 5 }]}
                     handleStyle={[
                       { backgroundColor: "white", borderColor: "teal" },
                       { backgroundColor: "white", borderColor: "teal" },
                     ]}
-                    // style={{ width: "80%" }}
+                  // style={{ width: "80%" }}
                   />
                 </div>
 
@@ -343,11 +392,13 @@ const AllProducts = () => {
                   <TextField
                     placeholder="Max"
                     className="custom-input"
-                    value={ filterOptions.Max === Infinity ? "10000+" : filterOptions.Max}
+                    value={filterOptions.Max === Infinity ? "10000+" : filterOptions.Max}
                     onChange={(e) => setFilterOptions(p => {
+                      const val = Number(e.target.value);
                       return {
                         ...p,
-                        Max: Number(e.target.value)
+                        // Max: Number(e.target.value)
+                        Max: val >= maxPrice ? Infinity : val
                       }
                     })}
                     sx={{
@@ -380,7 +431,10 @@ const AllProducts = () => {
           </div> */}
 
           <div className={`${style.applybtncontainer}`}>
-            <Button variant='contained' className={`${style.applyBtn}`} onClick={() => searchMutate({ search: searchTerm, filter: filterOptions })}>Apply</Button>
+            <Button variant='contained' className={`${style.applyBtn}`} onClick={() => {
+              setSearchTerm(searchInput)
+              setFinalFilterOptions(filterOptions)
+            }}>Apply</Button>
           </div>
         </section>
 
@@ -400,13 +454,15 @@ const AllProducts = () => {
                 },
               },
             }}
+              value={searchInput}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
                   e.preventDefault()
-                  searchMutate({ search: searchTerm, filter: filterOptions })
+                  // searchMutate({ search: searchTerm, filter: filterOptions })
+                  setSearchTerm(searchInput)
                 }
               }}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={(e) => setSearchInput(e.target.value)}
             />
             <IconButton sx={{
               width: "4%",
@@ -419,12 +475,23 @@ const AllProducts = () => {
             </IconButton>
           </div>
 
-          {!isLoading ? (!searchError ? <div className={`${style.displayProducts}`}>
-            <ProductsFullList productsList={searchData || products} />
+          {!isLoading ? (!isError ? <div className={`${style.displayProducts}`}>
+            {/* previous version of infinite scroll */}
+            {/* <ProductsFullList productsList={searchData || products} /> */}
+
+            <ProductsFullList
+              productsList={products}
+            />
+
+            {isFetchingNextPage && (
+              <div className="flex items-center py-4 justify-center">
+                <CircularProgress size={24} thickness={5} />
+              </div>
+            )}
           </div>
             :
             <section className="h-[100vh] w-[100%] flex items-center justify-center">
-              <p className="text-2xl lg:text-4xl sm:text-2xl">{getErrorMessage(searchError)}</p>
+              <p className="text-2xl lg:text-4xl sm:text-2xl">{getErrorMessage(error)}</p>
             </section>)
             :
             <section className="h-[100vh] w-[100%] flex items-center justify-center">

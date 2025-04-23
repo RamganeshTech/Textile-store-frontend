@@ -5,7 +5,7 @@ import {ProductType} from '../../Types/types'
 import Products from '../../subcomponents/Products/Products';
 
 interface ProductsDisplayProps {
-  productsList: ProductType[];
+  productsList: ProductType[] | undefined;
 }
 
 const ProductsDisplay: React.FC<ProductsDisplayProps> = ({ productsList }) => {
