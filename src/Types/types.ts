@@ -47,3 +47,13 @@ export type ReviewType = {
     // color:string,
     image:string
   }
+
+
+  // MYORDER TYPE
+
+  export interface OrderType {
+  productId: ProductType,
+  quantity:number,
+  size:string,
+  color:string
+  }

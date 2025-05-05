@@ -4,9 +4,12 @@ import { Button, TextField } from '@mui/material'
 import { validateDeliveryDetails } from '../../Utils/validation'
 import { useSelector } from 'react-redux'
 import { RootState } from '../../store/store'
-import axios from 'axios'
 import { loadRazorpayScript } from '../../razorpay/razorpay'
 import Api from '../../apiClient/apiClient'
+import PaymentSuccessfull from '../../components/PaymentStatus/PaymentSuccessfull'
+import PaymentFailure from '../../components/PaymentStatus/PaymentFailure'
+import { useNavigate } from 'react-router-dom'
+import { isAxiosError } from 'axios'
 
 
 export interface BookinginfoType {
@@ -48,6 +51,8 @@ const Payment = () => {
     })
 
     const [errors, setErrors] = useState<Partial<Record<keyof BookinginfoType, string>>>({});
+    const [isScriptLoaded, setIsScriptLoaded] = useState<boolean>(true);
+    let navigate = useNavigate()
 
     let user = useSelector((state: RootState) => state.user)
     let buyItems = useSelector((state: RootState) => state.buyItems.items)
@@ -132,10 +137,12 @@ const Payment = () => {
     const totalQuantity = useMemo(() => buyItems.reduce((acc, item) => acc + item.quantity, 0), []);
     const totalAmount = useMemo(() => buyItems.reduce((acc, item) => acc + (item.quantity * item.singleQuantityPrice), 0), []);
 
+    
 
     // USE THIS IF THE RAZORPAY NOT WORKED
     const handleSubmit = async (e: React.FormEvent, amount:number) => {
         e.preventDefault();
+
         let newErrors: Partial<Record<keyof BookinginfoType, string>> = {};
 
         Object.entries(bookingInfo).forEach(([key, value]) => {
@@ -156,17 +163,24 @@ const Payment = () => {
         // Proceed with form submission logic here
         console.log("Form submitted successfully!", bookingInfo);
 
+        if(!isScriptLoaded) return;
 
-        const isRazorpayReady = await loadRazorpayScript();
-        if (!isRazorpayReady) {
-          alert("Razorpay SDK failed to load. Are you online?");
-          return;
-        }
+       const orderedProducts = buyItems.map(item=> ({"productId":item.itemId, "quantity":item.quantity, "size":item.size, "color":item.color}))
+
+       const shippingAddress = {
+        "userName": bookingInfo.username.trim(),
+        "phoneNumber": bookingInfo.phonenumber,
+        "addressLine1": bookingInfo.doorno.trim() + "," + bookingInfo.street.trim(),
+        "landmark": bookingInfo.landmark.trim(),
+        "district": bookingInfo.district.trim(),
+        "state": bookingInfo.state.trim(),
+        "pincode": bookingInfo.pincode }
       
         try {
           // Step 1: Create order by calling your backend
           const { data } = await Api.post("/payment/order", {
-            amount, // in INR
+            amount: 1,// in INR
+            products:orderedProducts, shippingAddress
           });
       
           const { order } = data;
@@ -178,18 +192,25 @@ const Payment = () => {
             currency: "INR",
             name: "BMB Fashion",
             description: "Order Payment",
-            image: "/build%20my%20business.png",
+            // image: "/build%20my%20business.png",
             order_id: order.id,
-            handler: async (response: any) => {
+            handler: async (response: any) => { //once the payment has done this funtion will be called
               // Step 3: Send payment verification to backend
               const verifyResponse = await Api.post("/payment/verify", response);
       
               if (verifyResponse.data.success) {
-                alert("✅ Payment Successful!");
+                // alert("✅ Payment Successful!");
                 // Update your UI, order status, redirect, etc.
+                navigate(`/redirect-url/paymentsuccess/${response.razorpay_payment_id}`);
+                setTimeout(()=>{
+                    navigate('/allproducts')
+                }, 4000)
+
               } else {
                 alert("❌ Payment verification failed");
-              }
+                navigate(`/redirect-url/paymentfailure/${response.razorpay_payment_id}`);
+
+            }
             },
             prefill: {
               name: bookingInfo.username,
@@ -197,9 +218,31 @@ const Payment = () => {
               contact: bookingInfo.phonenumber,
             },
             theme: { color: "#1a73e8" },
+    //   FOR FAILURE NAVIGATION
+
+            modal: {
+                ondismiss: async () => {
+                    console.log("called payment failure")
+                    let {data} =  await Api.post("/payment/failure", {
+                        razorpay_order_id: order.id
+                      });
+
+                      console.log("from the payment failure", data)
+                //   console.warn("Payment popup closed by user");
+                //   navigate(`/redirect-url/paymentfailure/${order.id}`);
+                },
+            }
           };
       
           const rzp = new (window as any).Razorpay(options);
+    //   FOR FAILURE NAVIGATION
+        //     rzp.on("payment.failed", function (response: any) {
+        //     console.error("Payment Failed:", response.error);
+        //     // alert("❌ Payment Failed");
+        //     setTimeout(() => {
+        //         navigate(`/redirect-url/paymentfailure/${response.razorpay_payment_id}`);
+        //       }, 100); 
+        //   });
           rzp.open();
         } catch (err) {
           console.error("Payment error", err);
@@ -228,22 +271,33 @@ const Payment = () => {
         Object.keys(newBookingInfo).forEach((key) => {
             const fieldName = key as keyof BookinginfoType;
             const fieldValue = newBookingInfo[fieldName];
-            console.log("entering int to useEffect of payment")
             try {
-                console.log(fieldName, fieldValue)
+                // console.log(fieldName, fieldValue)
 
                 // Validate each field individually
                 validateDeliveryDetails(fieldName, fieldValue);
             } catch (err: any) {
-                console.log(err)
+                // console.log(err)
                 newErrors[fieldName] = err.message; // Store error message for the specific field
             }
         });
-        console.log(newErrors)
+        // console.log(newErrors)
         // Update the state with new values and errors
         setBookingInfo(newBookingInfo);
         setErrors(newErrors);
     }, [user]);
+
+    useEffect(() => {
+        const loadScript = async () => {
+          const isRazorpayReady = await loadRazorpayScript();
+          if (!isRazorpayReady) {
+            alert("Razorpay SDK failed to load. Check your internet connection.");
+            setIsScriptLoaded(false)
+          }
+        };
+      
+        loadScript();
+      }, []);
 
     return (
         <main className={`${style.maincontainer}`}>

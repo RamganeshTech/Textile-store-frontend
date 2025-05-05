@@ -48,6 +48,7 @@ const SingleProduct = () => {
     const [customLoading, setCustomLoading] = useState<boolean>(false)
 
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const [imgLoading, setImgLoading] = useState<boolean>(false);
 
     const [selectedColor, setSelectedColor] = useState<string>("");
     const [selectedSize, setSelectedSize] = useState<string>("");
@@ -116,7 +117,9 @@ const SingleProduct = () => {
     const availableStock = useMemo(() => product?.sizeVariants.find(sv => sv.size === selectedSize)
         ?.colors.find(c => c.color === selectedColor)?.availableStock || 0, [product, selectedSize, selectedColor])
 
-    const selectedColorImages = useMemo(() => product?.colorVariants.find(cv => cv.color === selectedColor)?.images || [], [product, selectedSize, selectedColor])
+    const selectedColorImages = useMemo(() => {
+        return product?.colorVariants.find(cv => cv.color === selectedColor)?.images || []
+    }, [product, selectedSize, selectedColor])
 
     let isFavourite = useMemo(() => {
         if (favourites && favourites.items && product) {
@@ -124,7 +127,6 @@ const SingleProduct = () => {
                 (fav: any) => {
                     return fav?.productId?._id === product._id
                 }
-
             );
         }
     }, [favourites, product, selectedSize, selectedColor]);
@@ -177,28 +179,30 @@ const SingleProduct = () => {
         if (selectedColorImages.length > 0) {
             setSelectedImage(selectedColorImages[0]);
         }
+        setImgLoading(false)
     }, [selectedColorImages]);
 
-    useEffect(() => {
-        const images = document.querySelectorAll('img[data-src]');
+    // CLOUDINARY VERSION
+    // useEffect(() => {
+    //     const images = document.querySelectorAll('img[data-src]');
 
-        const observer = new IntersectionObserver((entries, obs) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    const img = entry.target as HTMLImageElement;
-                    img.src = img.dataset.src!;
-                    // img.removeAttribute('data-src');
-                    obs.unobserve(img);
-                }
-            });
-        }, {
-            rootMargin: '100px',
-        });
+    //     const observer = new IntersectionObserver((entries, obs) => {
+    //         entries.forEach(entry => {
+    //             if (entry.isIntersecting) {
+    //                 const img = entry.target as HTMLImageElement;
+    //                 img.src = img.dataset.src!;
+    //                 // img.removeAttribute('data-src');
+    //                 obs.unobserve(img);
+    //             }
+    //         });
+    //     }, {
+    //         rootMargin: '100px',
+    //     });
 
-        images.forEach(img => observer.observe(img));
+    //     images.forEach(img => observer.observe(img));
 
-        return () => observer.disconnect();
-    }, [ selectedImage]); // Run when images change
+    //     return () => observer.disconnect();
+    // }, [selectedImage]); // Run when images change
 
     useEffect(() => {
         if (product)
@@ -280,7 +284,8 @@ const SingleProduct = () => {
                                 </div>
                             )} */}
 
-                            {selectedColorImages.map((image: string, i: number) => {
+                            {/* CLOUDINARY VERSION */}
+                            {/* {selectedColorImages.map((image: string, i: number) => {
                                 // <div key={i} className={`${style.singleSideImg}`}
                                 // onClick={() => setSelectedImage(image)}
                                 // style={{ border: selectedImage === image ? '2px solid black' : 'none' }}
@@ -313,6 +318,29 @@ const SingleProduct = () => {
                                     />
                                 </div>
                             }
+                            )} */}
+
+                            {selectedColorImages.map((image: string, i: number) => {
+                                return <div key={i} className={`${style.singleSideImg}`}
+                                    onClick={() => setSelectedImage(image)}
+                                    style={{ border: selectedImage === image ? '2px solid black' : 'none' }}
+                                    tabIndex={0}>
+                                    <img
+                                        src={image}
+                                        alt={`Side image ${i}`}
+                                        style={{
+                                            width: '100%',
+                                            height: 'auto',
+                                            filter: 'blur(8px)',
+                                            transition: 'filter 0.3s ease',
+                                        }}
+                                        onLoad={(e) => {
+                                            e.currentTarget.style.filter = 'none';
+                                        }}
+                                    />
+
+                                </div>
+                            }
                             )}
                         </aside>
 
@@ -324,7 +352,10 @@ const SingleProduct = () => {
                             ) : (
                                 <div>No image available</div>
                             )} */}
-                            {selectedImage || selectedColorImages.length > 0 ? (() => {
+
+
+                            {/* CLOUDINARY VERSION */}
+                            {/* {selectedImage || selectedColorImages.length > 0 ? (() => {
                                 const realImage = selectedImage || selectedColorImages[0];
                                 const blurred = realImage.replace('/upload/', '/upload/e_blur:1000,q_10/');
 
@@ -346,7 +377,27 @@ const SingleProduct = () => {
                                 );
                             })() : (
                                 <div>No image available</div>
-                            )}
+                            )} */}
+
+
+                            {/* AWS VERSION */}
+                            {selectedImage ?
+                                <img src={selectedImage} alt="Selected"
+                                    loading='lazy'
+                                    className={`transition duration-500 ease-in-out w-full h-auto ${imgLoading ? 'blur-0' : 'blur-md'
+                                        }`}
+                                    onLoad={() => setImgLoading(true)}
+                                />
+                                : selectedColorImages.length > 0 ? (
+                                    <img src={selectedColorImages[0]}
+                                        alt="Selected"
+                                        className={`transition duration-500 ease-in-out w-full h-auto ${imgLoading ? 'blur-0' : 'blur-md'
+                                            }`}
+                                        onLoad={() => setImgLoading(true)}
+                                    />
+                                ) : (
+                                    <div>No image available</div>
+                                )}
                         </div>
                     </section>
 
@@ -543,7 +594,7 @@ const SingleProduct = () => {
                 </div>
 
 
-                 <div className={style.relatedcontainer}>
+                <div className={style.relatedcontainer}>
                     <section className={style.relatedinnerdiv}>
                         <h1 className={style.relatedHeading}>People also searched for</h1>
                         <div className={style.relatedlist}>
@@ -560,7 +611,7 @@ const SingleProduct = () => {
                             )}
                         </div>
                     </section>
-                </div> 
+                </div>
             </main>
         </>
     )

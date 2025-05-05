@@ -46,8 +46,9 @@ const searchProducts = async ({pageParam = 1, search, filter}:{pageParam:number,
 //   };
 
 export const uploadImagesToS3 = async (files: File[]): Promise<string[]> => {
+ try{
   const formData = new FormData();
-  files.forEach(file => formData.append("files", file));  // this must match backend field name
+  files.forEach(file => formData.append("file", file));  // this must match backend field name
 
   const response = await Api.post("/products/uploadimage", formData, {
     headers: {
@@ -56,6 +57,11 @@ export const uploadImagesToS3 = async (files: File[]): Promise<string[]> => {
   });
 
   return response.data.images; // Already an array of image URLs
+ }
+ catch(err){
+  console.log(err)
+  throw err;
+ }
 };
 
 

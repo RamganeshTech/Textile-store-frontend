@@ -52,6 +52,10 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
     const [reviewCreated, setReviewCreated] = useState<boolean>(false);
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
+    const [retriveLoading, setRetriveLoading] = useState<boolean>(false);
+
+
+
     const handleStarClick = (star: number) => {
         setSelectedStars(star);
     };
@@ -76,12 +80,17 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
     let { mutate: deleteReviewMutate, isPending: deleteReviewPending } = useDeleteReview()
 
     // NEWLY ADDED
+    // to retrive the review from the list and display in the UI after creating or editin
     let yourReview = useMemo(() => {
         if (!reviewItems) return null;
-        return reviewItems.find(review => {
+        setRetriveLoading(true)
+        let singleReviewItem =  reviewItems.find(review => {
             return review.userId === user.userId
         }
         )
+        setRetriveLoading(false)
+        return singleReviewItem
+
     }, [reviewItems])
 
 
@@ -225,8 +234,11 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                 }
             />}
 
-            {reviewCreated ?
-                <div className={`${style.reviewDisplay}  w-full sm:w-[90%] flex flex-col justify-center items-center gap-5`}>
+            {reviewCreated  ?
+            <>
+            {retriveLoading ? <div className='!h-[100%] !p-[80px]'><CircularProgress thickness={5} size={24} sx={{color:"#0a0a0a"}} /></div> 
+            :
+             <div className={`${style.reviewDisplay}  w-full sm:w-[90%] flex flex-col justify-center items-center gap-5`}>
                     <p className={`${style.reviewheading}`}>Your Review</p>
 
                     <div className={`${style.reviewStars}`}>
@@ -265,7 +277,9 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                             {deleteReviewPending ? <CircularProgress sx={{ color: "#fafafa" }} size={23} thickness={5} /> : "Delete"}
                         </Button>
                     </div>
-                </div>
+                </div>}
+            </>
+               
                 :
                 <>
 
@@ -334,7 +348,6 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                                 </Button> */}
 
                                 <Button variant='contained' className=' sm:!h-[40px] !text-[16px] !p-[10px] !h-[25px] lg:!text-[20px] md:!text-[16px]  text-nowrap' onClick={handleEditReview}>
-                                    {/* POST */}
                                     {editReviewPending ? <CircularProgress sx={{ color: "#fafafa" }} size={25} thickness={5} /> : "POST"}
 
                                 </Button>

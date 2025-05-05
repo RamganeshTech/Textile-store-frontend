@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useOptimistic, useState, startTransition, useRef } from 'react'
 import style from './Products.module.css'
 
 import { Button, CircularProgress, IconButton } from '@mui/material'
@@ -39,8 +39,19 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
     const { data: favourites } = useFetchFavourite();
 
+    const [imgLoading, setImgLoading] = useState<boolean>(true)
+
+
+
     const handleFavourite = () => {
 
+        const newFavValue = !isFavourite;
+
+        // startTransition(() => {
+        //     setOptimisticFav(newFavValue);
+        // })
+
+        setImdFavState(newFavValue)
         // const firstAvailable = product.sizeVariants.map(sizeVariant =>
         //     sizeVariant.colors.find(color => color.availableStock > 0)
         // );
@@ -53,15 +64,24 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         // if (!selectedSize || !selectedColor) {
         //     return;
         // }
+        
+        try {
 
-        if (isFavourite && !removeFavPending) {
-            removeFavourite({ productId: product._id, });
-        } else {
-            if (!addFavPending) {
-                addFavourite({ productId: product._id, });
+            if (isFavourite && !removeFavPending) {
+                removeFavourite({ productId: product._id, });
+            } else {
+                if (!addFavPending) {
+                    addFavourite({ productId: product._id, });
+                }
             }
         }
-        // setIsFavourite(!isFavourite);
+        catch (error) {
+            // startTransition(() => {
+            //     setOptimisticFav(!newFavValue);
+            // })
+            setImdFavState(isFavourite)
+        }
+
     };
 
     // Get first available size and color with stock
@@ -76,16 +96,31 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
     // Get the image for that color
     const productImage = useMemo(() => {
-        return product.colorVariants.find(cv => cv.color === firstSelectedColor)?.images?.[0] || '';
+
+        let productImg = product.colorVariants.find(cv => cv.color === firstSelectedColor)?.images?.[0] || '';
+        // setImgLoading(false)
+        return productImg
     }, [product.colorVariants, firstSelectedColor]);
 
     const isInCart = useMemo(() => {
         return cartItems?.some((item: any) => item?.productId?._id === product._id) || false;
     }, [cartItems, product._id]);
 
+    const memoRunCountRef = useRef(0);
+    
     const isFavourite = useMemo(() => {
-        return favourites?.items?.some((fav: any) => fav?.productId?._id === product._id) || false;
+        return favourites?.items?.some((fav: any) => fav?.productId?._id === product._id) || false;        
     }, [favourites, product._id]);
+
+    const [immdFavState, setImdFavState] = useState<boolean>(isFavourite)
+
+
+
+    // const [optimisticFav, setOptimisticFav] = useOptimistic(isFavourite, (_, newVal) => {
+    //     console.log("newVal", newVal)
+    //     return newVal
+    // } )
+
 
     const handleCart = () => {
         if (isInCart && !removeCartPending) {
@@ -153,7 +188,8 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                          style={{ pointerEvents: "none" }} /> */}
 
 
-                        <img
+                        {/* CLOUDINARY VERSION */}
+                        {/* <img
                             src={getBlurredCloudinaryUrl(productImage) || notAvailableimage} // Show blurred version by default
                             data-src={productImage} // Actual image will be loaded when in view
                             alt={product.productName}
@@ -176,7 +212,25 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                                   img.removeAttribute('data-src');
                                 }
                               }}
-                            />
+                            /> */}
+
+                        <img
+                            src={productImage} // Show blurred version by default
+                            alt={product.productName}
+                            className={`${style.lazy_blur} transition-blur duration-500 ease-in-out ${imgLoading ? '!blur-md' : 'blur-0'} `}
+                            loading="lazy" // Native lazy loading support
+                            style={{
+                                width: '100%',
+                                // height: 'auto',
+                                transition: 'filter 0.4s ease',
+                            }}
+
+                            onLoad={(e) => {
+                                let img = e.currentTarget
+                                // img.removeAttribute(style.lazy_blur)
+                                setImgLoading(false)
+                            }}
+                        />
 
                     </Link>
                     <IconButton
@@ -186,7 +240,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                             e.stopPropagation();
                             handleFavourite()
                         }}>
-                        {isFavourite ? (<FavoriteIcon sx={{
+                        {immdFavState ? (<FavoriteIcon sx={{
                             fill: `red`
                         }} />) :
                             <FavoriteBorderIcon sx={{
@@ -198,7 +252,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                 <div className={`${style.descriptioncontainer}`}>
                     <Link to={`/product/${product._id}`} className='pt-[10px] pb-[10px] flex h-full flex-col justify-between '>
                         <p>{product.productName}</p>
-                        <p>M.R.P <span>₹</span><span>{product.price}</span></p>
+                        <p>Price <span>₹</span><span>{product.price}</span></p>
 
                         <div className={`${style.rating}`}>
                             <span>Rating: </span>

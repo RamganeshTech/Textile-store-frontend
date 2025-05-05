@@ -1,25 +1,25 @@
 import React from "react";
 import styles from "./MyOrders.module.css";
+import { useFetchMyOrders } from "../../apiList/userprofileApi";
+import { OrderType } from "../../Types/types";
+import SingleOrder from "./SingleOrder";
 
 const MyOrders: React.FC = () => {
-  // Dummy orders (replace with API call)
-  const orders = [
-    { id: 1, product: "T-Shirt", price: "$20" },
-    { id: 2, product: "Shoes", price: "$50" },
-  ];
+  const { data: orders, isError, error, isLoading } = useFetchMyOrders()
 
-  return (
-    <div className={styles[`container`]}>
-      <h2 className={styles[`title`]}>My Orders</h2>
-      <ul className={styles[`orderList`]}>
-        {orders.map((order) => (
-          <li key={order.id} className={styles[`orderItem`]}>
-            {order.product} - {order.price}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
+return(
+    <div className={styles.container}>
+      <h2 className={styles.title}>My Orders</h2>
+       <div className={styles.orderContainer}>
+       {orders?.map((order: OrderType) => (
+         <SingleOrder key={(order as any)._id} order={order} />
+        )
+      )}
+       </div>
+      </div>
+        )
 };
+
+
 
 export default MyOrders;

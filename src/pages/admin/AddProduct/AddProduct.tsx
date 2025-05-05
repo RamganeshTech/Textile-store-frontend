@@ -144,7 +144,7 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
 
   // const { mutateAsync: createProductMutation } = useCreateProduct();
   const { mutate: createProduct, isPending: createProdloading, isSuccess, error: createProdError, isError: createProdIsError, reset: resetCreateError } = useCreateProduct()
-  const { mutateAsync: uploadImage, isPending: imageUploadLoading } = useUploadImage();
+  const { mutateAsync: uploadImage, isPending: imageUploadLoading, error: imageProdError, isError: imageProdIsError, reset: resetImageError } = useUploadImage();
   let { mutate: editProduct, isPending: editProdPending, error: editProdError, isError: editProdIsError, reset: resetEditError } = useEditProduct()
 
 
@@ -172,52 +172,56 @@ const AddProduct: React.FC<AddProductProp> = ({ editProductId, editFormData, set
 
 
   const onSubmit = async (data: any) => {
-    try {
-      const sizeVariants = await Promise.all(
-        data.sizeVariants.map(async (variant: any) => {
-          const colors = await Promise.all(
-            variant.colors.map(async (colorObj: any) => {
-              const imageFiles: File[] = colorObj.images || [];
-              // Upload all images one by one (in parallel)
-              const uploadedImages = await uploadImage(imageFiles);
-              return {
-                ...colorObj,
-                images: uploadedImages, // this will now have [{ url, public_id }, ...]
-              };
-            })
-          );
+    const sizeVariants = await Promise.all(
+      data.sizeVariants.map(async (variant: any) => {
+        const colors = await Promise.all(
+          variant.colors.map(async (colorObj: any) => {
+            const imageFiles: File[] = colorObj.images || [];
+            // Upload all images one by one (in parallel)
+            const uploadedImages = await uploadImage(imageFiles);
+            return {
+              ...colorObj,
+              images: uploadedImages, // this will now have [{ url, public_id }, ...]
+            };
+          })
+        );
 
-          return {
-            size: variant.size,
-            colors,
-          };
-        })
-      );
+        return {
+          size: variant.size,
+          colors,
+        };
+      })
+    );
 
-      const finalData = {
-        ...data,
-        sizeVariants,
-      };
+    const finalData = {
+      ...data,
+      sizeVariants,
+    };
 
-      if (editProductId && !editProdPending) {
-        // In edit mode, call the editProduct mutation
-        editProduct({ productData: finalData, productId: editProductId });
-      } else {
-        // Otherwise, create a new product
-        console.log("createProdloading", createProdloading)
-        // if (!createProdloading) {
-          createProduct(finalData);
-        // }
-      }
-      // alert(editProductId ? "Product updated successfully" : "Product created successfully!");
-
-      // alert("Product Created!");
-    } catch (err) {
+    if (editProductId && !editProdPending) {
+      // In edit mode, call the editProduct mutation
+      editProduct({ productData: finalData, productId: editProductId });
+    } else {
+      // Otherwise, create a new product
+      console.log("createProdloading", createProdloading)
+      // if (!createProdloading) {
+      createProduct(finalData);
+      // }
     }
+    // alert(editProductId ? "Product updated successfully" : "Product created successfully!");
+
+    // alert("Product Created!");
+
   };
 
+  
   return (
     <div className="w-[100vw] !p-[20px] !mt-[70px] bg-[#fafafa]">
+
+
+      {imageProdIsError && <ErrorComponent
+        onClose={() => resetImageError()}
+        message={(imageProdError as any)?.response?.data?.message || (imageProdError as any)?.message} />}
 
       {editProdIsError && <ErrorComponent
         onClose={() => resetEditError()}

@@ -46,7 +46,7 @@ const Payment = lazy(() => import('./pages/Payment/Payment'));
 const AdminLogin = lazy(() => import('./pages/admin/AdminLogin/AdminLogin'));
 const AddProduct = lazy(() => import('./pages/admin/AddProduct/AddProduct'));
 const ListProducts = lazy(() => import('./pages/admin/ListProducts/ListProducts'));
-const NotFound = lazy(()=> import('./pages/NotFound/NotFound'))
+const NotFound = lazy(() => import('./pages/NotFound/NotFound'))
 
 // Components
 const Footer = lazy(() => import('./components/Footer/Footer'));
@@ -68,18 +68,20 @@ const ProtectedRoutes = lazy(() => import('./components/ProtectedRoutes/Protecte
 const ProtectedAdminRoutes = lazy(() => import('./components/ProtectedRoutes/ProtectedAdminRoutes'));
 
 import useIsAuthenticated from './hooks/useIsAuthenticated';
+import OfferPopup from './components/OfferPopup/OfferPopup'
 
 
 function App() {
- const {userAuthLoading} =  useIsAuthenticated()
+  const { userAuthLoading } = useIsAuthenticated()
 
-  if(userAuthLoading){
+  if (userAuthLoading) {
     return <div className='w-[100vw] h-[80vh] flex justify-center items-center'><Loading /></div>
   }
 
   return (
     <>
-      <Suspense fallback={ <div className='w-[100vw] h-[80vh] flex justify-center items-center'><Loading /></div>}>
+      <Suspense fallback={<div className='w-[100vw] h-[80vh] flex justify-center items-center'><Loading /></div>}>
+        <OfferPopup />
         <Navbar />
 
         <Routes>
@@ -93,7 +95,7 @@ function App() {
           <Route path='/allproducts' element={<AllProducts />} />
           <Route path='/payment' element={<ProtectedRoutes>
             <Payment />
-            </ProtectedRoutes>} />
+          </ProtectedRoutes>} />
           <Route path='/redirect-url/paymentsuccess/:merchantTransactionId' element={<PaymentSuccessfull />} />
           <Route path='/redirect-url/paymentfailure/:merchantTransactionId' element={<PaymentFailure />} />
 
@@ -115,6 +117,7 @@ function App() {
               <UserProfile />
             </ProtectedRoutes>
           }>
+            
             <Route path='verifypassword' element={<VerifyPassword />} />
             <Route path='editaddress' element={<EditAddress />} />
             <Route path='changepassword' element={<ChangePassword />} />
@@ -123,6 +126,7 @@ function App() {
             <Route path='editemail' element={<UpdateUserEmail />} />
             <Route path='editphonenumber' element={<UpdateUserPhoneNo />} />
             <Route path='editusername' element={<UpdateUserName />} />
+            <Route path='myorders' element={<MyOrders />} />
 
           </Route>
 

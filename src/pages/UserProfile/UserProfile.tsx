@@ -107,7 +107,7 @@ const UserProfile: React.FC = () => {
                 }}
               />
             </ListItemButton>
-            {/* <ListItemButton
+            <ListItemButton
               onClick={() => navigate("./myorders")}
               className={`${styles.listItem}`}
             >
@@ -125,7 +125,7 @@ const UserProfile: React.FC = () => {
                   },
                 }}
               />
-            </ListItemButton> */}
+            </ListItemButton>
             <Divider />
             <ListItemButton onClick={() => logout()} className={styles.listItem}>
               <ListItemText

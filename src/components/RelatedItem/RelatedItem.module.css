@@ -19,7 +19,7 @@
     height: 100%;
     width: 100%;
     object-fit: cover;
-    transition: transform .6s ease-in-out;
+    transition: transform .2s ease-out;
 }
 
 .relateditem:hover img {

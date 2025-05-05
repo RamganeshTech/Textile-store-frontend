@@ -32,11 +32,11 @@
     background-position: contain;
     cursor: pointer;
 }
-
+/* 
 .lazy_blur{
     filter: blur(10px);
     transition: filter 0.4s ease;
-}
+} */
 
 .imgcontainer button {
     position: absolute;
