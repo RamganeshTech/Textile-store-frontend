@@ -33,9 +33,25 @@ const SingleOrder: React.FC<SingleOrderProp> = ({ order }) => {
         return productImg
     }, [order.productId.colorVariants, firstSelectedColor]);
 
+
+    const changeBgColor = () => {
+        switch (order.orderStatus) {
+            case "processing":
+                return "bg-[#d98a2e]"
+            case "shipped":
+                return "bg-[#ff6408]"
+            case "delivered":
+                return "bg-[#2fc432]"
+            case "cancelled":
+                return "bg-[#fd4343]"
+            default:
+                return "bg-white"
+        }
+    }
+
     return (
         <div className={style.singleOrderWrapper}>
-            <Link to={`/product/${order.productId._id}`}  className={style.singleOrderCard}>
+            <Link to={`/product/${order.productId._id}`} className={style.singleOrderCard}>
 
                 <div className={style.imgContainer}>
                     <img
@@ -63,7 +79,8 @@ const SingleOrder: React.FC<SingleOrderProp> = ({ order }) => {
                     <p><StarRating rating={order?.productId.reviewStar ?? 0} /></p>
                     <p>Size <span>{order.size}</span></p>
                     <p>Color <span>{order.color}</span></p>
-
+                    <p>Status <span className={`${changeBgColor()} !p-[5px] rounded-xl`}>{order.orderStatus}</span></p>
+                    <p className={style.uniquelabel}>Unique Id: <span className={style.uniqueid}>{(order as any)._id}</span></p>
                 </div>
             </Link>
 

@@ -46,7 +46,7 @@
   }
   
   .itemDetails {
-    padding: 1rem;
+    padding: 5px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -66,7 +66,9 @@
     white-space: wrap;
 }
 
-  
+.itemDetails .uniqueid, .itemDetails .uniquelabel{
+  font-size: clamp(12px, 2vw, 18px);
+}
   
   .itemDetails p {
     margin: 0.3rem 0;
@@ -77,10 +79,41 @@
   .itemDetails span{
     color: #0a0a0a
   }
+
+  @media (max-width: 768px) {
+  
+    .imgContainer {
+      height: 100%;
+    }
+  
+    .itemDetails {
+      padding: 5px !important;
+    }
+
+    .itemDetails h2{
+        font-size: 20px;
+    }
+
+    .itemDetails p{
+        font-size: 14px;
+    }
+
+    .itemDetails .uniquelabel {
+      color: transparent;
+      font-size: 0;
+    }
+  
+    .itemDetails .uniquelabel .uniqueid {
+      color: black; /* or inherit if needed */
+      font-size: 10px; /* or whatever your default size is */
+    }
+
+
+  }
   
   @media (max-width: 426px) {
     .singleOrderWrapper {
-        height: 80%;
+        height: 90%;
         width: 100%;
       }
 
@@ -94,7 +127,7 @@
     }
   
     .itemDetails {
-      padding: 1rem;
+      padding: 5px !important;
     }
 
     .itemDetails h2{
@@ -105,4 +138,33 @@
         font-size: 16px;
     }
   }
+
+  @media (max-width: 375px) and ( min-width: 300px) {
+    .singleOrderWrapper {
+        height: 90%;
+        width: 100%;
+      }
+
+    .singleOrderCard {
+      height: 100%;
+      width: 100%;
+    }
   
+    .imgContainer {
+      height: 100%;
+    }
+  
+    .itemDetails {
+      padding: 5px !important;
+    }
+
+    .itemDetails h2{
+        font-size: 17px;
+    }
+
+    .itemDetails p{
+        font-size: 13px;
+    }
+
+
+  }  

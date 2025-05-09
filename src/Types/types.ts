@@ -56,4 +56,5 @@ export type ReviewType = {
   quantity:number,
   size:string,
   color:string
+  orderStatus:string,
   }

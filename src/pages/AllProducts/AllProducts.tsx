@@ -8,7 +8,7 @@ import Checkbox from '@mui/material/Checkbox';
 import TuneIcon from '@mui/icons-material/Tune';
 import { Button } from '@mui/material';
 import FilterSideBar from '../../components/FilterSidebar/FilterSideBar'
-import { useFetchProducts, useSearchProductsInfinite } from '../../apiList/productApi'
+import { useSearchProductsInfinite } from '../../apiList/productApi'
 import { ProductType } from '../../Types/types'
 import axios from 'axios'
 import Loading from '../../components/LoadingState/Loading'
@@ -95,7 +95,7 @@ const AllProducts = () => {
 
   function getErrorMessage(error: unknown): string {
     if (axios.isAxiosError(error)) {
-      return error.response?.data?.message|| error?.message || "Something went wrong!";
+      return error.response?.data?.message || error?.message || "Something went wrong!";
     }
     return "An unexpected error occurred.";
   }
@@ -112,12 +112,12 @@ const AllProducts = () => {
   };
 
 
+  // infinite scroll event
+  // useEffect(() => {
+  //   document.addEventListener("scroll", handleScroll)
 
-  useEffect(() => {
-    document.addEventListener("scroll", handleScroll)
-
-    return () => document.removeEventListener("scroll", handleScroll)
-  }, [fetchNextPage, hasNextPage, isFetchingNextPage])
+  //   return () => document.removeEventListener("scroll", handleScroll)
+  // }, [fetchNextPage, hasNextPage, isFetchingNextPage])
 
 
   const maxPrice = useMemo(() => {
@@ -132,7 +132,7 @@ const AllProducts = () => {
 
   useEffect(() => {
 
-    
+
     if (products?.length > 0) {
       const prices = products?.map((p: any) => p.price);
       const minPrice = Math.min(...prices);
@@ -165,15 +165,42 @@ const AllProducts = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [sidebarVisible]);
 
+  const loaderRef = useRef<HTMLDivElement | null>(null);
 
-  const handleScroll = () => {
-    // scrolly means how much i have scrolled
-    // innerheight means the visisble part
-    // scrollheight means the entire height of the web page or body
-    if (window.scrollY + window.innerHeight >= document.body.scrollHeight && hasNextPage && !isFetchingNextPage) {
-      fetchNextPage()
-    }
-  }
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      {
+        root: null, // viewport
+        rootMargin: "0px",
+        threshold: 1.0, // fully visible
+      }
+    );
+
+    const currentLoader = loaderRef.current;
+    if (currentLoader) observer.observe(currentLoader);
+
+    return () => {
+      if (currentLoader) observer.unobserve(currentLoader);
+    };
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+
+  // infinite scroll event
+
+  // const handleScroll = () => {
+  //   // scrolly means how much i have scrolled
+  //   // innerheight means the visisble part
+  //   // scrollheight means the entire height of the web page or body
+  //   if (window.scrollY + window.innerHeight >= document.body.scrollHeight && hasNextPage && !isFetchingNextPage) {
+  //     fetchNextPage()
+  //   }
+  // }
 
   return (
     <main className={`${style.maincontainer} mt-[70px] sm:mt-[70px]`}>
@@ -345,9 +372,9 @@ const AllProducts = () => {
                     max={maxPrice}
                     step={500}
                     value={[filterOptions.Min,
-                      //  filterOptions.Max
-                      filterOptions.Max === Infinity ? maxPrice : filterOptions.Max,
-                      ]}
+                    //  filterOptions.Max
+                    filterOptions.Max === Infinity ? maxPrice : filterOptions.Max,
+                    ]}
                     onChange={handleRangeChange}
                     trackStyle={[{ backgroundColor: "teal", height: 5 }]}
                     handleStyle={[
@@ -481,6 +508,7 @@ const AllProducts = () => {
 
             <ProductsFullList
               productsList={products}
+              loaderRef={loaderRef}
             />
 
             {isFetchingNextPage && (
@@ -498,6 +526,7 @@ const AllProducts = () => {
               <Loading />
             </section>
           }
+
         </div>
       </section>
 
