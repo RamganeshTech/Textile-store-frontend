@@ -1,4 +1,4 @@
-import { useMemo, useOptimistic, useState, startTransition, useRef } from 'react'
+import { useMemo, useState } from 'react'
 import style from './Products.module.css'
 
 import { Button, CircularProgress, IconButton } from '@mui/material'
@@ -17,7 +17,7 @@ import ErrorComponent from '../../Shared/ErrorComponent/ErrorComponent';
 type singleProductprop = {
     product: ProductType
 }
-const notAvailableimage = "https://th.bing.com/th/id/OIP.Skr-oJ6BWg_K65k5uDiMdgHaHa?w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
+// const notAvailableimage = "https://th.bing.com/th/id/OIP.Skr-oJ6BWg_K65k5uDiMdgHaHa?w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
 
 const Products: React.FC<singleProductprop> = ({ product }) => {
 
@@ -106,7 +106,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         return cartItems?.some((item: any) => item?.productId?._id === product._id) || false;
     }, [cartItems, product._id]);
 
-    const memoRunCountRef = useRef(0);
+    // const memoRunCountRef = useRef(0);
     
     const isFavourite = useMemo(() => {
         return favourites?.items?.some((fav: any) => fav?.productId?._id === product._id) || false;        
@@ -131,10 +131,10 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         // setIsInCart(!isInCart);
     };
 
-    const getBlurredCloudinaryUrl = (originalUrl: string) => {
-        if (!originalUrl.includes('/upload/')) return originalUrl;
-        return originalUrl.replace('/upload/', '/upload/e_blur:1000,q_10/');
-    };
+    // const getBlurredCloudinaryUrl = (originalUrl: string) => {
+    //     if (!originalUrl.includes('/upload/')) return originalUrl;
+    //     return originalUrl.replace('/upload/', '/upload/e_blur:1000,q_10/');
+    // };
 
     // const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
     //     const img = e.target as HTMLImageElement;
@@ -225,8 +225,8 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                                 transition: 'filter 0.4s ease',
                             }}
 
-                            onLoad={(e) => {
-                                let img = e.currentTarget
+                            onLoad={() => {
+                                // let img = e.currentTarget
                                 // img.removeAttribute(style.lazy_blur)
                                 setImgLoading(false)
                             }}

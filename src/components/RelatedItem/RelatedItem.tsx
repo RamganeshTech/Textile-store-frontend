@@ -6,11 +6,11 @@ import { CircularProgress } from '@mui/material'
 
 type RelatedItemProp = {
   item: ProductType,
-  product: ProductType
+  // product: ProductType
 }
-const notAvailableimage = "https://th.bing.com/th/id/OIP.Skr-oJ6BWg_K65k5uDiMdgHaHa?w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
+// const notAvailableimage = "https://th.bing.com/th/id/OIP.Skr-oJ6BWg_K65k5uDiMdgHaHa?w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2"
 
-const RelatedItem: React.FC<RelatedItemProp> = ({ item, product }) => {
+const RelatedItem: React.FC<RelatedItemProp> = ({ item }) => {
 
   // console.log("item", item)
   const [imgLoading, setImgLoading] = useState<boolean>(true);
@@ -39,11 +39,11 @@ const RelatedItem: React.FC<RelatedItemProp> = ({ item, product }) => {
     return image;
   }, [item.colorVariants, firstSelectedColor]);
 
-  const getBlurredCloudinaryUrl = (originalUrl: string) => {
-    // console.log("originalUrl", originalUrl)
-    if (!originalUrl.includes('/upload/')) return originalUrl;
-    return originalUrl.replace('/upload/', '/upload/e_blur:1000,q_10/');
-  };
+  // const getBlurredCloudinaryUrl = (originalUrl: string) => {
+  //   // console.log("originalUrl", originalUrl)
+  //   if (!originalUrl.includes('/upload/')) return originalUrl;
+  //   return originalUrl.replace('/upload/', '/upload/e_blur:1000,q_10/');
+  // };
 
 
   if (imgLoading) return <CircularProgress size={22} thickness={4} sx={{ color: "#0a0a0a" }} />

@@ -5,7 +5,7 @@ import { OrderType } from "../../Types/types";
 import SingleOrder from "./SingleOrder";
 
 const MyOrders: React.FC = () => {
-  const { data: orders, isError, error, isLoading } = useFetchMyOrders()
+  const { data: orders } = useFetchMyOrders()
 
 return(
     <div className={styles.container}>

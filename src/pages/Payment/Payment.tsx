@@ -6,10 +6,7 @@ import { useSelector } from 'react-redux'
 import { RootState } from '../../store/store'
 import { loadRazorpayScript } from '../../razorpay/razorpay'
 import Api from '../../apiClient/apiClient'
-import PaymentSuccessfull from '../../components/PaymentStatus/PaymentSuccessfull'
-import PaymentFailure from '../../components/PaymentStatus/PaymentFailure'
 import { useNavigate } from 'react-router-dom'
-import { isAxiosError } from 'axios'
 
 
 export interface BookinginfoType {
@@ -140,7 +137,7 @@ const Payment = () => {
     
 
     // USE THIS IF THE RAZORPAY NOT WORKED
-    const handleSubmit = async (e: React.FormEvent, amount:number) => {
+    const handleSubmit = async (e: React.FormEvent, amount:number = 1) => {
         e.preventDefault();
 
         let newErrors: Partial<Record<keyof BookinginfoType, string>> = {};
@@ -161,7 +158,7 @@ const Payment = () => {
         }
 
         // Proceed with form submission logic here
-        console.log("Form submitted successfully!", bookingInfo);
+        // console.log("Form submitted successfully!", bookingInfo);
 
         if(!isScriptLoaded) return;
 
@@ -179,7 +176,7 @@ const Payment = () => {
         try {
           // Step 1: Create order by calling your backend
           const { data } = await Api.post("/payment/order", {
-            amount: 1,// in INR
+            amount: amount,// in INR
             products:orderedProducts, shippingAddress
           });
       

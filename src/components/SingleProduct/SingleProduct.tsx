@@ -603,7 +603,7 @@ const SingleProduct = () => {
                                 return (
 
                                     <Link className='w-[45%]  xl:!w-[14%] lg:w-[20%] md:w-[25%] sm:w-[25%] shrink-0 sm:h-[100%] h-[50%] !h-custom-tablet' to={`/product/${item._id}`} key={item._id}>
-                                        <RelatedItem item={item} product={product} />
+                                        <RelatedItem item={item} />
                                     </Link>
 
                                 )

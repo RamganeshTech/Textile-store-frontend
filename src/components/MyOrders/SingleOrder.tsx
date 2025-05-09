@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, {  useMemo, useState } from 'react'
 import style from './SingleOrder.module.css'
 import { OrderType } from '../../Types/types'
 import StarRating from '../StarRating/StarRating'
@@ -65,8 +65,8 @@ const SingleOrder: React.FC<SingleOrderProp> = ({ order }) => {
                         //     transition: 'filter 0.4s ease',
                         // }}
 
-                        onLoad={(e) => {
-                            let img = e.currentTarget
+                        onLoad={() => {
+                            // let img = e.currentTarget
                             // img.removeAttribute(style.lazy_blur)
                             setImgLoading(false)
                         }}
