@@ -107,6 +107,7 @@ const UserProfile: React.FC = () => {
                 }}
               />
             </ListItemButton>
+            <Divider />
             <ListItemButton
               onClick={() => navigate("./myorders")}
               className={`${styles.listItem}`}
