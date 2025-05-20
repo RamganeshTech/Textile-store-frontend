@@ -16,6 +16,8 @@ export const useFetchOffer = ()=>{
    return useQuery({
       queryKey:['offer'],
       queryFn: fetchOffer,
-      staleTime: 1000 * 60 * 10
+      staleTime: 1000 * 60 * 10,
+      retry: false,
+      refetchOnWindowFocus:false
    })
 }

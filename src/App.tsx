@@ -1,38 +1,9 @@
 import './App.css'
 import Navbar from './components/Navbar/Navbar'
 import { Route, Routes } from 'react-router-dom'
-// import Home from './pages/Home/Home'
-// import Footer from './components/Footer/Footer'
-// import ForgotPassword from './pages/ForgotPassword/ForgotPassword'
-// import SingleProduct from './components/SingleProduct/SingleProduct'
-// import AddToCart from './pages/AddToCart/AddToCart'
-// import Favourite from './pages/Favourite/Favourite'
-// import AllProducts from './pages/AllProducts/AllProducts'
-// import UserProfile from './pages/UserProfile/UserProfile'
-// import ChangePassword from './components/ChangePassword/ChangePassword'
-// import MyOrders from './components/MyOrders/MyOrders'
-// import VerifyPassword from './components/VerifyPassword/VerifyPassword'
-// import EditAccountinfo from './components/EditAccountInfo/EditAccountinfo'
-// import UpdateUserEmail from './components/UserDataEditComponents/UpdateUserEmail/UpdateUserEmail'
-// import UpdateUserName from './components/UserDataEditComponents/UpdateUserName/UpdateUserName'
-// import UpdateUserPhoneNo from './components/UserDataEditComponents/UpdateUserPhoneNo/UpdateUserPhoneNo'
-// import Payment from './pages/Payment/Payment'
-// import useIsAuthenticated from './hooks/useIsAuthenticated'
-// import EditAddress from './components/EditAddress/EditAddress'
-// import AddProduct from './pages/admin/AddProduct/AddProduct'
-// import ProtectedRoutes from './components/ProtectedRoutes/ProtectedRoutes'
-// import AdminLogin from './pages/admin/AdminLogin/AdminLogin'
-// import ProtectedAdminRoutes from './components/ProtectedRoutes/ProtectedAdminRoutes'
-// import ListProducts from './pages/admin/ListProducts/ListProducts'
-// import PaymentSuccessfull from './components/PaymentStatus/PaymentSuccessfull'
-// import PaymentFailure from './components/PaymentStatus/PaymentFailure'
-
-
-// import Login from './components/Login/Login'
 
 import { lazy, Suspense } from 'react'
-import Loading from './components/LoadingState/Loading'
-
+// import Loading from './components/LoadingState/Loading'
 
 // Pages
 const Home = lazy(() => import('./pages/Home/Home'));
@@ -70,17 +41,39 @@ const ProtectedAdminRoutes = lazy(() => import('./components/ProtectedRoutes/Pro
 import useIsAuthenticated from './hooks/useIsAuthenticated';
 import OfferPopup from './components/OfferPopup/OfferPopup'
 
+const FooterSkeleton = lazy(() => import('./Loading/FooterSkeleton'))
+const NavbarSkeleton = lazy(() => import('./Loading/NavbarSkeleton'))
+const MainCarousel = lazy(() => import('./Loading/MainCarousel'))
+const LoadingGrid = lazy(() => import('./Loading/LoadingGrid'))
+
 
 function App() {
   const { userAuthLoading } = useIsAuthenticated()
 
+  // if (userAuthLoading) {
+  //   return <div className='w-[100vw] h-[80vh] flex justify-center items-center'><Loading /></div>
+  // }
+
+
   if (userAuthLoading) {
-    return <div className='w-[100vw] h-[80vh] flex justify-center items-center'><Loading /></div>
+    return <div className='w-[100vw] flex justify-center items-center flex-col'>
+      <NavbarSkeleton />
+      <MainCarousel />
+      <LoadingGrid rows={2} columns={4} />
+      <FooterSkeleton />
+    </div>
   }
 
   return (
     <>
-      <Suspense fallback={<div className='w-[100vw] h-[80vh] flex justify-center items-center'><Loading /></div>}>
+      <Suspense fallback={
+        <div className='w-[100vw] flex justify-center items-center flex-col'>
+        <NavbarSkeleton />
+        <MainCarousel />
+        <LoadingGrid rows={2} columns={4} />
+        <FooterSkeleton />
+      </div>
+    }>
         <OfferPopup />
         <Navbar />
 
@@ -117,7 +110,7 @@ function App() {
               <UserProfile />
             </ProtectedRoutes>
           }>
-            
+
             <Route path='verifypassword' element={<VerifyPassword />} />
             <Route path='editaddress' element={<EditAddress />} />
             <Route path='changepassword' element={<ChangePassword />} />

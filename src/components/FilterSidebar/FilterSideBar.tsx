@@ -40,7 +40,7 @@ const FilterSideBar = forwardRef<HTMLDivElement, FilterSideBarProp>(({handleSear
 
   //  let { mutate: searchMutate, data: searchData, isError: searchIsError, error: searchError, isPending: searchPending } = useSearchProducts()
   //   let { mutate: applyFiltersMutate, data: filterData, isError: filterIsError, error: filterError, isPending: filterPending } = useFilterProuducts()
-
+console.log("im rendering child compo")
   return (
     <section id='sidebar' ref={ref} className={`${style.sidebar} ${sidebarVisible ? style.visible : ''}`}>
       <div className={`${style.sidebarHeader}`}>

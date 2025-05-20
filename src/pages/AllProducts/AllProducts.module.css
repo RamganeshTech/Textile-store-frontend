@@ -1,8 +1,8 @@
-::-webkit-scrollbar{
+::-webkit-scrollbar {
     display: none;
 }
 
-.maincontainer{
+.maincontainer {
     width: 100vw;
     min-height: 100vh;
     margin-top: 70px;
@@ -12,7 +12,7 @@
     padding: 10px;
 }
 
-.innerDiv{
+.innerDiv {
     display: flex;
     gap: 5px;
     width: 100%;
@@ -22,7 +22,7 @@
     align-items: start;
 }
 
-.filters{
+.filters {
     display: flex;
     padding: 10px;
     width: 20%;
@@ -32,11 +32,11 @@
 
 }
 
-.mobileViewFilter{
+.mobileViewFilter {
     display: none;
 }
 
-.filterinnerDiv{
+.filterinnerDiv {
     display: flex;
     gap: 5px;
     width: 100%;
@@ -45,104 +45,107 @@
 
 
 .filterscategory:not(:last-child) {
-    border-bottom: 1px solid #34333328; 
+    border-bottom: 1px solid #34333328;
 
 }
 
-.filterscategory{
+.filterscategory {
     padding: 10px;
     width: 100% !important;
 }
 
 
-.filterscategory p{
+.filterscategory p {
     font-weight: 500;
     color: #4a4a4a
 }
 
 
 .filterscategory section {
-    margin-left: clamp(12px , 1vw, 20px)
+    margin-left: clamp(12px, 1vw, 20px)
 }
 
-.filterscategory section , .filterscategory span{
+.filterscategory section,
+.filterscategory span {
     color: #2b2b2b;
-    
+
 }
 
-.filterscategory section{
-    
+.filterscategory section {
+
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 5px;
-    
+
 }
 
 
-.filterscategory p{
-    font-size: clamp(16px , 2.4vw, 28px);
+.filterscategory p {
+    font-size: clamp(16px, 2.4vw, 28px);
     white-space: nowrap;
 }
 
 
 
-.filterscategory label, span{
-    font-size: clamp(14px , 1vw, 20px);
+.filterscategory label,
+span {
+    font-size: clamp(14px, 1vw, 20px);
 }
 
 
-.productcategory div{
+.productcategory div {
     display: flex;
     gap: 0px;
-    align-items: start; /*changed for mobile*/
+    align-items: start;
+    /*changed for mobile*/
     justify-content: start;
-   margin-left: 10px;
+    margin-left: 10px;
     flex: 1;
 }
- 
-.productsList{
+
+.productsList {
     display: flex;
     flex-direction: column;
     gap: 10px;
     width: 80%;
     /* border: 2px solid red; */
-    justify-content: start  ;
+    justify-content: start;
     align-items: center;
 }
 
-.displayProducts{
+.displayProducts {
     width: 100%;
     overflow: scroll;
     max-height: 157vh;
     /* border: 2px solid red; */
 }
 
-.searchBarMain{
+.searchBarMain {
     display: flex;
     /* border: 2px solid red; */
-align-items: center;
-justify-content: center;   
-gap: 5px;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 
 }
 
-.searchBarMain:first-child{
+.searchBarMain:first-child {
     width: 80% !important;
-    border: 2px solid #3a393951;
+    /* border: 2px solid #3a393951; */
 }
 
-.applybtncontainer{
+.applybtncontainer {
     width: 100%;
     font-size: clamp(12px, 3vw, 18px);
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid #34333328; 
+    border-bottom: 1px solid #34333328;
     padding: 20px 0;
 }
 
-.applyBtn{
+.applyBtn {
     font-size: clamp(12px, 3vw, 18px);
 }
 
@@ -151,7 +154,8 @@ gap: 5px;
 .sidebar {
     position: fixed;
     top: 0;
-    left: -100%; /* Hidden by default */
+    left: -100%;
+    /* Hidden by default */
     width: 80%;
     max-width: 300px;
     height: 100%;
@@ -161,40 +165,40 @@ gap: 5px;
     transition: left 0.3s ease;
     z-index: 1000;
     padding: 10px;
-  }
-  
-  
-  /* Sidebar header styling */
-  .sidebarHeader {
+}
+
+
+/* Sidebar header styling */
+.sidebarHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-  }
-  
-  /* Container for filter content inside the sidebar */
-  .sidebarinnerDiv {
+}
+
+/* Container for filter content inside the sidebar */
+.sidebarinnerDiv {
     display: flex;
     flex-direction: column;
     gap: 10px;
-  }
-  
-  /* Filter category container */
-  .filterscategory {
+}
+
+/* Filter category container */
+.filterscategory {
     border-bottom: 1px solid #ccc;
     padding: 10px 0;
-  }
-  
-  /* Title for filter category (clickable) */
-  .filterTitle {
+}
+
+/* Title for filter category (clickable) */
+.filterTitle {
     font-weight: 500;
     font-size: 18px;
     color: #4a4a4a;
     cursor: pointer;
-  }
-  
-  /* Container for dropdown options of a filter category */
-  .filterOptions {
+}
+
+/* Container for dropdown options of a filter category */
+.filterOptions {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
@@ -203,72 +207,82 @@ gap: 5px;
     align-items: start;
     justify-content: start;
     /* border: 2px solid red; */
-  }
+}
 
 
-  .filterOptions section{
+.filterOptions section {
     display: flex;
     justify-content: start;
     align-items: center;
-  }
-  
-  .filterOptions.open {
+}
+
+.filterOptions.open {
     max-height: 300px;
-  }
-  
-  /* Main products list area styling */
-  .productsList {
+}
+
+/* Main products list area styling */
+.productsList {
     flex: 1;
     width: 100%;
     padding: 10px;
-  }
-  
+}
 
-  
-  .closeBtn {
+
+
+.closeBtn {
     background-color: #e53e3e;
     color: #fff;
     text-transform: none;
-  }
+}
 
-   .slidercontainer {
+.slidercontainer {
     width: 100% !important;
     max-width: 200px;
     /* border: 2px solid red; */
     display: flex;
     justify-content: center;
-    align-items: start; 
-   margin-left: 0px !important;
-   flex: 0;
+    align-items: start;
+    margin-left: 0px !important;
+    flex: 0;
 
-  }
-  
-  .labels {
+}
+
+.labels {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
-  }
-    
-.priceinputfield{
+}
+
+.priceinputfield {
     display: flex;
     gap: 10px !important;
 }
-  
-  .custom-input .MuiInputBase-root {
+
+.custom-input .MuiInputBase-root {
     height: 20px !important;
     padding: 0 !important;
-  }
-  
-  .custom-input .MuiInputBase-input {
+}
+
+.custom-input .MuiInputBase-input {
     padding: 6px 8px;
     font-size: 14px;
     text-align: center;
-  }
-  
+}
 
-@media (max-width:426px){
 
-    .innerDiv{
+@media (max-width: 375px) {
+    .productsList {
+       padding: 0px;
+    }
+}
+
+@media (max-width:426px) {
+
+    .maincontainer {
+        padding: 5px;
+    }
+
+    .innerDiv {
         justify-content: center;
         align-items: center;
         flex-direction: column;
@@ -276,28 +290,29 @@ gap: 5px;
         flex-grow: 1;
         /* border: 2px solid red; */
         min-height: 100vh;
+        /* padding: 10px 0 0 0; */
 
     }
 
-     .mobileViewFilter{
+    .mobileViewFilter {
         display: flex;
         align-items: center;
         justify-content: space-between;
         width: 100%;
     }
 
-    .mobilesearch{
+    .mobilesearch {
         display: flex;
         justify-content: center;
         align-items: center;
         border: 2px solid #3a393951;
     }
 
-    .mobilesearch:first-child{
+    .mobilesearch:first-child {
         border: 2px solid rgb(0, 0, 255) !important;
     }
 
-    .filters{
+    .filters {
         display: none;
     }
 
@@ -306,25 +321,27 @@ gap: 5px;
         margin-left: 0;
     }
 
-    .searchBarMain{
+    .searchBarMain {
         display: none;
     }
 
-    .productsList{
+    .productsList {
         width: 100%;
+        padding: 0px;
     }
 
     .sidebar {
-        display: block; /* ensure it’s not hidden */
+        display: block;
+        /* ensure it’s not hidden */
     }
 
-    .sidebar.visible{
+    .sidebar.visible {
         left: 0%;
         z-index: 10001;
     }
 
-    .overlay{
-        position:fixed;
+    .overlay {
+        position: fixed;
         inset: 0;
         /* z-index: ; */
         background-color: #2b2b2b1b;
@@ -332,7 +349,7 @@ gap: 5px;
         transition: .3s all ease-in-out;
     }
 
-    .overlay.showoverLay{
+    .overlay.showoverLay {
         opacity: 1;
     }
 
@@ -340,9 +357,9 @@ gap: 5px;
 }
 
 
-@media (max-width:769px){
+@media (max-width:769px) {
 
-    .filters{
+    .filters {
         width: 30%;
     }
 
@@ -351,21 +368,21 @@ gap: 5px;
     }
 
 
-    .searchBarMain:first-child{
+    .searchBarMain:first-child {
         /* border: 2px solid rgb(255, 0, 183) !important; */
-        padding-right:15px;
+        padding-right: 15px;
     }
 
-    .searchBarMain:last-child{
+    .searchBarMain:last-child {
         border: 2px solid orange !important;
 
     }
 }
 
 
-@media (max-width:1024px){
-    .filterscategory p{
-        font-size: clamp(16px , 2vw, 28px);
+@media (max-width:1024px) {
+    .filterscategory p {
+        font-size: clamp(16px, 2vw, 28px);
         white-space: nowrap;
     }
 }

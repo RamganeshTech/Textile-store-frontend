@@ -25,8 +25,6 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
 
 
     let user = useSelector((state: RootState) => state.user)
-    // let user = { userId: "67e50bcd420994f6168c1020" }
-
 
     const [review, setReview] = useState<reviewprouducts>({
         reviewername: null,
@@ -53,8 +51,6 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
     const [retriveLoading, setRetriveLoading] = useState<boolean>(false);
-
-
 
     const handleStarClick = (star: number) => {
         setSelectedStars(star);
@@ -305,7 +301,7 @@ const UserReview = ({ reviewItems, currentProductId }: UserReviewProps) => {
                     <div className={`${style.reiviewDescription}`}>
                         <p>Characters remaining {reviewLimit}/500</p>
                         <textarea name="review" id="" placeholder='Write a Review' rows={1}
-                            value={review.review as string}
+                            value={review.review ?? ""}
                             onChange={handleReviewChange}
                         >
                         </textarea>

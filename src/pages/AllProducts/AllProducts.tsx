@@ -1,7 +1,7 @@
-import { ChangeEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import style from './AllProducts.module.css'
 import { SearchOutlined } from '@mui/icons-material'
-import { CircularProgress, IconButton, Radio, TextField } from '@mui/material'
+import { CircularProgress, IconButton, Radio, Skeleton, TextField } from '@mui/material'
 // import products from '../../Utils/product'
 import ProductsFullList from '../../components/ProductsFullList/ProductsFullList'
 import Checkbox from '@mui/material/Checkbox';
@@ -16,6 +16,9 @@ import { arrival, availabilities, categories, sizes } from '../../constants/filt
 
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
+import LoadingGrid from '../../Loading/LoadingGrid'
+import SeaachBarSkeleton from '../../Loading/SeaachBarSkeleton'
+import FilterSkeleton from '../../Loading/FilterSkeleton'
 
 
 // import { IconButton } from '@mui/material';
@@ -85,12 +88,10 @@ const AllProducts = () => {
 
   // let { mutate: applyFiltersMutate, data: filterData, isError: filterIsError, error: filterError, isPending: filterPending } = useFilterProuducts()
 
-
-  const handleSearch = () => {
-    setSearchTerm(searchInput)
-    setFinalFilterOptions(filterOptions)
-  }
-
+  const handleSearch = useCallback(() => {
+    setSearchTerm(searchInput);
+    setFinalFilterOptions(filterOptions);
+  }, [searchInput, filterOptions]);
 
 
   function getErrorMessage(error: unknown): string {
@@ -100,16 +101,6 @@ const AllProducts = () => {
     return "An unexpected error occurred.";
   }
 
-  const handleRangeChange = (value: number | number[]) => {
-    if (Array.isArray(value) && value.length === 2) {
-      setFilterOptions((prev) => ({
-        ...prev,
-        Min: value[0],
-        // Max: value[1],
-        Max: value[1] === maxPrice ? Infinity : value[1], // If max value is reached, set to Infinity
-      }));
-    }
-  };
 
 
   // infinite scroll event
@@ -129,6 +120,16 @@ const AllProducts = () => {
 
 
   const minPrice = useMemo(() => 0, [])
+
+  const handleRangeChange = useCallback((value: number | number[]) => {
+    if (Array.isArray(value) && value.length === 2) {
+      setFilterOptions((prev) => ({
+        ...prev,
+        Min: value[0],
+        Max: value[1] === maxPrice ? Infinity : value[1],
+      }));
+    }
+  }, [maxPrice]);
 
   useEffect(() => {
 
@@ -212,7 +213,7 @@ const AllProducts = () => {
           >
             <TuneIcon />
           </IconButton>
-          <div className={`${style.mobilesearch} w-[80%] flex items-center justify-center`}>
+          <div className={`${style.mobilesearch} w-[90%] sm:w-[80%] flex items-center justify-center`}>
             <TextField
               placeholder="Search Products"
               // className="w-[90%]"
@@ -264,7 +265,11 @@ const AllProducts = () => {
 
         {/* THE BELOW FILTER IS FOR LARGE DEIVCES */}
         <section className={`${style.filters}`}>
-          <div className={`${style.filterinnerDiv}`}>
+          {isLoading && <>
+            <FilterSkeleton />
+          </>}
+         {!isLoading && <>
+         <div className={`${style.filterinnerDiv}`}>
 
             <div className={` ${style.filterscategory} ${style.productcategory}`}>
               <p>Product Category</p>
@@ -290,7 +295,7 @@ const AllProducts = () => {
 
 
             <div className={` ${style.filterscategory} ${style.productcategory}`}>
-              <p>Product Avaibality</p>
+              <p>Product Availability</p>
 
               {availabilities && availabilities.map(item =>
                 <section key={item}>
@@ -453,21 +458,24 @@ const AllProducts = () => {
 
           </div>
 
-          {/* <div className='hidden'>
-            <TextField />
-          </div> */}
-
           <div className={`${style.applybtncontainer}`}>
             <Button variant='contained' className={`${style.applyBtn}`} onClick={() => {
               setSearchTerm(searchInput)
               setFinalFilterOptions(filterOptions)
             }}>Apply</Button>
           </div>
+         </>}
         </section>
 
         <div className={`${style.productsList} items-start justify-center  `}>
-          <div className={` ${style.searchBarMain} w-[100%]`}>
-            <TextField placeholder='Search Products' className='w-[100%]' sx={{
+          <div className={` ${style.searchBarMain} w-[100%] ${!isLoading ? "border-2 border-[#3a393951]" : "border-0" }`}>
+            {isLoading && <>
+            <SeaachBarSkeleton height='60px' />
+            </> }
+
+           {!isLoading && 
+           <>
+           <TextField placeholder='Search Products' className='w-[100%]' sx={{
               "& .MuiOutlinedInput-root": {
                 border: "none", // Removes the default border
                 "& fieldset": {
@@ -500,12 +508,10 @@ const AllProducts = () => {
             >
               <SearchOutlined />
             </IconButton>
+           </>}
           </div>
 
           {!isLoading ? (!isError ? <div className={`${style.displayProducts}`}>
-            {/* previous version of infinite scroll */}
-            {/* <ProductsFullList productsList={searchData || products} /> */}
-
             <ProductsFullList
               productsList={products}
               loaderRef={loaderRef}
@@ -523,7 +529,7 @@ const AllProducts = () => {
             </section>)
             :
             <section className="h-[100vh] w-[100%] flex items-center justify-center">
-              <Loading />
+              <LoadingGrid rows={2} columns={3} />
             </section>
           }
 

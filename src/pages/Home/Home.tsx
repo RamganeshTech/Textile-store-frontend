@@ -13,6 +13,7 @@ import { setProducts } from "../../slices/products";
 import { useFetchProducts } from "../../apiList/productApi";
 import { AppDispatch, RootState } from "../../store/store";
 import Loading from "../../components/LoadingState/Loading";
+import LoadingGrid from "../../Loading/LoadingGrid";
 
 
 const Home = () => {
@@ -47,8 +48,9 @@ const Home = () => {
           <p className="text-lg sm:text-2xl lg:text-4xl">{(error as any)?.response?.data?.message || (error as any)?.message || "Something went wrong"}</p>
           </div>}
 
-       {!isError && isLoading &&  <div className="h-[80vh] sm:h-[90vh] w-[100vw] flex justify-center items-center">
-         <Loading />
+       {!isError && isLoading &&  <div className="w-[100vw] flex justify-center items-center">
+         {/* <Loading /> */}
+         <LoadingGrid  rows={2} columns={4} />
        </div>}
 
        {!isError && !isLoading &&<ProductsList products={reduxProducts} />}

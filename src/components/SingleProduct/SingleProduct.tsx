@@ -69,6 +69,17 @@ const SingleProduct = () => {
     let { mutate: addFavourite, isError: addFavIsError, error: addFavError, reset: addFavResetError } = useAddToFavourite()
     let { mutate: removeFavourite, isError: removeFavIsError, error: removeFavError, reset: removeFavResetError } = useRemoveFavourite()
 
+      const [fadeIn, setFadeIn] = useState(false);
+
+  useEffect(() => {
+    if (product) {
+      // Wait for the initial paint with opacity 0
+      requestAnimationFrame(() => {
+        setFadeIn(true);
+      });
+    }
+  }, [product]);
+
     useEffect(() => {
         setCustomLoading(true)
         if (products) {
@@ -119,7 +130,7 @@ const SingleProduct = () => {
 
     const selectedColorImages = useMemo(() => {
         return product?.colorVariants.find(cv => cv.color === selectedColor)?.images || []
-    }, [product, selectedSize, selectedColor])
+    }, [selectedSize, selectedColor])
 
     let isFavourite = useMemo(() => {
         if (favourites && favourites.items && product) {
@@ -179,7 +190,7 @@ const SingleProduct = () => {
         if (selectedColorImages.length > 0) {
             setSelectedImage(selectedColorImages[0]);
         }
-        setImgLoading(false)
+        // setImgLoading(false)
     }, [selectedColorImages]);
 
     // CLOUDINARY VERSION
@@ -230,7 +241,7 @@ const SingleProduct = () => {
 
     return (
         <>
-            <main className={`${style.maincontainer}`}>
+            <main  className={`${style.maincontainer} ${fadeIn ? style.fadein : ''}`}>
 
                 {addCartIsError && [401, 403].includes((addCartError as any)?.response?.status) &&
                     <ErrorComponent message={(addCartError as any)?.response?.data?.message || addCartError?.message as string}
@@ -396,7 +407,7 @@ const SingleProduct = () => {
                                         onLoad={() => setImgLoading(true)}
                                     />
                                 ) : (
-                                    <div>No image available</div>
+                                    <div className='text-lg text-gray-700 w-[100%] h-[57vh] sm:!h-[100%] lg:text-2xl shadow-md rounded-sm flex items-center justify-center'>No image available</div>
                                 )}
                         </div>
                     </section>
