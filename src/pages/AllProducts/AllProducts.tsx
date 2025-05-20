@@ -1,7 +1,7 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import style from './AllProducts.module.css'
 import { SearchOutlined } from '@mui/icons-material'
-import { CircularProgress, IconButton, Radio, Skeleton, TextField } from '@mui/material'
+import { CircularProgress, IconButton, Radio, TextField } from '@mui/material'
 // import products from '../../Utils/product'
 import ProductsFullList from '../../components/ProductsFullList/ProductsFullList'
 import Checkbox from '@mui/material/Checkbox';
@@ -11,7 +11,7 @@ import FilterSideBar from '../../components/FilterSidebar/FilterSideBar'
 import { useSearchProductsInfinite } from '../../apiList/productApi'
 import { ProductType } from '../../Types/types'
 import axios from 'axios'
-import Loading from '../../components/LoadingState/Loading'
+// import Loading from '../../components/LoadingState/Loading'
 import { arrival, availabilities, categories, sizes } from '../../constants/filterConstants'
 
 import Slider from "rc-slider";

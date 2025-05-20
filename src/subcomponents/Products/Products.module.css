@@ -12,6 +12,10 @@
     transition: 0.2s all;
 }
 
+.mobileViewFilter{
+    display: none;
+}
+
 .product:hover {
     transform: scale(1.03);
     /* cursor: pointer; */

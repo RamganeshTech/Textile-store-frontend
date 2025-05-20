@@ -64,7 +64,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         // if (!selectedSize || !selectedColor) {
         //     return;
         // }
-        
+
         try {
 
             if (isFavourite && !removeFavPending) {
@@ -83,6 +83,21 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
         }
 
     };
+
+    const getLowestStock = useMemo(() => {
+        let minStock = 5;
+
+        for (const sizeVariant of product.sizeVariants) {
+            for (const color of sizeVariant.colors) {
+                if (color.availableStock < minStock) {
+                    minStock = color.availableStock;
+                }
+            }
+        }
+
+        return minStock === 5 ? null : minStock;
+    }, []);
+
 
     // Get first available size and color with stock
     const firstAvailable = useMemo(() => {
@@ -107,9 +122,9 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
     }, [cartItems, product._id]);
 
     // const memoRunCountRef = useRef(0);
-    
+
     const isFavourite = useMemo(() => {
-        return favourites?.items?.some((fav: any) => fav?.productId?._id === product._id) || false;        
+        return favourites?.items?.some((fav: any) => fav?.productId?._id === product._id) || false;
     }, [favourites, product._id]);
 
     const [immdFavState, setImdFavState] = useState<boolean>(isFavourite)
@@ -150,7 +165,7 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
 
 
     return (
-        <div className={`${style.mainProduct}`}>
+        <div className={`${style.mainProduct} relative group `}>
 
             {addCartIsError && [401, 403].includes((addCartError as any)?.response?.status) &&
                 <ErrorComponent message={(addCartError as any)?.response?.data?.message || addCartError?.message as string}
@@ -176,6 +191,11 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                 }
                 }
             />}
+
+
+            {getLowestStock && <div className={`sm:block group-hover:scale-[1.03] transition hidden rounded-sm px-1 bg-[#e16e1a] text-[16px] text-center z-1 !w-[40%] absolute top-[-10px] right-0`}>
+                <p>only <span>{getLowestStock}</span> left</p>
+            </div>}
 
             <section className={`${style.product}`}>
                 <div className={`${style.imgcontainer}`}>
@@ -252,7 +272,12 @@ const Products: React.FC<singleProductprop> = ({ product }) => {
                 <div className={`${style.descriptioncontainer}`}>
                     <Link to={`/product/${product._id}`} className='pt-[10px] pb-[10px] flex h-full flex-col justify-between '>
                         <p>{product.productName}</p>
+
+
                         <p>Price <span>₹</span><span>{product.price}</span></p>
+                        {getLowestStock && <div className={`sm:hidden !px-1 w-fit bg-[#1976d218] rounded-sm ]`}>
+                            <p className='!text-[16px] !inline'>only <span className='!text-[16px]'>{getLowestStock}</span> left</p>
+                        </div>}
 
                         <div className={`${style.rating}`}>
                             <span>Rating: </span>
